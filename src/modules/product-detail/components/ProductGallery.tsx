@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import type { Product } from "@/shared/types/product";
 import { getProductMedia } from "@/shared/lib/productMedia";
 import { ProductBadgeStack } from "@/modules/catalog/components/ProductBadgeStack";
+import { ProductCaptureButton } from "@/modules/catalog/components/ProductCaptureButton";
 
 interface ProductGalleryProps {
   product: Product;
@@ -174,6 +175,13 @@ export function ProductGallery({
             📷 {activeIndex + 1} de {media.length}
           </div>
         )}
+
+        <div
+          data-product-detail-capture
+          className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2"
+        >
+          <ProductCaptureButton product={product} />
+        </div>
       </div>
     </div>
   );

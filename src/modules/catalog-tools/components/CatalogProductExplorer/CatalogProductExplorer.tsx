@@ -29,9 +29,9 @@ export interface CatalogProductExplorerItem {
   product: Product;
   stateLabel: string;
   stateTone: CatalogProductExplorerStateTone;
-  actionLabel: string;
-  actionTone: CatalogProductExplorerActionTone;
-  onAction: () => void;
+  actionLabel?: string;
+  actionTone?: CatalogProductExplorerActionTone;
+  onAction?: () => void;
 }
 
 interface CatalogProductExplorerProps {
@@ -239,15 +239,18 @@ export default function CatalogProductExplorer({
                       {item.stateLabel}
                     </div>
 
-                    <button
-                      type="button"
-                      className={`catalog-product-explorer__action is-${item.actionTone}`}
-                      onClick={
-                        item.onAction
-                      }
-                    >
-                      {item.actionLabel}
-                    </button>
+                    {item.actionLabel &&
+                    item.onAction ? (
+                      <button
+                        type="button"
+                        className={`catalog-product-explorer__action is-${item.actionTone ?? "secondary"}`}
+                        onClick={
+                          item.onAction
+                        }
+                      >
+                        {item.actionLabel}
+                      </button>
+                    ) : null}
                   </article>
                 );
               },

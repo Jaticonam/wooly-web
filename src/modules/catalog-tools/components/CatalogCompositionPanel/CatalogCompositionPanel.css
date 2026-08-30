@@ -1337,3 +1337,94 @@ span {
     max-height: none;
   }
 }
+/* =========================================================
+   ADMIN 1.0 - A2.4 BUSQUEDA Y SCROLL NATURAL
+   ========================================================= */
+
+.catalog-composition-panel__catalogSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.catalog-composition-panel__catalogSearch > label {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 520px);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.catalog-composition-panel__catalogSearch > label > span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catalog-composition-panel__catalogSearch input {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid #dbe7e8;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 12px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.catalog-composition-panel__catalogSearch input:focus {
+  border-color: #178f8b;
+  box-shadow:
+    0 0 0 3px rgba(23, 143, 139, 0.1);
+}
+
+.catalog-composition-panel__catalogSearch input::placeholder {
+  color: #94a3b8;
+}
+
+.catalog-composition-panel__catalogSearch > button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.catalog-composition-panel__catalogSearch > button:hover {
+  color: #0f6f6c;
+}
+
+.catalog-composition-panel__catalogWorkspace
+  .catalog-product-explorer__viewport {
+  min-height: 0;
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
+  scrollbar-gutter: auto;
+}
+
+@media (max-width: 900px) {
+  .catalog-composition-panel__catalogSearch {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .catalog-composition-panel__catalogSearch > label {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

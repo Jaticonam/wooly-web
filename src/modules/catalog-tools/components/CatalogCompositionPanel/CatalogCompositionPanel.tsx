@@ -116,12 +116,31 @@ const toggleValue = (
         value,
       ];
 
+const normalizeCatalogSearchValue = (
+  value: unknown,
+) =>
+  String(
+    value ?? "",
+  )
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      "",
+    );
+
 export default function CatalogCompositionPanel({
   products,
   campaigns,
   isReady,
   onOpenCatalogSync,
 }: CatalogCompositionPanelProps) {
+  const [
+    catalogSearchQuery,
+    setCatalogSearchQuery,
+  ] = useState("");
+
   const [
     isCatalogDetailsOpen,
     setIsCatalogDetailsOpen,
@@ -175,6 +194,28 @@ const [
         composition,
       ],
     );
+
+  const normalizedCatalogSearch =
+    normalizeCatalogSearchValue(
+      catalogSearchQuery,
+    );
+
+  const catalogExplorerProducts =
+    normalizedCatalogSearch
+      ? resolution.products.filter(
+          (product) =>
+            normalizeCatalogSearchValue(
+              [
+                product.id,
+                product.title,
+                product.description,
+                product.category,
+              ].join(" "),
+            ).includes(
+              normalizedCatalogSearch,
+            ),
+        )
+      : resolution.products;
 
   const categoryOptions =
     useMemo(
@@ -801,6 +842,44 @@ const changeMode =
 
       {composition.mode === "automatic" ? (
         <section className="catalog-composition-panel__catalogWorkspace">
+          <div className="catalog-composition-panel__catalogSearch">
+            <label>
+              <span>
+                Buscar producto
+              </span>
+
+              <input
+                type="search"
+                value={
+                  catalogSearchQuery
+                }
+                placeholder="Buscar código, nombre, descripción o categoría..."
+                disabled={
+                  !isReady
+                }
+                aria-label="Buscar producto en catálogo"
+                onChange={(event) =>
+                  setCatalogSearchQuery(
+                    event.target.value,
+                  )
+                }
+              />
+            </label>
+
+            {catalogSearchQuery ? (
+              <button
+                type="button"
+                onClick={() =>
+                  setCatalogSearchQuery(
+                    "",
+                  )
+                }
+              >
+                Borrar búsqueda
+              </button>
+            ) : null}
+          </div>
+
           <div
             className="catalog-composition-panel__catalogFilters"
             aria-label="Filtros del catálogo"
@@ -934,7 +1013,7 @@ const changeMode =
 
           <CatalogProductExplorer
             items={
-              resolution.products.map(
+              catalogExplorerProducts.map(
                 (product) => ({
                   product,
                   stateLabel:

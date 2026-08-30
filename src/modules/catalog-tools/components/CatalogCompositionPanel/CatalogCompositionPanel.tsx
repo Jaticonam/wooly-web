@@ -29,6 +29,7 @@ import type {
 import CatalogHybridAdjuster, { type CatalogHybridAction } from "@/modules/catalog-tools/components/CatalogHybridAdjuster/CatalogHybridAdjuster";
 
 import CatalogManualSelector from "@/modules/catalog-tools/components/CatalogManualSelector/CatalogManualSelector";
+import CatalogProductExplorer from "@/modules/catalog-tools/components/CatalogProductExplorer/CatalogProductExplorer";
 
 import CatalogCompositionPreview from "@/modules/catalog-tools/components/CatalogCompositionPreview/CatalogCompositionPreview";
 
@@ -799,167 +800,157 @@ const changeMode =
       ) : null}
 
       {composition.mode === "automatic" ? (
-<div
-        className={`catalog-composition-panel__grid ${
-          filtersEnabled
-            ? ""
-            : "is-disabled"
-        }`}
-      >
-        <article className="catalog-composition-panel__section">
-          <div className="catalog-composition-panel__sectionHead">
-            <span>
-              02
-            </span>
-
-            <div>
-              <h3>
+        <section className="catalog-composition-panel__catalogWorkspace">
+          <div
+            className="catalog-composition-panel__catalogFilters"
+            aria-label="Filtros del catálogo"
+          >
+            <div className="catalog-composition-panel__catalogFilterGroup">
+              <span className="catalog-composition-panel__catalogFilterLabel">
                 Categorías
-              </h3>
+              </span>
 
-              <p>
-                Selecciona una o varias familias.
-              </p>
-            </div>
-          </div>
+              <div className="catalog-composition-panel__catalogFilterOptions">
+                {categoryOptions.map(
+                  (category) => {
+                    const isActive =
+                      composition.filters
+                        .categoryIds
+                        .includes(
+                          category.id,
+                        );
 
-          <div className="catalog-composition-panel__options">
-            {categoryOptions.map(
-              (category) => {
-                const isActive =
-                  composition.filters
-                    .categoryIds
-                    .includes(
-                      category.id,
+                    const isDisabled =
+                      !isReady ||
+                      !filtersEnabled ||
+                      category.count === 0;
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          category.id
+                        }
+                        disabled={
+                          isDisabled
+                        }
+                        aria-pressed={
+                          isActive
+                        }
+                        className={
+                          isActive
+                            ? "is-active"
+                            : ""
+                        }
+                        onClick={() =>
+                          toggleCategory(
+                            category.id,
+                          )
+                        }
+                      >
+                        <span aria-hidden="true">
+                          {category.icon}
+                        </span>
+
+                        <strong>
+                          {category.label}
+                        </strong>
+
+                        <small>
+                          {category.count}
+                        </small>
+                      </button>
                     );
-
-                const isDisabled =
-                  !isReady ||
-                  !filtersEnabled ||
-                  category.count === 0;
-
-                return (
-                  <button
-                    type="button"
-                    key={
-                      category.id
-                    }
-                    disabled={
-                      isDisabled
-                    }
-                    aria-pressed={
-                      isActive
-                    }
-                    className={
-                      isActive
-                        ? "is-active"
-                        : ""
-                    }
-                    onClick={() =>
-                      toggleCategory(
-                        category.id,
-                      )
-                    }
-                  >
-                    <span>
-                      {isActive
-                        ? "✓"
-                        : category.icon}
-                    </span>
-
-                    <strong>
-                      {category.label}
-                    </strong>
-
-                    <small>
-                      {category.count} productos
-                    </small>
-                  </button>
-                );
-              },
-            )}
-          </div>
-        </article>
-
-        <article className="catalog-composition-panel__section">
-          <div className="catalog-composition-panel__sectionHead">
-            <span>
-              03
-            </span>
-
-            <div>
-              <h3>
-                Campañas
-              </h3>
-
-              <p>
-                Puedes combinar varias campañas activas.
-              </p>
+                  },
+                )}
+              </div>
             </div>
-          </div>
 
-          {campaignOptions.length > 0 ? (
-            <div className="catalog-composition-panel__options">
-              {campaignOptions.map(
-                (campaign) => {
-                  const isActive =
-                    composition.filters
-                      .campaignIds
-                      .includes(
-                        campaign.id,
+            <div className="catalog-composition-panel__catalogFilterGroup">
+              <span className="catalog-composition-panel__catalogFilterLabel">
+                Campañas
+              </span>
+
+              {campaignOptions.length >
+              0 ? (
+                <div className="catalog-composition-panel__catalogFilterOptions">
+                  {campaignOptions.map(
+                    (campaign) => {
+                      const isActive =
+                        composition.filters
+                          .campaignIds
+                          .includes(
+                            campaign.id,
+                          );
+
+                      return (
+                        <button
+                          type="button"
+                          key={
+                            campaign.id
+                          }
+                          disabled={
+                            !isReady ||
+                            !filtersEnabled
+                          }
+                          aria-pressed={
+                            isActive
+                          }
+                          className={
+                            isActive
+                              ? "is-active"
+                              : ""
+                          }
+                          onClick={() =>
+                            toggleCampaign(
+                              campaign.id,
+                            )
+                          }
+                        >
+                          <span aria-hidden="true">
+                            {campaign.icon ||
+                              "●"}
+                          </span>
+
+                          <strong>
+                            {campaign.label}
+                          </strong>
+
+                          <small>
+                            {campaign.count}
+                          </small>
+                        </button>
                       );
-
-                  return (
-                    <button
-                      type="button"
-                      key={
-                        campaign.id
-                      }
-                      disabled={
-                        !isReady ||
-                        !filtersEnabled
-                      }
-                      aria-pressed={
-                        isActive
-                      }
-                      className={
-                        isActive
-                          ? "is-active"
-                          : ""
-                      }
-                      onClick={() =>
-                        toggleCampaign(
-                          campaign.id,
-                        )
-                      }
-                    >
-                      <span>
-                        {isActive
-                          ? "✓"
-                          : campaign.icon ||
-                            "●"}
-                      </span>
-
-                      <strong>
-                        {campaign.label}
-                      </strong>
-
-                      <small>
-                        {campaign.count} productos
-                      </small>
-                    </button>
-                  );
-                },
+                    },
+                  )}
+                </div>
+              ) : (
+                <span className="catalog-composition-panel__catalogFilterEmpty">
+                  Sin campañas activas
+                </span>
               )}
             </div>
-          ) : (
-            <div className="catalog-composition-panel__empty">
-              No hay campañas activas con productos.
-            </div>
-          )}
-        </article>
-      </div>
-) : null}
+          </div>
+
+          <CatalogProductExplorer
+            items={
+              resolution.products.map(
+                (product) => ({
+                  product,
+                  stateLabel:
+                    "En catálogo",
+                  stateTone:
+                    "available" as const,
+                }),
+              )
+            }
+            isReady={
+              isReady
+            }
+            emptyMessage="No hay productos para los filtros seleccionados."
+          />
+        </section>
+      ) : null}
 
               </div>
 

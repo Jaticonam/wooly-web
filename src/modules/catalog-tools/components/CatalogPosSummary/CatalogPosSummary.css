@@ -421,3 +421,211 @@
     min-height: 0;
   }
 }
+/* =========================================================
+   ADMIN 1.0 - A2.8 PANEL DERECHO COMPACTO
+   Tu catalogo = resumen operativo, no segundo workspace.
+   ========================================================= */
+
+.catalog-pos-summary {
+  min-height: 0;
+  border-color: #dbe7e8;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.055);
+}
+
+.catalog-pos-summary__header {
+  align-items: center;
+  gap: 8px;
+  padding: 11px 11px 8px;
+}
+
+.catalog-pos-summary__header > div:first-child > span {
+  margin-bottom: 2px;
+  font-size: 0.54rem;
+  letter-spacing: 0.07em;
+}
+
+.catalog-pos-summary__header h3 {
+  font-size: 0.94rem;
+  line-height: 1.1;
+}
+
+.catalog-pos-summary__header p {
+  display: none;
+}
+
+.catalog-pos-summary__totalBadge {
+  min-width: 62px;
+  border-radius: 10px;
+  padding: 7px 8px;
+  background: var(--w-primary-soft, #e8f6f9);
+}
+
+.catalog-pos-summary__totalBadge strong {
+  font-size: 1.2rem;
+}
+
+.catalog-pos-summary__totalBadge small {
+  margin-top: 3px;
+  font-size: 0.5rem;
+}
+
+.catalog-pos-summary__metrics {
+  gap: 4px;
+  padding: 0 10px 8px;
+}
+
+.catalog-pos-summary__metrics > div {
+  border-radius: 9px;
+  padding: 6px 4px;
+}
+
+.catalog-pos-summary__metrics strong {
+  font-size: 0.76rem;
+}
+
+.catalog-pos-summary__metrics span {
+  margin-top: 1px;
+  font-size: 0.46rem;
+}
+
+.catalog-pos-summary__rules {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  padding: 0 10px 8px;
+}
+
+.catalog-pos-summary__rules > div {
+  min-width: 0;
+  border: 1px solid #edf2f7;
+  border-radius: 9px;
+  padding: 6px 7px;
+  background: #f8fafc;
+}
+
+.catalog-pos-summary__rules span {
+  margin-bottom: 2px;
+  font-size: 0.46rem;
+}
+
+.catalog-pos-summary__rules strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.57rem;
+  line-height: 1.2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.catalog-pos-summary__body {
+  padding: 8px 10px;
+}
+
+.catalog-pos-summary__section + .catalog-pos-summary__section {
+  margin-top: 10px;
+  padding-top: 9px;
+}
+
+.catalog-pos-summary__sectionHead {
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.catalog-pos-summary__sectionHead strong {
+  font-size: 0.59rem;
+}
+
+.catalog-pos-summary__sectionHead span {
+  min-width: 22px;
+  padding: 2px 5px;
+  font-size: 0.5rem;
+}
+
+.catalog-pos-summary__categoryList {
+  gap: 3px;
+}
+
+.catalog-pos-summary__categoryList > div {
+  min-height: 24px;
+  border-radius: 7px;
+  padding: 3px 6px;
+}
+
+.catalog-pos-summary__categoryList span {
+  font-size: 0.56rem;
+}
+
+.catalog-pos-summary__categoryList strong {
+  font-size: 0.57rem;
+}
+
+.catalog-pos-summary__productList {
+  gap: 4px;
+}
+
+.catalog-pos-summary__product {
+  grid-template-columns:
+    36px
+    minmax(0, 1fr)
+    24px;
+  gap: 6px;
+  min-height: 42px;
+  border-radius: 8px;
+  padding: 3px 4px;
+}
+
+.catalog-pos-summary__productImage {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+.catalog-pos-summary__productInfo span {
+  font-size: 0.45rem;
+}
+
+.catalog-pos-summary__productInfo strong {
+  font-size: 0.55rem;
+}
+
+.catalog-pos-summary__productInfo small {
+  margin-top: 1px;
+  font-size: 0.47rem;
+}
+
+.catalog-pos-summary__productAction {
+  width: 23px;
+  height: 23px;
+  border-radius: 7px;
+  font-size: 0.7rem;
+}
+
+.catalog-pos-summary__empty {
+  padding: 7px;
+  font-size: 0.53rem;
+}
+
+.catalog-pos-summary__footer {
+  padding: 9px 10px 10px;
+}
+
+.catalog-pos-summary__final {
+  display: none;
+}
+
+.catalog-pos-summary__publish {
+  min-height: 42px;
+  border-radius: 10px;
+  font-size: 0.69rem;
+}
+
+@media (max-width: 1350px) {
+  .catalog-pos-summary {
+    position: static;
+    max-height: 560px;
+    min-height: 0;
+  }
+}

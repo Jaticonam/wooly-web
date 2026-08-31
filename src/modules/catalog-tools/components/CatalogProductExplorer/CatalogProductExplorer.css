@@ -910,3 +910,266 @@
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   ADMIN 1.0 - A2.7 COMMERCIAL LIST
+   ========================================================= */
+
+.catalog-product-explorer__commercialPrimary,
+.catalog-product-explorer__commercialPrice,
+.catalog-product-explorer__commercialStock,
+.catalog-product-explorer__commercialWholesale {
+  display: contents;
+}
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns:
+      108px
+      minmax(0, 1fr);
+    min-height: 112px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage {
+    height: 100%;
+    min-height: 112px;
+    aspect-ratio: auto;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    display: grid;
+    grid-template-columns:
+      minmax(240px, 1fr)
+      minmax(135px, 180px)
+      minmax(120px, 155px)
+      auto;
+    grid-template-areas:
+      "primary price stock state";
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrimary {
+    display: grid;
+    grid-area: primary;
+    min-width: 0;
+    align-content: center;
+    gap: 4px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice {
+    display: block;
+    grid-area: price;
+    min-width: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialStock {
+    display: block;
+    grid-area: stock;
+    min-width: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialWholesale {
+    display: none;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialIdentity {
+    justify-content: flex-start;
+    margin: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialTitle {
+    min-height: 0;
+    margin: 0;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div {
+    align-items: flex-start;
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div {
+    justify-content: flex-start;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialStock
+    > div {
+    margin: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo
+    .catalog-product-explorer__state {
+    grid-area: state;
+    width: fit-content;
+    min-width: 82px;
+    align-self: center;
+    justify-self: end;
+    margin: 0;
+    padding-top: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo
+    .catalog-product-explorer__action {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.7E COMMERCIAL LIST DENSITY
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns:
+      96px
+      minmax(0, 1fr);
+    min-height: 96px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage {
+    min-height: 96px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    gap: 10px 16px;
+    padding: 8px 12px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    grid-template-columns:
+      minmax(280px, 520px)
+      160px
+      150px
+      100px;
+    justify-content: space-between;
+  }
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.7G LIST IMAGE AND BADGES
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns:
+      96px
+      minmax(0, 1fr);
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage {
+    width: 96px;
+    height: 96px;
+    min-height: 96px;
+    align-self: center;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f8fafc;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  /*
+   * ProductCardBadges renderiza ProductBadgeStack como
+   * el div directo dentro de commercialImage.
+   * Solo se adapta su presentacion en Lista.
+   */
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    > div {
+    left: 5px;
+    top: 5px;
+    max-width: calc(100% - 10px);
+    gap: 3px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    > div
+    > * {
+    max-width: 100%;
+    padding: 3px 6px;
+    font-size: 8px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    .catalog-product-explorer__soldOut {
+    padding: 4px 7px;
+    border-width: 1px;
+    font-size: 8px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.7H LIST BADGE READABILITY
+   ========================================================= */
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    > div {
+    left: 3px;
+    top: 3px;
+    max-width: calc(100% - 6px);
+    gap: 2px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    > div
+    > * {
+    max-width: 100%;
+    padding: 2px 5px;
+    font-size: 7px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}

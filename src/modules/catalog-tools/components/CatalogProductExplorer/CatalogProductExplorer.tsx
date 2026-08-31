@@ -298,7 +298,8 @@ export default function CatalogProductExplorer({
                         </div>
 
                         <div className="catalog-product-explorer__commercialInfo">
-                          <div className="catalog-product-explorer__commercialIdentity">
+                          <div className="catalog-product-explorer__commercialPrimary">
+                            <div className="catalog-product-explorer__commercialIdentity">
                             <span className="catalog-product-explorer__id">
                               {product.id}
                             </span>
@@ -324,8 +325,10 @@ export default function CatalogProductExplorer({
                               product.title
                             }
                           </strong>
+                          </div>
 
-                          <ProductCardPrice
+                          <div className="catalog-product-explorer__commercialPrice">
+                            <ProductCardPrice
                             product={
                               product
                             }
@@ -333,8 +336,10 @@ export default function CatalogProductExplorer({
                               isPreventa
                             }
                           />
+                          </div>
 
-                          <ProductCardStock
+                          <div className="catalog-product-explorer__commercialStock">
+                            <ProductCardStock
                             stock={
                               product.stock
                             }
@@ -345,8 +350,10 @@ export default function CatalogProductExplorer({
                               product.status
                             }
                           />
+                          </div>
 
-                          <ProductVolumePriceBadges
+                          <div className="catalog-product-explorer__commercialWholesale">
+                            <ProductVolumePriceBadges
                             product={
                               product
                             }
@@ -357,6 +364,7 @@ export default function CatalogProductExplorer({
                               isPreventa
                             }
                           />
+                          </div>
 
                           <div className="catalog-product-explorer__state">
                             {

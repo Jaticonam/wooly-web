@@ -1428,3 +1428,330 @@ span {
     gap: 5px;
   }
 }
+/* =========================================================
+   ADMIN 1.0 - A2.6 SALES FILTER EXPERIENCE
+   ========================================================= */
+
+.catalog-composition-panel__catalogFilters {
+  gap: 10px;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories,
+.catalog-composition-panel__catalogFilterGroup.is-campaigns {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  padding: 10px 12px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories {
+  border-color: #e2e8f0;
+  background:
+    linear-gradient(
+      135deg,
+      #fbfdfe 0%,
+      #f4fafb 100%
+    );
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns {
+  border-color: #eddcf4;
+  background:
+    linear-gradient(
+      135deg,
+      #fff8fb 0%,
+      #faf7ff 52%,
+      #f7fbff 100%
+    );
+  box-shadow:
+    0 8px 24px
+    rgba(91, 33, 182, 0.05);
+}
+
+.catalog-composition-panel__catalogFilterHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.catalog-composition-panel__catalogFilterHeading
+  .catalog-composition-panel__catalogFilterLabel {
+  margin: 0;
+}
+
+.catalog-composition-panel__catalogFilterHeading > small {
+  color: #94a3b8;
+  font-size: 0.61rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterLabel {
+  color: #86198f;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterHeading
+  > small {
+  color: #a855a8;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions {
+  gap: 6px;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button {
+  min-height: 36px;
+  border-color: #dce7eb;
+  border-radius: 12px;
+  padding: 6px 9px;
+  background: #ffffff;
+  box-shadow:
+    0 2px 7px
+    rgba(15, 23, 42, 0.035);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  border-radius: 8px;
+  background: #edf8fa;
+  font-size: 0.8rem;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > strong {
+  font-weight: 900;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > small {
+  min-width: 22px;
+  border-radius: 999px;
+  padding: 3px 6px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button:hover:not(:disabled) {
+  border-color: #9ccbd5;
+  background: #f8fdfe;
+  box-shadow:
+    0 5px 14px
+    rgba(29, 130, 153, 0.09);
+  transform: translateY(-1px);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active {
+  border-color: #1d8299;
+  background:
+    linear-gradient(
+      135deg,
+      #e9f8fb 0%,
+      #f4fcfd 100%
+    );
+  color: #12677a;
+  box-shadow:
+    0 0 0 1px
+      rgba(29, 130, 153, 0.08),
+    0 6px 16px
+      rgba(29, 130, 153, 0.1);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active
+  > span {
+  background: #d9f1f5;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-categories
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active
+  > small {
+  background: #1d8299;
+  color: #ffffff;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions {
+  gap: 8px;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button {
+  min-height: 40px;
+  border-color: #ead9f1;
+  border-radius: 13px;
+  padding: 7px 10px;
+  background:
+    rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 3px 10px
+    rgba(88, 28, 135, 0.055);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > span {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  place-items: center;
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      135deg,
+      #fce7f3,
+      #ede9fe
+    );
+  font-size: 0.88rem;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > strong {
+  color: #4c1d5f;
+  font-weight: 950;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button
+  > small {
+  min-width: 24px;
+  border-radius: 999px;
+  padding: 3px 7px;
+  background: #f3e8ff;
+  color: #7e22ce;
+  font-weight: 950;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button:hover:not(:disabled) {
+  border-color: #d8b4fe;
+  background: #ffffff;
+  box-shadow:
+    0 7px 18px
+    rgba(126, 34, 206, 0.12);
+  transform: translateY(-1px);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active {
+  border-color: #7c3aed;
+  background:
+    linear-gradient(
+      135deg,
+      #6d28d9 0%,
+      #a21caf 55%,
+      #db2777 100%
+    );
+  color: #ffffff;
+  box-shadow:
+    0 8px 20px
+    rgba(126, 34, 206, 0.2);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active
+  > strong {
+  color: #ffffff;
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active
+  > span {
+  background:
+    rgba(255, 255, 255, 0.17);
+}
+
+.catalog-composition-panel__catalogFilterGroup.is-campaigns
+  .catalog-composition-panel__catalogFilterOptions
+  button.is-active
+  > small {
+  background:
+    rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.catalog-composition-panel__catalogFilterGroup
+  .catalog-composition-panel__catalogFilterOptions
+  button {
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+@media (max-width: 700px) {
+  .catalog-composition-panel__catalogFilterHeading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .catalog-composition-panel__catalogFilterGroup.is-categories,
+  .catalog-composition-panel__catalogFilterGroup.is-campaigns {
+    padding: 9px;
+  }
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.6B FILTER HEADING WIDTH
+   ========================================================= */
+
+@media (min-width: 901px) {
+  .catalog-composition-panel__catalogFilterGroup.is-categories,
+  .catalog-composition-panel__catalogFilterGroup.is-campaigns {
+    grid-template-columns:
+      180px
+      minmax(0, 1fr);
+  }
+
+  .catalog-composition-panel__catalogFilterHeading {
+    display: grid;
+    align-content: center;
+    justify-content: start;
+    gap: 3px;
+    margin-bottom: 0;
+  }
+
+  .catalog-composition-panel__catalogFilterHeading
+    > small {
+    max-width: 170px;
+    line-height: 1.25;
+  }
+}

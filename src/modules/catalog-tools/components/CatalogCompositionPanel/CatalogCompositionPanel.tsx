@@ -884,10 +884,16 @@ const changeMode =
             className="catalog-composition-panel__catalogFilters"
             aria-label="Filtros del catálogo"
           >
-            <div className="catalog-composition-panel__catalogFilterGroup">
-              <span className="catalog-composition-panel__catalogFilterLabel">
-                Categorías
-              </span>
+            <div className="catalog-composition-panel__catalogFilterGroup is-categories">
+              <div className="catalog-composition-panel__catalogFilterHeading">
+                <span className="catalog-composition-panel__catalogFilterLabel">
+                  Categorías
+                </span>
+
+                <small>
+                  Explora por familia de producto
+                </small>
+              </div>
 
               <div className="catalog-composition-panel__catalogFilterOptions">
                 {categoryOptions.map(
@@ -945,10 +951,16 @@ const changeMode =
               </div>
             </div>
 
-            <div className="catalog-composition-panel__catalogFilterGroup">
-              <span className="catalog-composition-panel__catalogFilterLabel">
-                Campañas
-              </span>
+            <div className="catalog-composition-panel__catalogFilterGroup is-campaigns">
+              <div className="catalog-composition-panel__catalogFilterHeading">
+                <span className="catalog-composition-panel__catalogFilterLabel">
+                  Campañas
+                </span>
+
+                <small>
+                  Oportunidades comerciales activas
+                </small>
+              </div>
 
               {campaignOptions.length >
               0 ? (

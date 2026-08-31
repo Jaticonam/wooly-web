@@ -1026,7 +1026,8 @@ const changeMode =
             isReady={
               isReady
             }
-            emptyMessage="No hay productos para los filtros seleccionados."
+            presentation="commercial"
+      emptyMessage="No hay productos para los filtros seleccionados."
           />
         </section>
       ) : null}

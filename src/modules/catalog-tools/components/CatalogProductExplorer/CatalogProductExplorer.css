@@ -102,7 +102,7 @@
   object-fit: cover;
 }
 
-.catalog-product-explorer__image > span {
+.catalog-product-explorer__image > span:not(.catalog-product-explorer__soldOut) {
   display: grid;
   width: 100%;
   height: 100%;
@@ -721,4 +721,192 @@
 .catalog-product-explorer__action.is-primary:hover:not(:disabled) {
   box-shadow:
     0 9px 20px rgba(29, 130, 153, 0.24);
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.5 COMMERCIAL PRODUCT CARD
+   ========================================================= */
+
+.catalog-product-explorer__card.is-commercial {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__card.is-commercial {
+  min-height: 100%;
+}
+
+.catalog-product-explorer__commercialImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+  background: #f8fafc;
+}
+
+.catalog-product-explorer__commercialImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.catalog-product-explorer__soldOut {
+  position: absolute;
+  z-index: 12;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 6px 11px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: #f97316;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catalog-product-explorer__commercialInfo {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 9px;
+  text-align: center;
+}
+
+.catalog-product-explorer__commercialIdentity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.catalog-product-explorer__commercialIdentity
+  .catalog-product-explorer__id,
+.catalog-product-explorer__category {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  border-radius: 999px;
+  padding: 3px 7px;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.catalog-product-explorer__commercialIdentity
+  .catalog-product-explorer__id {
+  background: #f1f5f9;
+}
+
+.catalog-product-explorer__commercialTitle {
+  display: -webkit-box;
+  min-height: 34px;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.catalog-product-explorer__commercialInfo
+  .catalog-product-explorer__state {
+  align-self: center;
+  margin: auto 0 0;
+  padding-top: 8px;
+}
+
+.catalog-product-explorer__commercialInfo
+  .catalog-product-explorer__action {
+  width: 100%;
+  margin: 8px 0 0;
+}
+
+.catalog-product-explorer__card.is-commercial
+  .wholesale-list {
+  margin-top: 5px;
+}
+
+.catalog-product-explorer__card.is-commercial
+  .wholesale-title {
+  font-size: 9px;
+}
+
+.catalog-product-explorer__card.is-commercial
+  .wholesale-chip {
+  min-height: 25px;
+  padding: 4px 5px;
+  font-size: 8px;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__card.is-commercial {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialImage {
+  aspect-ratio: 1 / 1;
+  height: 100%;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialInfo {
+  display: grid;
+  grid-template-columns:
+    minmax(140px, 1fr)
+    auto;
+  align-items: center;
+  gap: 5px 12px;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialIdentity,
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialTitle {
+  justify-content: flex-start;
+  margin: 0;
+  text-align: left;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialInfo
+  .wholesale-list {
+  display: none;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialInfo
+  .catalog-product-explorer__state {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    grid-template-columns: 1fr;
+  }
 }

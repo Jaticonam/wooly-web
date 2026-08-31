@@ -7,11 +7,39 @@ import type {
   Product,
 } from "@/shared/types/product";
 
+import {
+  getCategoryColor,
+} from "@/shared/config/categoryColors";
+
+import {
+  ProductCardBadges,
+} from "@/modules/catalog/components/ProductCardBadges";
+
+import {
+  ProductCardPrice,
+} from "@/modules/catalog/components/ProductCardPrice";
+
+import {
+  ProductCardStock,
+} from "@/modules/catalog/components/ProductCardStock";
+
+import {
+  ProductVolumePriceBadges,
+} from "@/modules/catalog/components/ProductVolumePriceBadges";
+
+import {
+  resolveProductCommercialPolicy,
+} from "@/modules/catalog/domain/ProductCommercialPolicy";
+
 import "./CatalogProductExplorer.css";
 
 export type CatalogProductExplorerViewMode =
   | "list"
   | "grid";
+
+export type CatalogProductExplorerPresentation =
+  | "operational"
+  | "commercial";
 
 export type CatalogProductExplorerStateTone =
   | "base"
@@ -38,6 +66,8 @@ interface CatalogProductExplorerProps {
   items: readonly CatalogProductExplorerItem[];
   isReady: boolean;
   emptyMessage: string;
+  presentation?:
+    CatalogProductExplorerPresentation;
 }
 
 const VIEW_STORAGE_KEY =
@@ -102,6 +132,7 @@ export default function CatalogProductExplorer({
   items,
   isReady,
   emptyMessage,
+  presentation = "operational",
 }: CatalogProductExplorerProps) {
   const [
     viewMode,
@@ -196,61 +227,221 @@ export default function CatalogProductExplorer({
                   product,
                 } = item;
 
+                const commercialPolicy =
+                  presentation ===
+                  "commercial"
+                    ? resolveProductCommercialPolicy(
+                        product,
+                      )
+                    : null;
+
+                const isPreventa =
+                  commercialPolicy?.status ===
+                  "preventa";
+
+                const isAgotado =
+                  commercialPolicy?.status ===
+                  "agotado";
+
+                const available =
+                  commercialPolicy
+                    ?.isPurchasable ??
+                  false;
+
                 return (
                   <article
                     key={
                       product.id
                     }
-                    className={`catalog-product-explorer__card is-${item.stateTone}`}
+                    className={[
+                      "catalog-product-explorer__card",
+                      `is-${item.stateTone}`,
+                      presentation ===
+                      "commercial"
+                        ? "is-commercial"
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                   >
-                    <div className="catalog-product-explorer__image">
-                      {product.img ? (
-                        <img
-                          src={
-                            product.img
+                    {presentation ===
+                    "commercial" ? (
+                      <>
+                        <div className="catalog-product-explorer__image catalog-product-explorer__commercialImage">
+                          <ProductCardBadges
+                            product={
+                              product
+                            }
+                          />
+
+                          {isAgotado ? (
+                            <span className="catalog-product-explorer__soldOut">
+                              Agotado
+                            </span>
+                          ) : null}
+
+                          {product.img ? (
+                            <img
+                              src={
+                                product.img
+                              }
+                              alt={
+                                product.title
+                              }
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span>
+                              Sin imagen
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="catalog-product-explorer__commercialInfo">
+                          <div className="catalog-product-explorer__commercialIdentity">
+                            <span className="catalog-product-explorer__id">
+                              {product.id}
+                            </span>
+
+                            <span
+                              className={[
+                                "catalog-product-explorer__category",
+                                getCategoryColor(
+                                  product.category,
+                                ),
+                              ].join(
+                                " ",
+                              )}
+                            >
+                              {
+                                product.category
+                              }
+                            </span>
+                          </div>
+
+                          <strong className="catalog-product-explorer__commercialTitle">
+                            {
+                              product.title
+                            }
+                          </strong>
+
+                          <ProductCardPrice
+                            product={
+                              product
+                            }
+                            isPreventa={
+                              isPreventa
+                            }
+                          />
+
+                          <ProductCardStock
+                            stock={
+                              product.stock
+                            }
+                            price={
+                              product.price_1
+                            }
+                            status={
+                              product.status
+                            }
+                          />
+
+                          <ProductVolumePriceBadges
+                            product={
+                              product
+                            }
+                            available={
+                              available
+                            }
+                            isPreventa={
+                              isPreventa
+                            }
+                          />
+
+                          <div className="catalog-product-explorer__state">
+                            {
+                              item.stateLabel
+                            }
+                          </div>
+
+                          {item.actionLabel &&
+                          item.onAction ? (
+                            <button
+                              type="button"
+                              className={`catalog-product-explorer__action is-${item.actionTone ?? "secondary"}`}
+                              onClick={
+                                item.onAction
+                              }
+                            >
+                              {
+                                item.actionLabel
+                              }
+                            </button>
+                          ) : null}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="catalog-product-explorer__image">
+                          {product.img ? (
+                            <img
+                              src={
+                                product.img
+                              }
+                              alt={
+                                product.title
+                              }
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span>
+                              Sin imagen
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="catalog-product-explorer__info">
+                          <span className="catalog-product-explorer__id">
+                            {
+                              product.id
+                            }
+                          </span>
+
+                          <strong>
+                            {
+                              product.title
+                            }
+                          </strong>
+
+                          <small>
+                            {
+                              product.category
+                            }
+                          </small>
+                        </div>
+
+                        <div className="catalog-product-explorer__state">
+                          {
+                            item.stateLabel
                           }
-                          alt={
-                            product.title
-                          }
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span>
-                          Sin imagen
-                        </span>
-                      )}
-                    </div>
+                        </div>
 
-                    <div className="catalog-product-explorer__info">
-                      <span className="catalog-product-explorer__id">
-                        {product.id}
-                      </span>
-
-                      <strong>
-                        {product.title}
-                      </strong>
-
-                      <small>
-                        {product.category}
-                      </small>
-                    </div>
-
-                    <div className="catalog-product-explorer__state">
-                      {item.stateLabel}
-                    </div>
-
-                    {item.actionLabel &&
-                    item.onAction ? (
-                      <button
-                        type="button"
-                        className={`catalog-product-explorer__action is-${item.actionTone ?? "secondary"}`}
-                        onClick={
-                          item.onAction
-                        }
-                      >
-                        {item.actionLabel}
-                      </button>
-                    ) : null}
+                        {item.actionLabel &&
+                        item.onAction ? (
+                          <button
+                            type="button"
+                            className={`catalog-product-explorer__action is-${item.actionTone ?? "secondary"}`}
+                            onClick={
+                              item.onAction
+                            }
+                          >
+                            {
+                              item.actionLabel
+                            }
+                          </button>
+                        ) : null}
+                      </>
+                    )}
                   </article>
                 );
               },

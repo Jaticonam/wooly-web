@@ -268,11 +268,9 @@ export default function CatalogProductExplorer({
                     "commercial" ? (
                       <>
                         <div className="catalog-product-explorer__image catalog-product-explorer__commercialImage">
-                          <ProductCardBadges
-                            product={
-                              product
-                            }
-                          />
+                          {viewMode !== "list" ? (
+                            <ProductCardBadges product={product} />
+                          ) : null}
 
                           {isAgotado ? (
                             <span className="catalog-product-explorer__soldOut">
@@ -299,6 +297,11 @@ export default function CatalogProductExplorer({
 
                         <div className="catalog-product-explorer__commercialInfo">
                           <div className="catalog-product-explorer__commercialPrimary">
+                            {viewMode === "list" ? (
+                              <div className="catalog-product-explorer__commercialListBadges">
+                                <ProductCardBadges product={product} />
+                              </div>
+                            ) : null}
                             <div className="catalog-product-explorer__commercialIdentity">
                             <span className="catalog-product-explorer__id">
                               {product.id}

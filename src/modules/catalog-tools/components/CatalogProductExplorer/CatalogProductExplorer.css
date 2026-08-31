@@ -1173,3 +1173,217 @@
     text-overflow: clip;
   }
 }
+
+/* =========================================================
+   ADMIN 1.0 - A2.7I HIGH DENSITY LIST
+   ========================================================= */
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialListBadges {
+  min-width: 0;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialListBadges
+  > div {
+  position: static;
+  left: auto;
+  top: auto;
+  z-index: auto;
+  display: flex;
+  max-width: 100%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialListBadges
+  > div
+  > * {
+  max-width: 100%;
+  padding: 2px 5px;
+  font-size: 7px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__commercialImage
+  .catalog-product-explorer__soldOut {
+  display: none;
+}
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns:
+      76px
+      minmax(0, 1fr);
+    min-height: 76px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage {
+    width: 68px;
+    height: 68px;
+    min-height: 68px;
+    align-self: center;
+    justify-self: center;
+    border-radius: 10px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage
+    img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    gap: 6px 12px;
+    padding: 5px 10px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrimary {
+    display: grid;
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+    grid-template-areas:
+      "identity badges"
+      "title title";
+    align-items: center;
+    align-content: center;
+    column-gap: 8px;
+    row-gap: 2px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialIdentity {
+    grid-area: identity;
+    flex-wrap: nowrap;
+    margin: 0;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialListBadges {
+    grid-area: badges;
+    min-width: 0;
+    justify-self: start;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialTitle {
+    display: block;
+    grid-area: title;
+    min-height: 0;
+    overflow: hidden;
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.25;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+/* =========================================================
+   ADMIN 1.0 - A2.7J FINE LIST DENSITY
+   ========================================================= */
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__items {
+  gap: 5px;
+}
+
+@media (min-width: 701px) {
+  .catalog-product-explorer--list
+    .catalog-product-explorer__card.is-commercial {
+    grid-template-columns:
+      68px
+      minmax(0, 1fr);
+    min-height: 68px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialImage {
+    width: 60px;
+    height: 60px;
+    min-height: 60px;
+    border-radius: 8px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialInfo {
+    gap: 4px 10px;
+    padding: 3px 8px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrimary {
+    column-gap: 7px;
+    row-gap: 1px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialTitle {
+    font-size: 10.5px;
+    line-height: 1.2;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div {
+    gap: 1px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > span {
+    font-size: 8px;
+    line-height: 1;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div {
+    gap: 3px;
+    line-height: 1;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div
+    > span {
+    line-height: 1;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div
+    > span[class*="text-[27px]"],
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div
+    > span[class*="text-[30px]"] {
+    font-size: 22px;
+  }
+
+  .catalog-product-explorer--list
+    .catalog-product-explorer__commercialPrice
+    > div
+    > div
+    > span[class*="line-through"] {
+    font-size: 9px;
+  }
+}

@@ -114,6 +114,38 @@ describe(
     );
 
     it(
+      "resume los tiers cuando la tarjeta define un máximo visible",
+      () => {
+        const { container } = render(
+          <ProductVolumePriceBadges
+            product={createProduct()}
+            available
+            isPreventa={false}
+            maxTiers={2}
+          />,
+        );
+
+        expect(
+          container.querySelectorAll(
+            ".wholesale-chip",
+          ),
+        ).toHaveLength(2);
+
+        expect(
+          screen.getByText(
+            "+2 escalas",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          container.textContent,
+        ).not.toContain(
+          "Medio ciento",
+        );
+      },
+    );
+
+    it(
       "muestra únicamente tiers parciales válidos",
       () => {
         const { container } =

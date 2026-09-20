@@ -1040,6 +1040,183 @@
 }
 
 /* =========================================================
+   ADMIN 1.0 - LOTE 8 COMPACT PRODUCT CARDS
+   ========================================================= */
+
+.catalog-product-explorer__image.is-missing {
+  background:
+    linear-gradient(
+      145deg,
+      #f8fafc,
+      var(--w-primary-soft, #e8f6f9)
+    );
+}
+
+.catalog-product-explorer__imageFallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-content: center;
+  place-items: center;
+  gap: 4px;
+  padding: 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+.catalog-product-explorer__imageFallback > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(29, 130, 153, 0.18);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--w-primary, #1d8299);
+  font-size: 1rem;
+}
+
+.catalog-product-explorer__imageFallback > strong {
+  color: #475569;
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.catalog-product-explorer__imageFallback > small {
+  color: #94a3b8;
+  font-size: 0.52rem;
+  font-weight: 800;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__items {
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(185px, 1fr)
+    );
+  gap: 8px;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialImage {
+  aspect-ratio: 1 / 1.08;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialInfo {
+  padding: 8px;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialTitle {
+  min-height: 30px;
+  font-size: 10.5px;
+  line-height: 1.3;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialPrice
+  > div {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialPrice
+  > div
+  > div
+  > span[class*="text-[27px]"],
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialPrice
+  > div
+  > div
+  > span[class*="text-[30px]"] {
+  font-size: 25px;
+}
+
+.catalog-product-explorer__card.is-commercial
+  .wholesale-more {
+  display: block;
+  color: #64748b;
+  font-size: 0.55rem;
+  font-weight: 850;
+  text-align: center;
+}
+
+.catalog-product-explorer--grid
+  .catalog-product-explorer__commercialInfo
+  .catalog-product-explorer__state {
+  padding-top: 6px;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__imageFallback {
+  gap: 1px;
+  padding: 4px;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__imageFallback
+  > span {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  font-size: 0.72rem;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__imageFallback
+  > strong {
+  font-size: 0.46rem;
+  line-height: 1.1;
+}
+
+.catalog-product-explorer--list
+  .catalog-product-explorer__imageFallback
+  > small {
+  display: none;
+}
+
+@media (min-width: 1700px) {
+  .catalog-product-explorer--grid
+    .catalog-product-explorer__items {
+    grid-template-columns:
+      repeat(
+        auto-fill,
+        minmax(180px, 1fr)
+      );
+  }
+}
+
+@media (max-width: 900px) {
+  .catalog-product-explorer--grid
+    .catalog-product-explorer__items {
+    grid-template-columns:
+      repeat(
+        auto-fill,
+        minmax(175px, 1fr)
+      );
+  }
+}
+
+@media (max-width: 520px) {
+  .catalog-product-explorer--grid
+    .catalog-product-explorer__items {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .catalog-product-explorer--grid
+    .catalog-product-explorer__commercialImage {
+    aspect-ratio: 1 / 1.12;
+  }
+}
+
+/* =========================================================
    ADMIN 1.0 - A2.7E COMMERCIAL LIST DENSITY
    ========================================================= */
 

@@ -83,19 +83,9 @@ const MODE_OPTIONS: readonly ModeOption[] = [
     status: "Disponible",
   },
 ];
-const MODE_TABS: readonly {
-  id: CatalogCompositionMode;
-  label: string;
-}[] = [
-  {
-    id: "automatic",
-    label: "Catálogo",
-  },
-  {
-    id: "hybrid",
-    label: "Personalizado",
-  },
-];
+type CatalogPanelStage =
+  | "explorer"
+  | "workspace";
 const SELECTABLE_CATEGORIES =
   CATEGORY_CONFIG.filter(
     (category) =>
@@ -136,6 +126,13 @@ export default function CatalogCompositionPanel({
   isReady,
   onOpenCatalogSync,
 }: CatalogCompositionPanelProps) {
+  const [
+    panelStage,
+    setPanelStage,
+  ] = useState<CatalogPanelStage>(
+    "explorer",
+  );
+
   const [
     catalogSearchQuery,
     setCatalogSearchQuery,
@@ -403,6 +400,77 @@ const [
         )
       : "Sin campaña específica";
 
+  const explorerMetrics =
+    useMemo(
+      () => {
+        const publishedProducts =
+          products.filter(
+            (product) =>
+              product.status ===
+              "publicado",
+          ).length;
+
+        const limitedStockProducts =
+          products.filter(
+            (product) =>
+              typeof product.stock ===
+                "number" &&
+              product.stock > 0 &&
+              product.stock <= 5,
+          ).length;
+
+        return [
+          {
+            label: "Productos",
+            value: products.length,
+            detail: "Base disponible",
+            tone: "base",
+          },
+          {
+            label: "Publicados",
+            value: publishedProducts,
+            detail: "Listos para vender",
+            tone: "ready",
+          },
+          {
+            label: "Stock limitado",
+            value: limitedStockProducts,
+            detail: "5 unidades o menos",
+            tone: "warning",
+          },
+          {
+            label: "En esta vista",
+            value:
+              catalogExplorerProducts.length,
+            detail:
+              composition.filters
+                  .categoryIds.length > 0 ||
+                composition.filters
+                  .campaignIds.length > 0 ||
+                Boolean(
+                  normalizedCatalogSearch,
+                )
+                ? "Resultado filtrado"
+                : "Sin filtros activos",
+            tone: "active",
+          },
+        ] as const;
+      },
+      [
+        products,
+        catalogExplorerProducts.length,
+        composition.filters.categoryIds.length,
+        composition.filters.campaignIds.length,
+        normalizedCatalogSearch,
+      ],
+    );
+
+  const activeFilterCount =
+    composition.filters.categoryIds
+      .length +
+    composition.filters.campaignIds
+      .length;
+
 const changeMode =
     (
       mode: CatalogCompositionMode,
@@ -616,6 +684,10 @@ const changeMode =
       setPublicationIdentity(
         createDefaultCatalogPublicationIdentity(),
       );
+
+      setPanelStage(
+        "explorer",
+      );
     };
 
   return (
@@ -628,39 +700,41 @@ const changeMode =
     <div
       className="catalog-composition-panel__commandModes"
       role="group"
-      aria-label="Flujo de catálogo"
+      aria-label="Etapas del catálogo"
     >
-      {MODE_TABS.map(
-        (mode) => {
-          const isActive =
-            composition.mode ===
-            mode.id;
+      <button
+        type="button"
+        className={
+          panelStage === "explorer"
+            ? "is-active"
+            : ""
+        }
+        aria-pressed={
+          panelStage === "explorer"
+        }
+        onClick={() =>
+          setPanelStage("explorer")
+        }
+      >
+        1. Productos
+      </button>
 
-          return (
-            <button
-              type="button"
-              key={
-                mode.id
-              }
-              className={
-                isActive
-                  ? "is-active"
-                  : ""
-              }
-              aria-pressed={
-                isActive
-              }
-              onClick={() =>
-                changeMode(
-                  mode.id,
-                )
-              }
-            >
-              {mode.label}
-            </button>
-          );
-        },
-      )}
+      <button
+        type="button"
+        className={
+          panelStage === "workspace"
+            ? "is-active"
+            : ""
+        }
+        aria-pressed={
+          panelStage === "workspace"
+        }
+        onClick={() =>
+          setPanelStage("workspace")
+        }
+      >
+        2. Preparar
+      </button>
     </div>
   </div>
 
@@ -793,9 +867,70 @@ const changeMode =
           completo y el registro de campañas.
         </div>
       ) : null}
-            <div className="catalog-composition-panel__posWorkspace">
+
+      {panelStage === "workspace" ? (
+        <section className="catalog-composition-panel__workspaceIntro">
+          <header>
+            <div>
+              <span>Catalog Workspace</span>
+              <h2>Prepara tu catálogo</h2>
+              <p>
+                Define el alcance, ajusta productos y revisa el resultado antes de publicar.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                setPanelStage("explorer")
+              }
+            >
+              ← Volver a productos
+            </button>
+          </header>
+
+          <div
+            className="catalog-composition-panel__workspaceModes"
+            role="group"
+            aria-label="Tipo de composición"
+          >
+            {MODE_OPTIONS.map(
+              (mode) => (
+                <button
+                  type="button"
+                  key={mode.id}
+                  className={
+                    composition.mode === mode.id
+                      ? "is-active"
+                      : ""
+                  }
+                  aria-pressed={
+                    composition.mode === mode.id
+                  }
+                  onClick={() =>
+                    changeMode(mode.id)
+                  }
+                >
+                  <span>{mode.label}</span>
+                  <small>{mode.description}</small>
+                </button>
+              ),
+            )}
+          </div>
+        </section>
+      ) : null}
+
+      <div
+        className={[
+          "catalog-composition-panel__posWorkspace",
+          panelStage === "explorer"
+            ? "is-explorer"
+            : "is-composition",
+        ].join(" ")}
+      >
         <div className="catalog-composition-panel__posMain">
-{composition.mode ===
+{panelStage === "workspace" &&
+composition.mode ===
       "hybrid" ? (
         <CatalogHybridAdjuster
           products={
@@ -821,7 +956,8 @@ const changeMode =
           }
         />
       ) : null}
-      {composition.mode ===
+      {panelStage === "workspace" &&
+      composition.mode ===
       "manual" ? (
         <CatalogManualSelector
           products={
@@ -840,23 +976,55 @@ const changeMode =
         />
       ) : null}
 
-      {composition.mode === "automatic" ? (
+      {panelStage === "explorer" ? (
         <section className="catalog-composition-panel__catalogWorkspace">
-          <div className="catalog-composition-panel__catalogSearch">
-            <label>
-              <span>
-                Buscar producto
+          <header className="catalog-composition-panel__explorerHead">
+            <div>
+              <span className="catalog-composition-panel__explorerEyebrow">
+                Explorador de productos
               </span>
+
+              <h2>
+                Encuentra y prepara tu catálogo
+              </h2>
+
+              <p>
+                Busca, filtra y revisa el inventario antes de preparar la publicación.
+              </p>
+            </div>
+
+            <span className="catalog-composition-panel__flowStep">
+              Paso 1 de 3
+            </span>
+          </header>
+
+          <div className="catalog-composition-panel__explorerMetrics">
+            {explorerMetrics.map(
+              (metric) => (
+                <article
+                  key={metric.label}
+                  className={`is-${metric.tone}`}
+                >
+                  <span>{metric.label}</span>
+                  <strong>{metric.value}</strong>
+                  <small>{metric.detail}</small>
+                </article>
+              ),
+            )}
+          </div>
+
+          <div
+            className="catalog-composition-panel__explorerToolbar"
+            aria-label="Buscar y filtrar productos"
+          >
+            <label className="catalog-composition-panel__searchField">
+              <span aria-hidden="true">⌕</span>
 
               <input
                 type="search"
-                value={
-                  catalogSearchQuery
-                }
-                placeholder="Buscar código, nombre, descripción o categoría..."
-                disabled={
-                  !isReady
-                }
+                value={catalogSearchQuery}
+                placeholder="Buscar por código, nombre o descripción..."
+                disabled={!isReady}
                 aria-label="Buscar producto en catálogo"
                 onChange={(event) =>
                   setCatalogSearchQuery(
@@ -866,36 +1034,23 @@ const changeMode =
               />
             </label>
 
-            {catalogSearchQuery ? (
-              <button
-                type="button"
-                onClick={() =>
-                  setCatalogSearchQuery(
-                    "",
-                  )
-                }
-              >
-                Borrar búsqueda
-              </button>
-            ) : null}
-          </div>
+            <details className="catalog-composition-panel__filterMenu">
+              <summary>
+                Categorías
+                {composition.filters.categoryIds.length > 0 ? (
+                  <span>
+                    {composition.filters.categoryIds.length}
+                  </span>
+                ) : null}
+              </summary>
 
-          <div
-            className="catalog-composition-panel__catalogFilters"
-            aria-label="Filtros del catálogo"
-          >
-            <div className="catalog-composition-panel__catalogFilterGroup is-categories">
-              <div className="catalog-composition-panel__catalogFilterHeading">
-                <span className="catalog-composition-panel__catalogFilterLabel">
-                  Categorías
-                </span>
+              <div className="catalog-composition-panel__filterPopover">
+                <div className="catalog-composition-panel__filterPopoverHead">
+                  <strong>Categorías</strong>
+                  <small>Selección múltiple</small>
+                </div>
 
-                <small>
-                  Explora por familia de producto
-                </small>
-              </div>
-
-              <div className="catalog-composition-panel__catalogFilterOptions">
+                <div className="catalog-composition-panel__catalogFilterOptions">
                 {categoryOptions.map(
                   (category) => {
                     const isActive =
@@ -949,18 +1104,24 @@ const changeMode =
                   },
                 )}
               </div>
-            </div>
-
-            <div className="catalog-composition-panel__catalogFilterGroup is-campaigns">
-              <div className="catalog-composition-panel__catalogFilterHeading">
-                <span className="catalog-composition-panel__catalogFilterLabel">
-                  Campañas
-                </span>
-
-                <small>
-                  Oportunidades comerciales activas
-                </small>
               </div>
+            </details>
+
+            <details className="catalog-composition-panel__filterMenu">
+              <summary>
+                Campañas
+                {composition.filters.campaignIds.length > 0 ? (
+                  <span>
+                    {composition.filters.campaignIds.length}
+                  </span>
+                ) : null}
+              </summary>
+
+              <div className="catalog-composition-panel__filterPopover">
+                <div className="catalog-composition-panel__filterPopoverHead">
+                  <strong>Campañas activas</strong>
+                  <small>Oportunidades comerciales</small>
+                </div>
 
               {campaignOptions.length >
               0 ? (
@@ -1020,7 +1181,32 @@ const changeMode =
                   Sin campañas activas
                 </span>
               )}
-            </div>
+              </div>
+            </details>
+
+            {catalogSearchQuery ||
+            activeFilterCount > 0 ? (
+              <button
+                type="button"
+                className="catalog-composition-panel__clearExplorer"
+                onClick={() => {
+                  setCatalogSearchQuery("");
+
+                  setComposition(
+                    (current) => ({
+                      ...current,
+                      filters: {
+                        ...current.filters,
+                        categoryIds: [],
+                        campaignIds: [],
+                      },
+                    }),
+                  );
+                }}
+              >
+                Limpiar filtros
+              </button>
+            ) : null}
           </div>
 
           <CatalogProductExplorer
@@ -1041,12 +1227,42 @@ const changeMode =
             presentation="commercial"
       emptyMessage="No hay productos para los filtros seleccionados."
           />
+
+          <footer className="catalog-composition-panel__explorerNext">
+            <div>
+              <span>Alcance actual</span>
+              <strong>
+                {resolution.productIds.length} productos listos para preparar
+              </strong>
+            </div>
+
+            <button
+              type="button"
+              disabled={
+                !isReady ||
+                resolution.productIds.length === 0
+              }
+              onClick={() =>
+                setPanelStage("workspace")
+              }
+            >
+              Preparar catálogo →
+            </button>
+          </footer>
         </section>
+      ) : null}
+
+      {panelStage === "workspace" ? (
+        <CatalogCompositionPreview
+          products={resolution.products}
+          isReady={isReady}
+        />
       ) : null}
 
               </div>
 
-        <CatalogPosSummary
+        {panelStage === "workspace" ? (
+          <CatalogPosSummary
           mode={
             composition.mode
           }
@@ -1106,15 +1322,8 @@ const changeMode =
               )
           }
         />
+        ) : null}
       </div>
-<CatalogCompositionPreview
-        products={
-          resolution.products
-        }
-        isReady={
-          isReady
-        }
-      />
     </section>
   );
 }

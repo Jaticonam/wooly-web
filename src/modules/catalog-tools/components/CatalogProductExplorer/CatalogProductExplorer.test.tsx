@@ -121,4 +121,49 @@ describe("CatalogProductExplorer", () => {
       1,
     );
   });
+
+  it("reemplaza una imagen fallida por un fallback accesible", () => {
+    const items:
+      CatalogProductExplorerItem[] = [
+        {
+          product,
+          stateLabel:
+            "Disponible",
+          stateTone:
+            "available",
+        },
+      ];
+
+    render(
+      <CatalogProductExplorer
+        items={items}
+        isReady
+        emptyMessage="Sin productos"
+      />,
+    );
+
+    fireEvent.error(
+      screen.getByRole(
+        "img",
+        {
+          name: "Rosa premium",
+        },
+      ),
+    );
+
+    expect(
+      screen.getByRole(
+        "img",
+        {
+          name: "Imagen no disponible para Rosa premium",
+        },
+      ),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        "Imagen no disponible",
+      ),
+    ).toBeInTheDocument();
+  });
 });

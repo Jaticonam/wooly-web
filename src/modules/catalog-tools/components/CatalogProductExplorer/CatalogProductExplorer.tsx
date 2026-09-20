@@ -128,6 +128,83 @@ const VIEW_OPTIONS: Array<{
   },
 ];
 
+interface ProductExplorerImageProps {
+  product: Product;
+  commercial?: boolean;
+  showBadges?: boolean;
+  soldOut?: boolean;
+}
+
+function ProductExplorerImage({
+  product,
+  commercial = false,
+  showBadges = false,
+  soldOut = false,
+}: ProductExplorerImageProps) {
+  const [
+    hasImageError,
+    setHasImageError,
+  ] = useState(false);
+
+  useEffect(
+    () => {
+      setHasImageError(false);
+    },
+    [product.img],
+  );
+
+  const hasImage =
+    Boolean(product.img) &&
+    !hasImageError;
+
+  return (
+    <div
+      className={[
+        "catalog-product-explorer__image",
+        commercial
+          ? "catalog-product-explorer__commercialImage"
+          : "",
+        !hasImage
+          ? "is-missing"
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {showBadges ? (
+        <ProductCardBadges product={product} />
+      ) : null}
+
+      {soldOut ? (
+        <span className="catalog-product-explorer__soldOut">
+          Agotado
+        </span>
+      ) : null}
+
+      {hasImage ? (
+        <img
+          src={product.img}
+          alt={product.title}
+          loading="lazy"
+          onError={() =>
+            setHasImageError(true)
+          }
+        />
+      ) : (
+        <div
+          className="catalog-product-explorer__imageFallback"
+          role="img"
+          aria-label={`Imagen no disponible para ${product.title}`}
+        >
+          <span aria-hidden="true">▧</span>
+          <strong>Imagen no disponible</strong>
+          <small>{product.id}</small>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CatalogProductExplorer({
   items,
   isReady,
@@ -267,33 +344,17 @@ export default function CatalogProductExplorer({
                     {presentation ===
                     "commercial" ? (
                       <>
-                        <div className="catalog-product-explorer__image catalog-product-explorer__commercialImage">
-                          {viewMode !== "list" ? (
-                            <ProductCardBadges product={product} />
-                          ) : null}
-
-                          {isAgotado ? (
-                            <span className="catalog-product-explorer__soldOut">
-                              Agotado
-                            </span>
-                          ) : null}
-
-                          {product.img ? (
-                            <img
-                              src={
-                                product.img
-                              }
-                              alt={
-                                product.title
-                              }
-                              loading="lazy"
-                            />
-                          ) : (
-                            <span>
-                              Sin imagen
-                            </span>
-                          )}
-                        </div>
+                        <ProductExplorerImage
+                          product={product}
+                          commercial
+                          showBadges={
+                            viewMode !==
+                            "list"
+                          }
+                          soldOut={
+                            isAgotado
+                          }
+                        />
 
                         <div className="catalog-product-explorer__commercialInfo">
                           <div className="catalog-product-explorer__commercialPrimary">
@@ -366,6 +427,7 @@ export default function CatalogProductExplorer({
                             isPreventa={
                               isPreventa
                             }
+                            maxTiers={2}
                           />
                           </div>
 
@@ -393,23 +455,9 @@ export default function CatalogProductExplorer({
                       </>
                     ) : (
                       <>
-                        <div className="catalog-product-explorer__image">
-                          {product.img ? (
-                            <img
-                              src={
-                                product.img
-                              }
-                              alt={
-                                product.title
-                              }
-                              loading="lazy"
-                            />
-                          ) : (
-                            <span>
-                              Sin imagen
-                            </span>
-                          )}
-                        </div>
+                        <ProductExplorerImage
+                          product={product}
+                        />
 
                         <div className="catalog-product-explorer__info">
                           <span className="catalog-product-explorer__id">

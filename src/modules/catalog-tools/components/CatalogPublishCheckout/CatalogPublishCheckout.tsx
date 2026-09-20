@@ -16,8 +16,10 @@ import {
 } from "@/modules/catalog/domain/CatalogPublicationIdentity";
 
 import {
-  buildCatalogPdfUrl,
-} from "@/modules/catalog-tools/services/BuildCatalogPdfUrl";
+  createWoolyCatalogCompositionId,
+  createWoolyCatalogDocumentRequest,
+  prepareWoolyCatalogDocument,
+} from "@/modules/catalog-export/ports/WoolyCatalogDocumentPort";
 
 import CommercialOutputsPanel from "@/modules/catalog-tools/components/CommercialOutputsPanel/CommercialOutputsPanel";
 
@@ -235,20 +237,20 @@ export default function CatalogPublishCheckout({
       .length >
     0;
 
-  const publicUrl =
+  const documentParams =
     hasProducts &&
     eligibility.status ===
       "v1-publicable"
-      ? buildCatalogPdfUrl({
+      ? ({
           origin:
             window.location.origin,
 
           ...eligibility.v1,
-        })
+        } as const)
       : hasProducts &&
           eligibility.status ===
             "v2-publicable"
-        ? buildCatalogPdfUrl({
+        ? ({
             origin:
               window.location.origin,
 
@@ -256,8 +258,27 @@ export default function CatalogPublishCheckout({
               "2",
 
             ...eligibility.v2,
-          })
-        : "";
+          } as const)
+        : null;
+
+  const documentRequest =
+    createWoolyCatalogDocumentRequest(
+      createWoolyCatalogCompositionId(
+        composition,
+      ),
+    );
+
+  const documentPreparation =
+    documentParams
+      ? prepareWoolyCatalogDocument(
+          documentRequest,
+          documentParams,
+        )
+      : null;
+
+  const publicUrl =
+    documentPreparation
+      ?.previewUrl ?? "";
 
   const isDirectlyPublicable =
     Boolean(

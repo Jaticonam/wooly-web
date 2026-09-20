@@ -8,6 +8,7 @@ export * from "./exporter";
 export * from "./mapper";
 export * from "./types";
 export * from "./validator";
+export * from "./WoolyMetaChannelExport";
 
 export const MetaConnector: IntegrationConnector<FeedProduct, MetaFeedItem> = {
   key: "meta",
@@ -17,6 +18,5 @@ export const MetaConnector: IntegrationConnector<FeedProduct, MetaFeedItem> = {
   map: mapProductToMeta,
   export: exportMetaCsv,
 };
-
 
 

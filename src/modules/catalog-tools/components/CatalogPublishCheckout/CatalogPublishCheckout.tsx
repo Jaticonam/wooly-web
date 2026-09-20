@@ -19,6 +19,8 @@ import {
   buildCatalogPdfUrl,
 } from "@/modules/catalog-tools/services/BuildCatalogPdfUrl";
 
+import CommercialOutputsPanel from "@/modules/catalog-tools/components/CommercialOutputsPanel/CommercialOutputsPanel";
+
 import {
   buildApplicationWhatsAppUrl,
 } from "@/shared/config/application";
@@ -556,6 +558,15 @@ export default function CatalogPublishCheckout({
             </small>
           </aside>
         </section>
+
+        <CommercialOutputsPanel
+          productCount={
+            resolution.productIds.length
+          }
+          hasPublicUrl={
+            Boolean(publicUrl)
+          }
+        />
       </div>
 
       <aside

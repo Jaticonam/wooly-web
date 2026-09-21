@@ -21,11 +21,13 @@ interface OutputGroup {
 interface CommercialOutputsPanelProps {
   productCount: number;
   hasPublicUrl: boolean;
+  pdfUrl?: string;
 }
 
 export default function CommercialOutputsPanel({
   productCount,
   hasPublicUrl,
+  pdfUrl = "",
 }: CommercialOutputsPanelProps) {
   const shareStatus: OutputReadiness =
     hasPublicUrl
@@ -164,6 +166,17 @@ export default function CommercialOutputsPanel({
                   >
                     {item.statusLabel}
                   </span>
+
+                  {item.label === "PDF catálogo" && pdfUrl ? (
+                    <a
+                      className="commercial-outputs__action"
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Generar
+                    </a>
+                  ) : null}
                 </article>
               ))}
             </div>

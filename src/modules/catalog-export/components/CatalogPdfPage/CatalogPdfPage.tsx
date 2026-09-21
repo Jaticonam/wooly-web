@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useRef,
+} from "react";
+
+import {
   getApplicationConfig,
 } from "@/shared/config/application";
 import {
@@ -63,6 +68,8 @@ const PUBLIC_PUBLICATION_STATE_COPY = {
 } as const;
 
 export default function CatalogPdfPage() {
+  const autoPrintStarted = useRef(false);
+
   const {
     generatedAt,
     validUntil,
@@ -94,6 +101,68 @@ export default function CatalogPdfPage() {
     window.print();
   };
 
+  const autoPrintRequested =
+    new URLSearchParams(
+      window.location.search,
+    ).get("print") === "1";
+
+  useEffect(() => {
+    if (
+      !autoPrintRequested ||
+      autoPrintStarted.current ||
+      !selectionIsReady ||
+      !hasProducts
+    ) {
+      return;
+    }
+
+    autoPrintStarted.current = true;
+
+    let cancelled = false;
+    let printTimer = 0;
+
+    const waitForAssetsAndPrint = async () => {
+      await document.fonts?.ready;
+
+      await Promise.all(
+        Array.from(document.images).map(
+          (image) =>
+            image.complete
+              ? Promise.resolve()
+              : new Promise<void>((resolve) => {
+                  image.addEventListener("load", () => resolve(), {
+                    once: true,
+                  });
+
+                  image.addEventListener("error", () => resolve(), {
+                    once: true,
+                  });
+                }),
+        ),
+      );
+
+      if (cancelled) {
+        return;
+      }
+
+      printTimer = window.setTimeout(
+        () => window.print(),
+        250,
+      );
+    };
+
+    void waitForAssetsAndPrint();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(printTimer);
+    };
+  }, [
+    autoPrintRequested,
+    hasProducts,
+    selectionIsReady,
+  ]);
+
   return (
     <main className="catalog-pdf-page">
       <section className="catalog-pdf-toolbar no-print">
@@ -107,8 +176,8 @@ export default function CatalogPdfPage() {
           </h1>
 
           <p className="catalog-pdf-toolbar__description">
-            Vista optimizada para guardar como PDF
-            desde el navegador.
+            Vista optimizada para descargar o imprimir
+            el catálogo como PDF.
           </p>
 
           {!isPublicId && !selectionIsReady ? (
@@ -128,7 +197,7 @@ export default function CatalogPdfPage() {
             onClick={handlePrint}
             disabled={!hasProducts || !selectionIsReady}
           >
-            Imprimir PDF
+            Descargar / imprimir PDF
           </button>
         </div>
       </section>

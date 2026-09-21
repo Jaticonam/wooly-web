@@ -735,6 +735,28 @@ const changeMode =
       >
         2. Preparar
       </button>
+
+      <button
+        type="button"
+        className={
+          isCatalogDetailsOpen
+            ? "is-active"
+            : ""
+        }
+        aria-pressed={
+          isCatalogDetailsOpen
+        }
+        disabled={
+          !isReady ||
+          resolution.productIds.length === 0
+        }
+        onClick={() => {
+          setPanelStage("workspace");
+          setIsCatalogDetailsOpen(true);
+        }}
+      >
+        3. Publicar
+      </button>
     </div>
   </div>
 

@@ -280,6 +280,15 @@ export default function CatalogPublishCheckout({
     documentPreparation
       ?.previewUrl ?? "";
 
+  const pdfExportUrl =
+    publicUrl
+      ? `${publicUrl}${
+          publicUrl.includes("?")
+            ? "&"
+            : "?"
+        }print=1`
+      : "";
+
   const isDirectlyPublicable =
     Boolean(
       publicUrl,
@@ -356,19 +365,27 @@ export default function CatalogPublishCheckout({
   return (
     <section className="catalog-publish-checkout">
       <div className="catalog-publish-checkout__main">
+        <nav
+          className="catalog-publish-checkout__flow"
+          aria-label="Flujo de publicación"
+        >
+          <span>1. Productos</span>
+          <span>2. Preparar</span>
+          <strong aria-current="step">3. Publicar</strong>
+        </nav>
+
         <header className="catalog-publish-checkout__intro">
           <span>
             Presentación
           </span>
 
           <h3>
-            Últimos detalles
+            Publica y comparte
           </h3>
 
           <p>
-            Define cómo verá el cliente este catálogo.
-            El nombre interno del borrador permanece
-            separado de su presentación pública.
+            Confirma la presentación, revisa las salidas disponibles
+            y comparte solo cuando todo esté listo.
           </p>
         </header>
 
@@ -587,6 +604,9 @@ export default function CatalogPublishCheckout({
           hasPublicUrl={
             Boolean(publicUrl)
           }
+          pdfUrl={
+            pdfExportUrl
+          }
         />
       </div>
 
@@ -724,13 +744,23 @@ export default function CatalogPublishCheckout({
             <div className="catalog-publish-checkout__actions">
               <a
                 href={
-                  publicUrl
+                  pdfExportUrl
                 }
                 target="_blank"
                 rel="noreferrer"
                 className="is-primary"
               >
-                Ver catálogo
+                Generar PDF
+              </a>
+
+              <a
+                href={
+                  publicUrl
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                Vista previa
               </a>
 
               <button

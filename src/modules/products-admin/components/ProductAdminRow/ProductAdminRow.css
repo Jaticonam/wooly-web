@@ -1,0 +1,112 @@
+.product-admin-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(260px, 2fr) minmax(100px, 0.7fr) minmax(130px, 0.9fr) minmax(100px, 0.75fr) minmax(95px, 0.7fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 9px 12px;
+  background: #ffffff;
+}
+
+.product-admin-row__open {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.product-admin-row:hover {
+  background: #f8fafc;
+}
+
+.product-admin-row__open:focus-visible {
+  outline: 3px solid rgba(36, 148, 170, 0.32);
+  outline-offset: -3px;
+}
+
+.product-admin-row__identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-admin-row__identity > div:last-child {
+  min-width: 0;
+}
+
+.product-admin-row__image {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  place-items: center;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.product-admin-row__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-admin-row code,
+.product-admin-row__identity strong {
+  display: block;
+}
+
+.product-admin-row code {
+  color: #64748b;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.product-admin-row__identity strong {
+  overflow: hidden;
+  margin-top: 3px;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-admin-row__price,
+.product-admin-row__stock,
+.product-admin-row__category,
+.product-admin-row__status {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.product-admin-row__stock.is-available { color: #166534; }
+.product-admin-row__stock.is-low { color: #92400e; }
+.product-admin-row__stock.is-out,
+.product-admin-row__stock.is-untracked { color: #64748b; }
+.product-admin-row__stock.is-preorder { color: #075985; }
+.product-admin-row__stock.is-inconsistent { color: #991b1b; }
+
+.product-admin-row__category,
+.product-admin-row__status {
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+@media (max-width: 860px) {
+  .product-admin-row {
+    grid-template-columns: minmax(220px, 2fr) minmax(90px, 0.8fr) minmax(115px, 1fr);
+  }
+
+  .product-admin-row__category,
+  .product-admin-row__status {
+    display: none;
+  }
+}

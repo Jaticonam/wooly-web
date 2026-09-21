@@ -45,6 +45,10 @@ const SalesCatalogToolsPage = lazy(
   () => import("@/app/pages/SalesCatalogToolsPage"),
 );
 
+const ProductsAdminPage = lazy(
+  () => import("@/app/pages/ProductsAdminPage"),
+);
+
 const ProductDetailPage = lazy(
   () => import("@/app/pages/ProductDetailPage"),
 );
@@ -159,6 +163,13 @@ export default function App() {
                 <Route
                   path="/admin"
                   element={
+                    <ProductsAdminPage />
+                  }
+                />
+
+                <Route
+                  path="/admin/catalogos"
+                  element={
                     <SalesCatalogToolsPage />
                   }
                 />
@@ -168,7 +179,7 @@ export default function App() {
                   path="/ventas/catalogos"
                   element={
                     <Navigate
-                      to="/admin"
+                      to="/admin/catalogos"
                       replace
                     />
                   }

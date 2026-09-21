@@ -51,7 +51,7 @@
 
 .wooly-admin-shell__brand span {
   color: #cbd5e1;
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -63,9 +63,7 @@
   padding: 12px 8px;
 }
 
-.wooly-admin-shell__navigation a,
-.wooly-admin-shell__navigation button,
-.wooly-admin-shell__sidebarFooter button {
+.wooly-admin-shell__navigation a {
   display: grid;
   place-items: center;
   gap: 3px;
@@ -76,7 +74,7 @@
   background: transparent;
   color: #94a3b8;
   font: inherit;
-  font-size: 0.58rem;
+  font-size: 0.7rem;
   font-weight: 850;
   text-decoration: none;
   cursor: pointer;
@@ -87,22 +85,10 @@
   color: #ffffff;
 }
 
-.wooly-admin-shell__navigation button:disabled,
-.wooly-admin-shell__sidebarFooter button:disabled {
-  cursor: default;
-  opacity: 0.42;
-}
-
 .wooly-admin-shell__navIcon {
   color: inherit;
   font-size: 1rem;
   line-height: 1;
-}
-
-.wooly-admin-shell__sidebarFooter {
-  margin-top: auto;
-  padding: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .wooly-admin-shell__stage {
@@ -139,7 +125,7 @@
   padding: 0 9px;
   background: #e0f2fe;
   color: #0369a1;
-  font-size: 0.56rem;
+  font-size: 0.7rem;
   font-weight: 1000;
   letter-spacing: 0.07em;
 }
@@ -162,7 +148,7 @@
 .wooly-admin-shell__context small {
   margin-top: 1px;
   color: #64748b;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 750;
 }
 
@@ -207,9 +193,7 @@
   }
 
   .wooly-admin-shell__brand span,
-  .wooly-admin-shell__navigation a > span:last-child,
-  .wooly-admin-shell__navigation button > span:last-child,
-  .wooly-admin-shell__sidebarFooter button > span:last-child {
+  .wooly-admin-shell__navigation a > span:last-child {
     display: none;
   }
 
@@ -227,7 +211,7 @@
   .wooly-admin-shell__actions button {
     min-height: 36px;
     padding: 0 9px;
-    font-size: 0.62rem;
+    font-size: 0.7rem;
   }
 }
 
@@ -254,7 +238,7 @@
   }
 }
 
-/* ADMIN 1.0 - A4A WOOLY VISUAL SYSTEM */
+/* WOOLY ADMIN VISUAL SYSTEM */
 
 .wooly-admin-shell {
   background:
@@ -331,17 +315,4 @@
   border-color: var(--w-primary, #1d8299);
   background: var(--w-primary, #1d8299);
   color: #ffffff;
-}
-
-/* ADMIN 1.0 - A4B SIDEBAR POLISH */
-
-.wooly-admin-shell__navigation button:disabled,
-.wooly-admin-shell__sidebarFooter button:disabled {
-  opacity:
-    0.62;
-}
-
-.wooly-admin-shell__navigation button:disabled {
-  color:
-    #b8c8d6;
 }

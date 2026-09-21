@@ -2,22 +2,24 @@ import type {
   ReactNode,
 } from "react";
 
+import {
+  NavLink,
+} from "react-router-dom";
+
 import "./AdminShell.css";
 
 interface AdminShellProps {
   children:
     ReactNode;
-}
 
-const futureItems = [
-  "Productos",
-  "Campañas",
-  "Clientes",
-  "Historial",
-] as const;
+  title?: string;
+  subtitle?: string;
+}
 
 export default function AdminShell({
   children,
+  title = "Productos",
+  subtitle = "Inventario comercial",
 }: AdminShellProps) {
   return (
     <div className="wooly-admin-shell">
@@ -36,71 +38,53 @@ export default function AdminShell({
           className="wooly-admin-shell__navigation"
           aria-label="Wooly Admin"
         >
-          <a
-            href="/admin"
-            className="is-active"
-            aria-current="page"
+          <NavLink
+            to="/admin"
+            end
+            className={({ isActive }) =>
+              isActive ? "is-active" : ""
+            }
           >
             <span className="wooly-admin-shell__navIcon">
               ▣
             </span>
 
             <span>
-              Catálogos
+              Productos
             </span>
-          </a>
+          </NavLink>
 
-          {futureItems.map(
-            (item) => (
-              <button
-                key={item}
-                type="button"
-                disabled
-                title="Próximamente"
-              >
-                <span className="wooly-admin-shell__navIcon">
-                  ·
-                </span>
-
-                <span>
-                  {item}
-                </span>
-              </button>
-            ),
-          )}
-        </nav>
-
-        <div className="wooly-admin-shell__sidebarFooter">
-          <button
-            type="button"
-            disabled
-            title="Próximamente"
+          <NavLink
+            to="/admin/catalogos"
+            className={({ isActive }) =>
+              isActive ? "is-active" : ""
+            }
           >
             <span className="wooly-admin-shell__navIcon">
-              ⚙
+              ▤
             </span>
 
             <span>
-              Sistema
+              Catálogos
             </span>
-          </button>
-        </div>
+          </NavLink>
+        </nav>
       </aside>
 
       <div className="wooly-admin-shell__stage">
         <header className="wooly-admin-shell__topbar">
           <div className="wooly-admin-shell__context">
             <span>
-              WOOLY ADMIN 1.0
+              WOOLY ADMIN 2.0
             </span>
 
             <div>
               <strong>
-                Catálogos
+                {title}
               </strong>
 
               <small>
-                Workspace de ventas
+                {subtitle}
               </small>
             </div>
           </div>

@@ -48,7 +48,10 @@ export default function SalesCatalogToolsPage() {
     !isCampaignRegistryLoading;
 
   return (
-    <AdminShell>
+    <AdminShell
+      title="Catálogos"
+      subtitle="Composición y publicación"
+    >
       <main className="sales-catalog-tools">
         <AdminModal
           open={

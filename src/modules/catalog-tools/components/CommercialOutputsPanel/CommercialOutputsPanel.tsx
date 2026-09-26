@@ -1,188 +1,78 @@
 import "./CommercialOutputsPanel.css";
 
-type OutputReadiness =
-  | "ready"
-  | "prepared"
-  | "pending"
-  | "blocked";
-
-interface OutputItem {
-  label: string;
-  detail: string;
-  status: OutputReadiness;
-  statusLabel: string;
-}
-
-interface OutputGroup {
-  title: string;
-  items: readonly OutputItem[];
-}
-
 interface CommercialOutputsPanelProps {
   productCount: number;
   hasPublicUrl: boolean;
   pdfUrl?: string;
 }
 
+const FUTURE_OUTPUTS = [
+  "Cotización",
+  "Meta Catalog",
+  "Google Merchant",
+  "Pinterest",
+  "Mercado Libre",
+] as const;
+
 export default function CommercialOutputsPanel({
   productCount,
   hasPublicUrl,
   pdfUrl = "",
 }: CommercialOutputsPanelProps) {
-  const shareStatus: OutputReadiness =
-    hasPublicUrl
-      ? "ready"
-      : productCount > 0
-        ? "prepared"
-        : "blocked";
-
-  const shareLabel =
-    hasPublicUrl
-      ? "Listo"
-      : productCount > 0
-        ? "Preparado"
-        : "Bloqueado";
-
-  const groups: readonly OutputGroup[] = [
-    {
-      title: "Documentos",
-      items: [
-        {
-          label: "PDF catálogo",
-          detail: hasPublicUrl
-            ? "Salida pública disponible"
-            : "Requiere publicación de la composición",
-          status: hasPublicUrl ? "ready" : shareStatus,
-          statusLabel: hasPublicUrl ? "Listo" : shareLabel,
-        },
-        {
-          label: "Cotización",
-          detail: "Contrato definido; renderer pendiente",
-          status: "pending",
-          statusLabel: "Próximo",
-        },
-        {
-          label: "Lista de precios",
-          detail: "Contrato definido; template pendiente",
-          status: "pending",
-          statusLabel: "Próximo",
-        },
-      ],
-    },
-    {
-      title: "Marketplaces",
-      items: [
-        {
-          label: "Meta",
-          detail: "Feed general operativo; adapter por composición pendiente",
-          status: "prepared",
-          statusLabel: "Base lista",
-        },
-        {
-          label: "Google Merchant",
-          detail: "Perfil y adapter pendientes",
-          status: "pending",
-          statusLabel: "Pendiente",
-        },
-        {
-          label: "Pinterest",
-          detail: "Perfil y adapter pendientes",
-          status: "pending",
-          statusLabel: "Pendiente",
-        },
-        {
-          label: "Mercado Libre",
-          detail: "Mapeo dinámico por categoría pendiente",
-          status: "pending",
-          statusLabel: "Pendiente",
-        },
-      ],
-    },
-    {
-      title: "Compartir",
-      items: [
-        {
-          label: "WhatsApp",
-          detail: hasPublicUrl
-            ? "Mensaje y enlace disponibles"
-            : "Esperando enlace público",
-          status: shareStatus,
-          statusLabel: shareLabel,
-        },
-        {
-          label: "Copiar enlace",
-          detail: hasPublicUrl
-            ? "URL pública disponible"
-            : "Esperando enlace público",
-          status: shareStatus,
-          statusLabel: shareLabel,
-        },
-      ],
-    },
-  ];
+  const canGeneratePdf = productCount > 0 && Boolean(pdfUrl);
 
   return (
-    <section
-      className="commercial-outputs"
-      aria-labelledby="commercial-outputs-title"
-    >
-      <header className="commercial-outputs__header">
-        <div>
-          <span>Commercial Publishing</span>
-          <h3 id="commercial-outputs-title">Outputs</h3>
+    <section className="commercial-outputs" aria-labelledby="commercial-outputs-title">
+      <article className="commercial-outputs__primary">
+        <div className="commercial-outputs__pdfIcon" aria-hidden="true">
+          PDF
+        </div>
+
+        <div className="commercial-outputs__pdfCopy">
+          <span>Disponible ahora</span>
+          <h3 id="commercial-outputs-title">Catálogo mayorista PDF</h3>
           <p>
-            Una composición, múltiples salidas controladas.
+            {productCount} productos · formato Wooly · listo para imprimir o guardar.
           </p>
         </div>
 
-        <div className="commercial-outputs__contract">
-          <strong>{productCount}</strong>
-          <span>productos</span>
-          <small>commercial-composition.v1</small>
-        </div>
-      </header>
-
-      <div className="commercial-outputs__groups">
-        {groups.map((group) => (
-          <section
-            className="commercial-outputs__group"
-            key={group.title}
+        {canGeneratePdf ? (
+          <a
+            className="commercial-outputs__primaryAction"
+            href={pdfUrl}
+            target="_blank"
+            rel="noreferrer"
           >
-            <h4>{group.title}</h4>
+            Generar PDF
+          </a>
+        ) : (
+          <span className="commercial-outputs__blocked">
+            {productCount === 0 ? "Sin productos" : "Requiere publicación"}
+          </span>
+        )}
+      </article>
 
-            <div className="commercial-outputs__items">
-              {group.items.map((item) => (
-                <article
-                  className="commercial-outputs__item"
-                  key={item.label}
-                >
-                  <div>
-                    <strong>{item.label}</strong>
-                    <small>{item.detail}</small>
-                  </div>
+      <section className="commercial-outputs__future" aria-labelledby="future-outputs-title">
+        <header>
+          <div>
+            <span>Próximas salidas</span>
+            <h4 id="future-outputs-title">Canales en preparación</h4>
+          </div>
+          <small>Se habilitarán sobre la misma composición comercial.</small>
+        </header>
 
-                  <span
-                    className={`commercial-outputs__badge is-${item.status}`}
-                  >
-                    {item.statusLabel}
-                  </span>
+        <div className="commercial-outputs__futureList">
+          {FUTURE_OUTPUTS.map((output) => (
+            <span key={output}>{output}</span>
+          ))}
+        </div>
+      </section>
 
-                  {item.label === "PDF catálogo" && pdfUrl ? (
-                    <a
-                      className="commercial-outputs__action"
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Generar
-                    </a>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+      {hasPublicUrl ? (
+        <p className="commercial-outputs__note">
+          El enlace y las opciones para compartir están disponibles en el resumen.
+        </p>
+      ) : null}
     </section>
   );
 }

@@ -1,0 +1,227 @@
+.catalog-workflow-header {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(440px, 1.5fr) auto;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid var(--w-border, #e2e8f0);
+  border-radius: 18px;
+  padding: 14px;
+  background: #ffffff;
+  box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
+}
+
+.catalog-workflow-header__identity {
+  min-width: 0;
+}
+
+.catalog-workflow-header__identity > span {
+  color: var(--w-primary-dark, #156f84);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.catalog-workflow-header__identity h1 {
+  margin: 3px 0 0;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+.catalog-workflow-header__identity p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.catalog-workflow-header__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 5px;
+  border-radius: 14px;
+  background: #f1f5f9;
+}
+
+.catalog-workflow-header__steps button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  min-width: 0;
+  min-height: 54px;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  padding: 7px 9px;
+  background: transparent;
+  color: #64748b;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.catalog-workflow-header__steps button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.72);
+  color: #334155;
+}
+
+.catalog-workflow-header__steps button.is-active {
+  border-color: rgba(29, 130, 153, 0.18);
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.07);
+}
+
+.catalog-workflow-header__steps button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.catalog-workflow-header__steps button > span {
+  display: grid;
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: #dbe4ec;
+  color: #475569;
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.catalog-workflow-header__steps button.is-active > span {
+  background: var(--w-primary, #1d8299);
+  color: #ffffff;
+}
+
+.catalog-workflow-header__steps strong,
+.catalog-workflow-header__steps small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalog-workflow-header__steps strong {
+  align-self: end;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.catalog-workflow-header__steps small {
+  align-self: start;
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.catalog-workflow-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.catalog-workflow-header__actions button {
+  min-height: 34px;
+  border: 1px solid #dbe3ee;
+  border-radius: 9px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #475569;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.catalog-workflow-header__actions button:hover {
+  border-color: rgba(29, 130, 153, 0.35);
+  background: var(--w-primary-soft, #e8f6f9);
+  color: var(--w-primary-dark, #156f84);
+}
+
+.catalog-workflow-header__actions button.is-reset {
+  border-color: transparent;
+  color: #991b1b;
+}
+
+.catalog-workflow-header__actions button.is-reset:hover {
+  background: #fef2f2;
+}
+
+@media (max-width: 1080px) {
+  .catalog-workflow-header {
+    grid-template-columns: minmax(200px, 0.8fr) minmax(420px, 1.6fr);
+  }
+
+  .catalog-workflow-header__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .catalog-workflow-header {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-workflow-header__steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .catalog-workflow-header__steps button {
+    grid-template-columns: 22px minmax(0, 1fr);
+    column-gap: 6px;
+    min-height: 48px;
+    padding: 6px;
+  }
+
+  .catalog-workflow-header__steps button > span {
+    width: 22px;
+    height: 22px;
+  }
+
+  .catalog-workflow-header__steps small {
+    display: none;
+  }
+
+  .catalog-workflow-header__actions {
+    grid-column: auto;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 440px) {
+  .catalog-workflow-header__identity p,
+  .catalog-workflow-header__steps small {
+    display: none;
+  }
+
+  .catalog-workflow-header__steps button {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    min-height: 42px;
+    text-align: center;
+  }
+
+  .catalog-workflow-header__steps button > span {
+    grid-row: auto;
+    width: 20px;
+    height: 20px;
+  }
+
+  .catalog-workflow-header__steps strong {
+    align-self: center;
+  }
+
+  .catalog-workflow-header__actions button {
+    flex: 1 1 auto;
+  }
+}

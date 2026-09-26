@@ -62,25 +62,25 @@ describe("CatalogCompositionPanel flow", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "Encuentra y prepara tu catálogo",
+        name: "Selecciona los productos",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.queryByRole("heading", {
-        name: "Prepara tu catálogo",
+        name: "Revisa tu catálogo",
       }),
     ).not.toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Preparar catálogo →",
+        name: "Revisar catálogo →",
       }),
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Prepara tu catálogo",
+        name: "Revisa tu catálogo",
       }),
     ).toBeInTheDocument();
 
@@ -92,20 +92,72 @@ describe("CatalogCompositionPanel flow", () => {
 
     expect(
       screen.queryByRole("heading", {
-        name: "Encuentra y prepara tu catálogo",
+        name: "Selecciona los productos",
       }),
     ).not.toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "← Volver a productos",
+        name: "← Volver a seleccionar",
       }),
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Encuentra y prepara tu catálogo",
+        name: "Selecciona los productos",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("permite elegir el modo antes de revisar", () => {
+    render(
+      <CatalogCompositionPanel
+        products={[product]}
+        campaigns={[campaign]}
+        isReady
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Desde cero/,
+      }),
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: /Desde cero/,
+      }),
+    ).toHaveAttribute("aria-pressed", "true");
+
+    expect(
+      screen.queryByLabelText("Buscar producto en catálogo"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("abre Generar con el PDF como salida principal", () => {
+    render(
+      <CatalogCompositionPanel
+        products={[product]}
+        campaigns={[campaign]}
+        isReady
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Generar PDF y compartir/,
+      }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Generar catálogo" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Genera el PDF de Wooly" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("link", { name: "Generar PDF" }),
+    ).toHaveLength(1);
   });
 });

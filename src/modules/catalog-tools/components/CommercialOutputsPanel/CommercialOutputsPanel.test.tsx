@@ -12,23 +12,26 @@ import {
 import CommercialOutputsPanel from "./CommercialOutputsPanel";
 
 describe("CommercialOutputsPanel", () => {
-  it("distingue salidas listas de adapters todavía pendientes", () => {
+  it("prioriza el PDF y separa los canales futuros", () => {
     render(
       <CommercialOutputsPanel
         productCount={24}
         hasPublicUrl
+        pdfUrl="/catalogo/pdf?print=1"
       />,
     );
 
-    expect(screen.getByText("commercial-composition.v1")).toBeInTheDocument();
-    expect(screen.getByText("PDF catálogo")).toBeInTheDocument();
-    expect(screen.getByText("Meta")).toBeInTheDocument();
+    expect(screen.getByText("Catálogo mayorista PDF")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Generar PDF" })).toHaveAttribute(
+      "href",
+      "/catalogo/pdf?print=1",
+    );
+    expect(screen.getByText("Meta Catalog")).toBeInTheDocument();
     expect(screen.getByText("Mercado Libre")).toBeInTheDocument();
-    expect(screen.getAllByText("Listo")).toHaveLength(3);
-    expect(screen.getAllByText("Pendiente")).toHaveLength(3);
+    expect(screen.getByText("Canales en preparación")).toBeInTheDocument();
   });
 
-  it("bloquea compartir cuando la composición no tiene productos", () => {
+  it("bloquea el PDF cuando la composición no tiene productos", () => {
     render(
       <CommercialOutputsPanel
         productCount={0}
@@ -36,6 +39,7 @@ describe("CommercialOutputsPanel", () => {
       />,
     );
 
-    expect(screen.getAllByText("Bloqueado")).toHaveLength(3);
+    expect(screen.getByText("Sin productos")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Generar PDF" })).not.toBeInTheDocument();
   });
 });

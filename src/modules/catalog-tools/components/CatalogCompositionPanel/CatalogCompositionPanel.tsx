@@ -41,6 +41,13 @@ import {
 import CatalogDraftManager from "@/modules/catalog-tools/components/CatalogDraftManager/CatalogDraftManager";
 import CatalogPublishCheckout from "@/modules/catalog-tools/components/CatalogPublishCheckout/CatalogPublishCheckout";
 import CatalogPosSummary from "@/modules/catalog-tools/components/CatalogPosSummary/CatalogPosSummary";
+import CatalogWorkflowHeader, {
+  type CatalogWorkflowStage,
+} from "@/modules/catalog-tools/components/CatalogWorkflowHeader/CatalogWorkflowHeader";
+import CatalogCompositionModePicker from "@/modules/catalog-tools/components/CatalogCompositionModePicker/CatalogCompositionModePicker";
+import {
+  CATALOG_COMPOSITION_MODE_OPTIONS,
+} from "@/modules/catalog-tools/domain/CatalogCompositionModeOptions";
 
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 
@@ -53,36 +60,6 @@ interface CatalogCompositionPanelProps {
   onOpenCatalogSync?: () => void;
 }
 
-interface ModeOption {
-  id: CatalogCompositionMode;
-  label: string;
-  description: string;
-  status: string;
-}
-
-const MODE_OPTIONS: readonly ModeOption[] = [
-  {
-    id: "automatic",
-    label: "Catálogo",
-    description:
-      "Selecciona categorías y campañas para construir la base de tu catálogo.",
-    status: "Disponible",
-  },
-  {
-    id: "hybrid",
-    label: "Personalizado",
-    description:
-      "Parte de tu catálogo y agrega o retira productos según lo que necesita tu cliente.",
-    status: "Recomendado",
-  },
-  {
-    id: "manual",
-    label: "Catálogo a medida",
-    description:
-      "Selecciona producto por producto para crear una propuesta específica.",
-    status: "Disponible",
-  },
-];
 type CatalogPanelStage =
   | "explorer"
   | "workspace";
@@ -374,17 +351,13 @@ const [
           campaignId,
       );
 
-  const filtersEnabled =
-    composition.mode !==
-    "manual";
-
   const selectedMode =
-    MODE_OPTIONS.find(
+    CATALOG_COMPOSITION_MODE_OPTIONS.find(
       (mode) =>
         mode.id ===
         composition.mode,
     ) ??
-    MODE_OPTIONS[0];
+    CATALOG_COMPOSITION_MODE_OPTIONS[0];
 
   const categorySummary =
     selectedCategoryLabels.length > 0
@@ -399,71 +372,6 @@ const [
           ", ",
         )
       : "Sin campaña específica";
-
-  const explorerMetrics =
-    useMemo(
-      () => {
-        const publishedProducts =
-          products.filter(
-            (product) =>
-              product.status ===
-              "publicado",
-          ).length;
-
-        const limitedStockProducts =
-          products.filter(
-            (product) =>
-              typeof product.stock ===
-                "number" &&
-              product.stock > 0 &&
-              product.stock <= 5,
-          ).length;
-
-        return [
-          {
-            label: "Productos",
-            value: products.length,
-            detail: "Base disponible",
-            tone: "base",
-          },
-          {
-            label: "Publicados",
-            value: publishedProducts,
-            detail: "Listos para vender",
-            tone: "ready",
-          },
-          {
-            label: "Stock limitado",
-            value: limitedStockProducts,
-            detail: "5 unidades o menos",
-            tone: "warning",
-          },
-          {
-            label: "En esta vista",
-            value:
-              catalogExplorerProducts.length,
-            detail:
-              composition.filters
-                  .categoryIds.length > 0 ||
-                composition.filters
-                  .campaignIds.length > 0 ||
-                Boolean(
-                  normalizedCatalogSearch,
-                )
-                ? "Resultado filtrado"
-                : "Sin filtros activos",
-            tone: "active",
-          },
-        ] as const;
-      },
-      [
-        products,
-        catalogExplorerProducts.length,
-        composition.filters.categoryIds.length,
-        composition.filters.campaignIds.length,
-        normalizedCatalogSearch,
-      ],
-    );
 
   const activeFilterCount =
     composition.filters.categoryIds
@@ -487,10 +395,6 @@ const changeMode =
     (
       categoryId: string,
     ) => {
-      if (!filtersEnabled) {
-        return;
-      }
-
       setComposition(
         (current) => ({
           ...current,
@@ -513,10 +417,6 @@ const changeMode =
     (
       campaignId: string,
     ) => {
-      if (!filtersEnabled) {
-        return;
-      }
-
       setComposition(
         (current) => ({
           ...current,
@@ -690,115 +590,32 @@ const changeMode =
       );
     };
 
+  const workflowStage: CatalogWorkflowStage =
+    panelStage === "explorer" ? "select" : "review";
+
+  const handleWorkflowStageChange = (
+    stage: CatalogWorkflowStage,
+  ) => {
+    setIsCatalogDetailsOpen(false);
+    setPanelStage(stage === "select" ? "explorer" : "workspace");
+  };
+
   return (
     <section className="catalog-composition-panel">
-      {/* ADMIN 1.0 - A5-E CATALOGO PERSONALIZADO */}
-      <header className="catalog-composition-panel__commandBar">
-  <div className="catalog-composition-panel__commandModeGroup">
-    
-
-    <div
-      className="catalog-composition-panel__commandModes"
-      role="group"
-      aria-label="Etapas del catálogo"
-    >
-      <button
-        type="button"
-        className={
-          panelStage === "explorer"
-            ? "is-active"
-            : ""
-        }
-        aria-pressed={
-          panelStage === "explorer"
-        }
-        onClick={() =>
-          setPanelStage("explorer")
-        }
-      >
-        1. Productos
-      </button>
-
-      <button
-        type="button"
-        className={
-          panelStage === "workspace"
-            ? "is-active"
-            : ""
-        }
-        aria-pressed={
-          panelStage === "workspace"
-        }
-        onClick={() =>
-          setPanelStage("workspace")
-        }
-      >
-        2. Preparar
-      </button>
-
-      <button
-        type="button"
-        className={
-          isCatalogDetailsOpen
-            ? "is-active"
-            : ""
-        }
-        aria-pressed={
-          isCatalogDetailsOpen
-        }
-        disabled={
-          !isReady ||
-          resolution.productIds.length === 0
-        }
-        onClick={() => {
+      <CatalogWorkflowHeader
+        stage={workflowStage}
+        isGenerateOpen={isCatalogDetailsOpen}
+        canGenerate={isReady && resolution.productIds.length > 0}
+        showCatalogSync={Boolean(onOpenCatalogSync)}
+        onStageChange={handleWorkflowStageChange}
+        onOpenGenerate={() => {
           setPanelStage("workspace");
           setIsCatalogDetailsOpen(true);
         }}
-      >
-        3. Publicar
-      </button>
-    </div>
-  </div>
-
-  <div className="catalog-composition-panel__commandActions">
-    
-
-        
-    <button
-      type="button"
-      className="is-utility"
-      onClick={() =>
-        setIsDraftManagerOpen(
-          true,
-        )
-      }
-    >
-      Mis catálogos
-    </button>
-
-{onOpenCatalogSync ? (
-      <button
-        type="button"
-        className="is-utility"
-        onClick={
-          onOpenCatalogSync
-        }
-      >
-        Google Sheets
-      </button>
-    ) : null}
-
-    <button
-      type="button"
-      className="is-danger"
-      onClick={
-        resetComposition
-      }
-    >
-      Limpiar
-    </button>
-  </div>
-</header>
+        onOpenDrafts={() => setIsDraftManagerOpen(true)}
+        onOpenCatalogSync={() => onOpenCatalogSync?.()}
+        onReset={resetComposition}
+      />
 
       <AdminModal
         open={
@@ -851,8 +668,8 @@ const changeMode =
           isCatalogDetailsOpen
         }
         size="large"
-        title="Publicar catálogo"
-        description="Revisa la presentación y confirma cómo llegará el catálogo a tu cliente."
+        title="Generar catálogo"
+        description="Genera el PDF mayorista y utiliza las salidas que ya están disponibles."
         onClose={() =>
           setIsCatalogDetailsOpen(
             false,
@@ -868,9 +685,6 @@ const changeMode =
           }
           publicationIdentity={
             publicationIdentity
-          }
-          onPublicationIdentityChange={
-            setPublicationIdentity
           }
           modeLabel={
             selectedMode.label
@@ -894,10 +708,10 @@ const changeMode =
         <section className="catalog-composition-panel__workspaceIntro">
           <header>
             <div>
-              <span>Catalog Workspace</span>
-              <h2>Prepara tu catálogo</h2>
+              <span>Revisión</span>
+              <h2>Revisa tu catálogo</h2>
               <p>
-                Define el alcance, ajusta productos y revisa el resultado antes de publicar.
+                Comprueba la composición final antes de generar la salida comercial.
               </p>
             </div>
 
@@ -907,38 +721,9 @@ const changeMode =
                 setPanelStage("explorer")
               }
             >
-              ← Volver a productos
+              ← Volver a seleccionar
             </button>
           </header>
-
-          <div
-            className="catalog-composition-panel__workspaceModes"
-            role="group"
-            aria-label="Tipo de composición"
-          >
-            {MODE_OPTIONS.map(
-              (mode) => (
-                <button
-                  type="button"
-                  key={mode.id}
-                  className={
-                    composition.mode === mode.id
-                      ? "is-active"
-                      : ""
-                  }
-                  aria-pressed={
-                    composition.mode === mode.id
-                  }
-                  onClick={() =>
-                    changeMode(mode.id)
-                  }
-                >
-                  <span>{mode.label}</span>
-                  <small>{mode.description}</small>
-                </button>
-              ),
-            )}
-          </div>
         </section>
       ) : null}
 
@@ -951,94 +736,37 @@ const changeMode =
         ].join(" ")}
       >
         <div className="catalog-composition-panel__posMain">
-{panelStage === "workspace" &&
-composition.mode ===
-      "hybrid" ? (
-        <CatalogHybridAdjuster
-          products={
-            products
-          }
-          automaticProductIds={
-            resolution
-              .automaticProductIds
-          }
-          includedProductIds={
-            composition.overrides
-              .includedProductIds
-          }
-          excludedProductIds={
-            composition.overrides
-              .excludedProductIds
-          }
-          isReady={
-            isReady
-          }
-          onProductAction={
-            applyHybridProductAction
-          }
-        />
-      ) : null}
-      {panelStage === "workspace" &&
-      composition.mode ===
-      "manual" ? (
-        <CatalogManualSelector
-          products={
-            products
-          }
-          includedProductIds={
-            composition.overrides
-              .includedProductIds
-          }
-          isReady={
-            isReady
-          }
-          onToggleProduct={
-            toggleManualProduct
-          }
-        />
-      ) : null}
 
       {panelStage === "explorer" ? (
         <section className="catalog-composition-panel__catalogWorkspace">
           <header className="catalog-composition-panel__explorerHead">
             <div>
               <span className="catalog-composition-panel__explorerEyebrow">
-                Explorador de productos
+                Selección
               </span>
 
               <h2>
-                Encuentra y prepara tu catálogo
+                Selecciona los productos
               </h2>
 
               <p>
-                Busca, filtra y revisa el inventario antes de preparar la publicación.
+                Elige un modo de composición y define qué productos formarán el catálogo.
               </p>
             </div>
 
-            <span className="catalog-composition-panel__flowStep">
-              Paso 1 de 3
-            </span>
           </header>
 
-          <div className="catalog-composition-panel__explorerMetrics">
-            {explorerMetrics.map(
-              (metric) => (
-                <article
-                  key={metric.label}
-                  className={`is-${metric.tone}`}
-                >
-                  <span>{metric.label}</span>
-                  <strong>{metric.value}</strong>
-                  <small>{metric.detail}</small>
-                </article>
-              ),
-            )}
-          </div>
+          <CatalogCompositionModePicker
+            value={composition.mode}
+            onChange={changeMode}
+          />
 
+          {composition.mode !== "manual" ? (
           <div
             className="catalog-composition-panel__explorerToolbar"
             aria-label="Buscar y filtrar productos"
           >
+            {composition.mode === "automatic" ? (
             <label className="catalog-composition-panel__searchField">
               <span aria-hidden="true">⌕</span>
 
@@ -1055,6 +783,7 @@ composition.mode ===
                 }
               />
             </label>
+            ) : null}
 
             <details className="catalog-composition-panel__filterMenu">
               <summary>
@@ -1084,7 +813,6 @@ composition.mode ===
 
                     const isDisabled =
                       !isReady ||
-                      !filtersEnabled ||
                       category.count === 0;
 
                     return (
@@ -1164,8 +892,7 @@ composition.mode ===
                             campaign.id
                           }
                           disabled={
-                            !isReady ||
-                            !filtersEnabled
+                            !isReady
                           }
                           aria-pressed={
                             isActive
@@ -1206,7 +933,7 @@ composition.mode ===
               </div>
             </details>
 
-            {catalogSearchQuery ||
+            {(composition.mode === "automatic" && catalogSearchQuery) ||
             activeFilterCount > 0 ? (
               <button
                 type="button"
@@ -1230,7 +957,9 @@ composition.mode ===
               </button>
             ) : null}
           </div>
+          ) : null}
 
+          {composition.mode === "automatic" ? (
           <CatalogProductExplorer
             items={
               catalogExplorerProducts.map(
@@ -1247,14 +976,35 @@ composition.mode ===
               isReady
             }
             presentation="commercial"
-      emptyMessage="No hay productos para los filtros seleccionados."
+            emptyMessage="No hay productos para los filtros seleccionados."
           />
+          ) : null}
+
+          {composition.mode === "hybrid" ? (
+            <CatalogHybridAdjuster
+              products={products}
+              automaticProductIds={resolution.automaticProductIds}
+              includedProductIds={composition.overrides.includedProductIds}
+              excludedProductIds={composition.overrides.excludedProductIds}
+              isReady={isReady}
+              onProductAction={applyHybridProductAction}
+            />
+          ) : null}
+
+          {composition.mode === "manual" ? (
+            <CatalogManualSelector
+              products={products}
+              includedProductIds={composition.overrides.includedProductIds}
+              isReady={isReady}
+              onToggleProduct={toggleManualProduct}
+            />
+          ) : null}
 
           <footer className="catalog-composition-panel__explorerNext">
             <div>
-              <span>Alcance actual</span>
+              <span>Resultado actual</span>
               <strong>
-                {resolution.productIds.length} productos listos para preparar
+                {resolution.productIds.length} productos seleccionados
               </strong>
             </div>
 
@@ -1268,7 +1018,7 @@ composition.mode ===
                 setPanelStage("workspace")
               }
             >
-              Preparar catálogo →
+              Revisar catálogo →
             </button>
           </footer>
         </section>

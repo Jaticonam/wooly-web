@@ -11,7 +11,6 @@ import {
 } from "@/modules/catalog/domain/CatalogPublicationEligibility";
 
 import {
-  resolveCatalogPublicationCover,
   type CatalogPublicationIdentity,
 } from "@/modules/catalog/domain/CatalogPublicationIdentity";
 
@@ -43,16 +42,6 @@ interface CatalogPublishCheckoutProps {
 
   publicationIdentity:
     CatalogPublicationIdentity;
-
-  onPublicationIdentityChange:
-    (
-      value:
-        CatalogPublicationIdentity |
-        ((
-          current:
-            CatalogPublicationIdentity,
-        ) => CatalogPublicationIdentity),
-    ) => void;
 
   modeLabel:
     string;
@@ -167,8 +156,6 @@ export default function CatalogPublishCheckout({
   composition,
   resolution,
   publicationIdentity,
-  onPublicationIdentityChange:
-    setPublicationIdentity,
   modeLabel,
   categorySummary,
   campaignSummary,
@@ -183,12 +170,6 @@ export default function CatalogPublishCheckout({
       "message"
     >(
       "",
-    );
-
-  const resolvedCover =
-    resolveCatalogPublicationCover(
-      publicationIdentity,
-      composition,
     );
 
   const eligibility =
@@ -365,237 +346,20 @@ export default function CatalogPublishCheckout({
   return (
     <section className="catalog-publish-checkout">
       <div className="catalog-publish-checkout__main">
-        <nav
-          className="catalog-publish-checkout__flow"
-          aria-label="Flujo de publicación"
-        >
-          <span>1. Productos</span>
-          <span>2. Preparar</span>
-          <strong aria-current="step">3. Publicar</strong>
-        </nav>
-
         <header className="catalog-publish-checkout__intro">
           <span>
-            Presentación
+            Salida principal
           </span>
 
           <h3>
-            Publica y comparte
+            Genera el PDF de Wooly
           </h3>
 
           <p>
-            Confirma la presentación, revisa las salidas disponibles
-            y comparte solo cuando todo esté listo.
+            Crea el catálogo mayorista con la selección revisada. Después podrás abrirlo,
+            imprimirlo o compartir su enlace con el cliente.
           </p>
         </header>
-
-        <div className="catalog-publish-checkout__fields">
-          <label>
-            <span>
-              Título público
-            </span>
-
-            <input
-              type="text"
-              value={
-                publicationIdentity.title
-              }
-              maxLength={
-                90
-              }
-              placeholder="Opcional · Ej. Selección mayorista de flores"
-              onChange={(event) =>
-                setPublicationIdentity(
-                  (current) => ({
-                    ...current,
-
-                    title:
-                      event.target.value,
-                  }),
-                )
-              }
-            />
-          </label>
-
-          <label>
-            <span>
-              Descripción
-            </span>
-
-            <textarea
-              value={
-                publicationIdentity.description
-              }
-              maxLength={
-                180
-              }
-              rows={
-                3
-              }
-              placeholder="Opcional · Describe brevemente esta selección."
-              onChange={(event) =>
-                setPublicationIdentity(
-                  (current) => ({
-                    ...current,
-
-                    description:
-                      event.target.value,
-                  }),
-                )
-              }
-            />
-          </label>
-        </div>
-
-        <section className="catalog-publish-checkout__cover">
-          <div className="catalog-publish-checkout__coverControls">
-            <span className="catalog-publish-checkout__eyebrow">
-              Portada
-            </span>
-
-            <div className="catalog-publish-checkout__coverOptions">
-              <label>
-                <input
-                  type="radio"
-                  name="catalog-publish-cover"
-                  value="auto"
-                  checked={
-                    publicationIdentity
-                      .cover
-                      .strategy ===
-                    "auto"
-                  }
-                  onChange={() =>
-                    setPublicationIdentity(
-                      (current) => ({
-                        ...current,
-
-                        cover: {
-                          ...current.cover,
-
-                          strategy:
-                            "auto",
-                        },
-                      }),
-                    )
-                  }
-                />
-
-                Automática
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="catalog-publish-cover"
-                  value="custom"
-                  checked={
-                    publicationIdentity
-                      .cover
-                      .strategy ===
-                    "custom"
-                  }
-                  onChange={() =>
-                    setPublicationIdentity(
-                      (current) => ({
-                        ...current,
-
-                        cover: {
-                          ...current.cover,
-
-                          strategy:
-                            "custom",
-                        },
-                      }),
-                    )
-                  }
-                />
-
-                Personalizada
-              </label>
-            </div>
-
-            {publicationIdentity
-              .cover
-              .strategy ===
-            "custom" ? (
-              <label className="catalog-publish-checkout__customUrl">
-                <span>
-                  URL de imagen
-                </span>
-
-                <input
-                  type="url"
-                  value={
-                    publicationIdentity
-                      .cover
-                      .customImageUrl
-                  }
-                  placeholder="https://..."
-                  onChange={(event) =>
-                    setPublicationIdentity(
-                      (current) => ({
-                        ...current,
-
-                        cover: {
-                          ...current.cover,
-
-                          customImageUrl:
-                            event.target.value,
-                        },
-                      }),
-                    )
-                  }
-                />
-              </label>
-            ) : null}
-          </div>
-
-          <aside className="catalog-publish-checkout__coverPreview">
-            <span>
-              Vista de portada
-            </span>
-
-            <div className="catalog-publish-checkout__coverImage">
-              <img
-                src={
-                  resolvedCover.imagePath
-                }
-                alt="Portada del catálogo"
-              />
-            </div>
-
-            <strong>
-              {publicationIdentity
-                .title
-                .trim() ||
-                "Catálogo Wooly"}
-            </strong>
-
-            {publicationIdentity
-              .description
-              .trim() ? (
-              <p>
-                {
-                  publicationIdentity
-                    .description
-                }
-              </p>
-            ) : null}
-
-            <small>
-              Fuente:
-              {" "}
-              {resolvedCover.source ===
-              "custom"
-                ? "Personalizada"
-                : resolvedCover.source ===
-                    "campaign"
-                  ? "Campaña"
-                  : "Wooly"}
-            </small>
-          </aside>
-        </section>
 
         <CommercialOutputsPanel
           productCount={
@@ -742,17 +506,6 @@ export default function CatalogPublishCheckout({
             </div>
 
             <div className="catalog-publish-checkout__actions">
-              <a
-                href={
-                  pdfExportUrl
-                }
-                target="_blank"
-                rel="noreferrer"
-                className="is-primary"
-              >
-                Generar PDF
-              </a>
-
               <a
                 href={
                   publicUrl

@@ -1,0 +1,67 @@
+name: Publish Wooly web artifact
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wooly-hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Prepare Hostinger SPA fallback
+        run: |
+          cat > dist/.htaccess <<'EOF'
+          Options -MultiViews
+          RewriteEngine On
+          RewriteBase /
+          RewriteCond %{REQUEST_FILENAME} -f [OR]
+          RewriteCond %{REQUEST_FILENAME} -d
+          RewriteRule ^ - [L]
+          RewriteRule ^ index.html [L]
+          EOF
+          test -f dist/index.html
+
+      - name: Publish versioned artifact branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          artifact_dir="${GITHUB_WORKSPACE}/dist"
+          deploy_dir="${RUNNER_TEMP}/wooly-hostinger-production"
+
+          if git ls-remote --exit-code --heads origin hostinger-production >/dev/null; then
+            git fetch origin refs/heads/hostinger-production:refs/remotes/origin/hostinger-production
+            git worktree add -b hostinger-production "$deploy_dir" origin/hostinger-production
+          else
+            git worktree add --detach "$deploy_dir" "$GITHUB_SHA"
+            git -C "$deploy_dir" checkout --orphan hostinger-production
+          fi
+
+          # Replace the previous artifact, including obsolete assets and hidden files.
+          find "$deploy_dir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
+          cp -a "$artifact_dir"/. "$deploy_dir"/
+
+          git -C "$deploy_dir" config user.name 'github-actions[bot]'
+          git -C "$deploy_dir" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$deploy_dir" add -A
+          git -C "$deploy_dir" commit --allow-empty -m "deploy: ${GITHUB_SHA}"
+          git -C "$deploy_dir" push origin hostinger-production

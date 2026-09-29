@@ -1,0 +1,49 @@
+[
+  {
+    "id": "meta-all",
+    "name": "Meta - Todo el catálogo",
+    "description": "Publica todos los productos disponibles para Meta.",
+    "connector": "meta",
+    "enabled": true,
+    "mode": "all",
+    "filters": {
+      "excludeOutOfStock": true
+    },
+    "sorting": {
+      "by": "priority",
+      "direction": "desc"
+    }
+  },
+  {
+    "id": "meta-top-priority",
+    "name": "Meta - Top prioridad",
+    "description": "Publica los mejores productos por prioridad.",
+    "connector": "meta",
+    "enabled": true,
+    "mode": "all",
+    "filters": {
+      "excludeOutOfStock": true
+    },
+    "sorting": {
+      "by": "priority",
+      "direction": "desc"
+    },
+    "limit": 100
+  },
+  {
+    "id": "meta-cajas",
+    "name": "Meta - Cajas",
+    "description": "Publica solo productos de la categoría cajas.",
+    "connector": "meta",
+    "enabled": true,
+    "mode": "category",
+    "filters": {
+      "category": "cajas",
+      "excludeOutOfStock": true
+    },
+    "sorting": {
+      "by": "priority",
+      "direction": "desc"
+    }
+  }
+]

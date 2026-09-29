@@ -1,0 +1,1573 @@
+/* =========================================================
+   Catalog PDF Header
+   Fase 2.3B: portada media hoja estilo Wooly
+   ========================================================= */
+
+/* ===== BASE ===== */
+
+.catalog-pdf-header {
+  margin-bottom: 10px;
+  -moz-column-break-after: avoid;
+       break-after: avoid;
+  page-break-after: avoid;
+}
+
+.catalog-pdf-header__cover {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  justify-items: center;
+  box-sizing: border-box;
+  min-height: 136mm;
+  padding: 18mm 16mm 10mm;
+  border: 1px solid rgba(213, 225, 235, 0.95);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(29, 130, 153, 0.08), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(242, 134, 190, 0.12), transparent 35%),
+    linear-gradient(180deg, #ffffff 0%, #ffffff 58%, #f8fbfc 100%);
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.04),
+    0 18px 45px rgba(15, 23, 42, 0.05);
+}
+
+/* ===== LOGO ===== */
+
+.catalog-pdf-header__logoWrap {
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  text-align: center;
+}
+
+.catalog-pdf-header__logoImage {
+  display: block;
+  width: min(365px, 78%);
+  height: auto;
+  max-height: 104px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center;
+     object-position: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.catalog-pdf-header__logoFallback {
+  color: var(--w-primary, #1d8299);
+  font-size: 2.15rem;
+  font-weight: 1000;
+  letter-spacing: -0.05em;
+}
+
+.catalog-pdf-header__brandFootnote {
+  max-width: 560px;
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* ===== COPY CENTRAL ===== */
+
+.catalog-pdf-header__copy {
+  display: flex;
+  width: 100%;
+  max-width: 660px;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.catalog-pdf-header__segment {
+  display: inline-flex;
+  width: -moz-fit-content;
+  width: fit-content;
+  min-height: 29px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 11px;
+  border-radius: 999px;
+  padding: 0 15px;
+  background: #fce8e6;
+  color: #c5221f;
+  font-size: 0.64rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.catalog-pdf-header__title {
+  margin: 0;
+  color: #202124;
+  font-size: 2.34rem;
+  font-weight: 1000;
+  line-height: 1.02;
+  letter-spacing: -0.065em;
+}
+
+.catalog-pdf-header__subtitle {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: #5f6368;
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.36;
+}
+
+/* ===== META GRID ===== */
+
+.catalog-pdf-header__metaGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1.24fr 1fr;
+  gap: 10px;
+  align-self: end;
+  margin-top: 12px;
+}
+
+.catalog-pdf-header__metaCard {
+  display: flex;
+  min-height: 58px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 18px;
+  padding: 10px 10px;
+  text-align: center;
+}
+
+.catalog-pdf-header__metaCard span {
+  font-size: 0.58rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.catalog-pdf-header__metaCard strong {
+  font-size: 1.2rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.catalog-pdf-header__metaCard--products {
+  border: 1px solid #fbcfe8;
+  background: #fff0f5;
+  color: #ad1457;
+}
+
+.catalog-pdf-header__metaCard--products span {
+  color: #d81b60;
+}
+
+.catalog-pdf-header__metaCard--contact {
+  background: linear-gradient(
+    135deg,
+    var(--w-primary, #1d8299),
+    var(--w-primary-dark, #156f84)
+  );
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(29, 130, 153, 0.14);
+}
+
+.catalog-pdf-header__metaCard--contact span {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.catalog-pdf-header__metaCard--contact strong {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.catalog-pdf-header__metaCard--validity {
+  border: 1px solid #fde293;
+  background: #fffbef;
+  color: #e65100;
+}
+
+.catalog-pdf-header__metaCard--validity span {
+  color: #b06000;
+}
+
+/* ===== STATUS ===== */
+
+.catalog-pdf-header__statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  width: 100%;
+  margin-top: 8px;
+  color: #9aa0a6;
+  font-size: 0.6rem;
+  font-weight: 850;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ===== PRINT ===== */
+
+@media print {
+  .catalog-pdf-header,
+  .catalog-pdf-header *,
+  .catalog-pdf-header *::before,
+  .catalog-pdf-header *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box;
+  }
+
+  .catalog-pdf-header {
+    margin-bottom: 8px;
+    -moz-column-break-after: avoid;
+         break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .catalog-pdf-header__cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* Media hoja útil controlada */
+    height: 132mm;
+    min-height: 0;
+
+    gap: 7mm;
+    padding: 10mm 14mm 8mm;
+
+    border-radius: 28px;
+    box-shadow: none;
+  }
+
+  /* ===== LOGO ===== */
+
+  .catalog-pdf-header__logoWrap {
+    flex: 0 0 auto;
+    width: 80%;
+    margin: 0;
+  }
+
+  .catalog-pdf-header__logoImage {
+    width: min(350px, 76%);
+    max-height: 92px;
+  }
+
+  .catalog-pdf-header__brandFootnote {
+    max-width: 520px;
+    margin-top: 5px;
+    font-size: 0.62rem;
+    line-height: 1.2;
+  }
+
+  /* ===== COPY ===== */
+
+  .catalog-pdf-header__copy {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 620px;
+    margin: 0;
+  }
+
+  .catalog-pdf-header__segment {
+    min-height: 26px;
+    margin-bottom: 9px;
+    padding: 0 13px;
+    font-size: 0.6rem;
+  }
+
+  .catalog-pdf-header__title {
+    font-size: 2.1rem;
+    line-height: 1.02;
+  }
+
+  .catalog-pdf-header__subtitle {
+    max-width: 560px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    line-height: 1.32;
+  }
+
+  /* ===== META ===== */
+
+  .catalog-pdf-header__metaGrid {
+    flex: 0 0 auto;
+    width: 100%;
+    grid-template-columns: 1fr 1.24fr 1fr;
+    gap: 9px;
+    margin-top: 0;
+  }
+
+  .catalog-pdf-header__metaCard {
+    min-height: 54px;
+    border-radius: 16px;
+    padding: 9px 8px;
+  }
+
+  .catalog-pdf-header__metaCard span {
+    font-size: 0.54rem;
+  }
+
+  .catalog-pdf-header__metaCard strong {
+    font-size: 1.08rem;
+  }
+
+  .catalog-pdf-header__metaCard--contact strong {
+    font-size: 0.92rem;
+  }
+
+  /* ===== STATUS ===== */
+
+  .catalog-pdf-header__statusRow {
+    flex: 0 0 auto;
+    margin-top: -2mm;
+    font-size: 0.56rem;
+    line-height: 1.15;
+  }
+}
+/* ===== TABLET / SMALL PREVIEW ===== */
+
+@media screen and (max-width: 900px) {
+  .catalog-pdf-header {
+    margin-bottom: 12px;
+  }
+
+  .catalog-pdf-header__cover {
+    min-height: auto;
+    padding: 22px 16px 18px;
+    border-radius: 24px;
+  }
+
+  .catalog-pdf-header__logoImage {
+    width: min(340px, 88%);
+    max-height: 104px;
+  }
+
+  .catalog-pdf-header__brandFootnote {
+    max-width: 360px;
+    font-size: 0.62rem;
+  }
+
+  .catalog-pdf-header__title {
+    font-size: 1.72rem;
+  }
+
+  .catalog-pdf-header__subtitle {
+    font-size: 0.74rem;
+  }
+
+  .catalog-pdf-header__metaGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .catalog-pdf-header__metaCard {
+    min-height: 54px;
+  }
+}
+
+/* ===== MOBILE PREVIEW ===== */
+
+@media screen and (max-width: 640px) {
+  .catalog-pdf-header__cover {
+    padding: 20px 14px 16px;
+  }
+
+  .catalog-pdf-header__logoImage {
+    width: min(320px, 92%);
+    max-height: 96px;
+  }
+
+  .catalog-pdf-header__brandFootnote {
+    max-width: 300px;
+    margin-top: 12px;
+    font-size: 0.58rem;
+  }
+
+  .catalog-pdf-header__segment {
+    min-height: 25px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    padding: 5px 25px;
+    font-size: 0.55rem;
+  }
+
+  .catalog-pdf-header__title {
+    font-size: 1.52rem;
+    line-height: 1.05;
+  }
+
+  .catalog-pdf-header__subtitle {
+    margin-top: 8px;
+    font-size: 0.7rem;
+    line-height: 1.35;
+  }
+
+  .catalog-pdf-header__metaCard {
+    min-height: 25px;
+    border-radius: 16px;
+    padding: 10px;
+  }
+
+  .catalog-pdf-header__metaCard span {
+    font-size: 0.52rem;
+  }
+
+  .catalog-pdf-header__metaCard strong {
+    font-size: 1.08rem;
+  }
+
+  .catalog-pdf-header__metaCard--contact strong {
+    font-size: 0.92rem;
+  }
+
+  .catalog-pdf-header__statusRow {
+    margin-top: 10px;
+    font-size: 0.52rem;
+  }
+}
+
+
+/* =========================================================
+   PRINT OVERRIDE FINAL
+   Debe quedar al final para que nada pise el PDF
+   ========================================================= */
+
+@media print {
+  .catalog-pdf-header,
+  .catalog-pdf-header *,
+  .catalog-pdf-header *::before,
+  .catalog-pdf-header *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box !important;
+  }
+
+  .catalog-pdf-header {
+    margin-bottom: 8px !important;
+    -moz-column-break-after: avoid !important;
+         break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .catalog-pdf-header__cover {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    height: 132mm !important;
+    min-height: 132mm !important;
+    max-height: 132mm !important;
+
+    gap: 7mm !important;
+    padding: 10mm 14mm 8mm !important;
+
+    border-radius: 28px !important;
+    box-shadow: none !important;
+  }
+
+  .catalog-pdf-header__logoWrap {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .catalog-pdf-header__logoImage {
+    width: min(350px, 76%) !important;
+    max-height: 92px !important;
+  }
+
+  .catalog-pdf-header__brandFootnote {
+    max-width: 520px !important;
+    margin-top: 5px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .catalog-pdf-header__copy {
+    width: 100% !important;
+    max-width: 620px !important;
+    margin: 0 !important;
+  }
+
+  .catalog-pdf-header__segment {
+    min-height: 26px !important;
+    margin-bottom: 9px !important;
+    padding: 0 13px !important;
+    font-size: 0.6rem !important;
+  }
+
+  .catalog-pdf-header__title {
+    font-size: 2.1rem !important;
+    line-height: 1.02 !important;
+  }
+
+  .catalog-pdf-header__subtitle {
+    max-width: 560px !important;
+    margin-top: 8px !important;
+    font-size: 0.8rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .catalog-pdf-header__metaGrid {
+    display: grid !important;
+    width: 100% !important;
+    grid-template-columns: 1fr 1.24fr 1fr !important;
+    gap: 9px !important;
+    margin-top: 0 !important;
+  }
+
+  .catalog-pdf-header__metaCard {
+    min-height: 54px !important;
+    border-radius: 16px !important;
+    padding: 9px 8px !important;
+  }
+
+  .catalog-pdf-header__metaCard span {
+    font-size: 0.54rem !important;
+  }
+
+  .catalog-pdf-header__metaCard strong {
+    font-size: 1.08rem !important;
+  }
+
+  .catalog-pdf-header__metaCard--contact strong {
+    font-size: 0.92rem !important;
+  }
+
+  .catalog-pdf-header__statusRow {
+    margin-top: -2mm !important;
+    font-size: 0.56rem !important;
+    line-height: 1.15 !important;
+  }
+}
+/* =========================================================
+   Catalog PDF Card
+   Fase 2.2G: precios mayoristas grandes, compactos y a la izquierda
+   ========================================================= */
+
+/* ===== BASE ===== */
+
+.catalog-pdf-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.035),
+    0 14px 34px rgba(15, 23, 42, 0.035);
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* ===== MEDIA ===== */
+
+.catalog-pdf-card__media {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 10 / 10;
+  border-radius: 13px;
+  background: #f8f9fa;
+}
+
+.catalog-pdf-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+
+.catalog-pdf-card__offerBadge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f286be, #ffb7d5);
+  font-size: 0.56rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(
+    90deg,
+    #c026d3 0%,
+    #9333ea 52%,
+    #7c3aed 100%
+  );
+  color: #ffffff;
+  border: 1px solid rgba(147, 51, 234, 0.45);
+  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.22);
+}
+
+/* ===== CONTENT ===== */
+
+.catalog-pdf-card__content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0 1px 1px;
+}
+
+/* ===== META ===== */
+
+.catalog-pdf-card__meta {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 4px;
+  align-items: center;
+}
+
+.catalog-pdf-card__code,
+.catalog-pdf-card__category,
+.catalog-pdf-card__stock {
+  display: inline-flex;
+  min-height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 6px;
+  font-size: 0.47rem;
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.catalog-pdf-card__code {
+  background: #f1f3f4;
+  color: #5f6368;
+  letter-spacing: 0.04em;
+}
+
+.catalog-pdf-card__category {
+  background: linear-gradient(
+    135deg,
+    var(--w-primary, #1d8299),
+    var(--w-primary-dark, #156f84)
+  );
+  color: #ffffff;
+}
+
+.catalog-pdf-card__stock {
+  overflow: hidden;
+  justify-self: end;
+  max-width: 100%;
+  border: 1px solid #bbf7d0;
+  background: #e6f4ea;
+  color: #137333;
+  text-overflow: ellipsis;
+}
+
+/* ===== TITLE ===== */
+
+.catalog-pdf-card__title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #202124;
+  font-size: 0.98rem;
+  font-weight: 950;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* ===== UNIT / OFFER PRICE ===== */
+
+.catalog-pdf-card__priceSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.catalog-pdf-card__priceSummary--single {
+  grid-template-columns: 1fr;
+}
+
+.catalog-pdf-card__priceBox {
+  display: flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid;
+  border-radius: 9px;
+  padding: 4px 7px;
+  line-height: 1;
+  text-align: center;
+}
+
+.catalog-pdf-card__priceBox span,
+.catalog-pdf-card__priceBox strong {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.catalog-pdf-card__priceBox span {
+  overflow: hidden;
+  font-size: 0.48rem;
+  font-weight: 950;
+}
+
+.catalog-pdf-card__priceBox strong {
+  font-size: 0.78rem;
+  font-weight: 1000;
+  letter-spacing: -0.03em;
+}
+
+.catalog-pdf-card__priceBox--unit {
+  border-color: rgba(29, 130, 153, 0.25);
+  background: rgba(29, 130, 153, 0.055);
+  color: var(--w-primary, #1d8299);
+}
+
+.catalog-pdf-card__priceBox--unit span {
+  color: #475569;
+}
+
+.catalog-pdf-card__priceBox--offer {
+  border-color: #f286be;
+  background: #fff0f5;
+  color: #9d174d;
+}
+
+/* ===== WHOLESALE ===== */
+
+.catalog-pdf-card__wholesaleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.catalog-pdf-card__sectionLabel {
+  display: block;
+  color: #334155;
+  font-size: 0.54rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.catalog-pdf-card__tiers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.catalog-pdf-card__tier {
+  display: flex;
+  min-height: 47px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.catalog-pdf-card__tierLabel {
+  overflow: hidden;
+  width: 100%;
+  font-size: 0.54rem;
+  font-weight: 1000;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalog-pdf-card__tierPrice {
+  display: block;
+  width: 100%;
+  font-size: 1.08rem;
+  font-weight: 1000;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ===== TIER COLORS ===== */
+
+.catalog-pdf-card__tier--price3 {
+  min-height: 53px;
+  border-color: #f5b025;
+  background: #fffbef;
+  color: #92400e;
+  box-shadow: inset 0 0 0 1px rgba(245, 176, 37, 0.18);
+}
+
+.catalog-pdf-card__tier--price3 .catalog-pdf-card__tierLabel {
+  font-size: 0.58rem;
+}
+
+.catalog-pdf-card__tier--price3 .catalog-pdf-card__tierPrice {
+  font-size: 1.28rem;
+}
+
+.catalog-pdf-card__tier--price12 {
+  border-color: #f286be;
+  background: #fff0f5;
+  color: #9d174d;
+}
+
+.catalog-pdf-card__tier--price50 {
+  border-color: #c4b5fd;
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+
+.catalog-pdf-card__tier--price100 {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.catalog-pdf-card__noTiers {
+  margin: 0;
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: #f8f9fa;
+  color: #5f6368;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ===== DESCRIPTION ===== */
+
+.catalog-pdf-card__description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #5f6368;
+  font-size: 0.52rem;
+  font-weight: 650;
+  line-height: 1.14;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.catalog-pdf-card__description span {
+  color: #334155;
+  font-weight: 950;
+}
+
+/* ===== PRINT ===== */
+
+@media print {
+  /* Mantiene colores y fondos en la impresión/PDF */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box;
+  }
+
+  .catalog-pdf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    padding: 7px;
+    border-radius: 14px;
+    box-shadow: none;
+
+    /* Evita que una tarjeta se divida entre dos páginas */
+    -moz-column-break-inside: avoid;
+         break-inside: avoid;
+    page-break-inside: avoid;
+
+    overflow: hidden;
+  }
+
+  /* ===== IMAGE ===== */
+
+  .catalog-pdf-card__media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 11px;
+    overflow: hidden;
+
+    -moz-column-break-inside: avoid;
+
+         break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .catalog-pdf-card__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+    -o-object-position: center;
+       object-position: center;
+  }
+
+  /* ===== TITLE ===== */
+
+  .catalog-pdf-card__title {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.15;
+    text-align: center;
+
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  /* ===== UNIT / OFFER PRICE ===== */
+
+  .catalog-pdf-card__priceSummary {
+    gap: 4px;
+    -moz-column-break-inside: avoid;
+         break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .catalog-pdf-card__priceBox {
+    min-height: 28px;
+    padding: 4px 6px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .catalog-pdf-card__priceBox span,
+  .catalog-pdf-card__priceBox strong {
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+  }
+
+  .catalog-pdf-card__priceBox span {
+    font-size: 0.46rem;
+    line-height: 1.05;
+  }
+
+  .catalog-pdf-card__priceBox strong {
+    font-size: 0.76rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* ===== SECTION LABEL ===== */
+
+  .catalog-pdf-card__sectionLabel {
+    margin: 0;
+    font-size: 0.52rem;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  /* ===== TIERS ===== */
+
+  .catalog-pdf-card__tier {
+    display: flex;
+    min-height: 45px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: 6px 7px;
+    border-radius: 9px;
+    text-align: center;
+
+    -moz-column-break-inside: avoid;
+
+         break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .catalog-pdf-card__tierLabel,
+  .catalog-pdf-card__tierPrice {
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+  }
+
+  .catalog-pdf-card__tierLabel {
+    font-size: 0.52rem;
+    line-height: 1.05;
+  }
+
+  .catalog-pdf-card__tierPrice {
+    font-size: 1.04rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* Precio principal destacado */
+  .catalog-pdf-card__tier--price3 {
+    min-height: 51px;
+  }
+
+  .catalog-pdf-card__tier--price3
+    .catalog-pdf-card__tierLabel {
+    font-size: 0.56rem;
+  }
+
+  .catalog-pdf-card__tier--price3
+    .catalog-pdf-card__tierPrice {
+    font-size: 1.22rem;
+  }
+
+  /* ===== DESCRIPTION ===== */
+
+  .catalog-pdf-card__description {
+    margin: 0;
+    font-size: 0.5rem;
+    line-height: 1.25;
+    text-align: center;
+
+    overflow-wrap: anywhere;
+    hyphens: auto;
+
+    /* Evita líneas sueltas al cambiar de página */
+    orphans: 2;
+    widows: 2;
+  }
+}
+
+/* ===== MOBILE PREVIEW ===== */
+
+@media (max-width: 640px) {
+  .catalog-pdf-card {
+    gap: 5px;
+    padding: 6px;
+    border-radius: 15px;
+  }
+
+  .catalog-pdf-card__media {
+    aspect-ratio: 10 / 10;
+    border-radius: 11px;
+  }
+
+  .catalog-pdf-card__code,
+  .catalog-pdf-card__category,
+  .catalog-pdf-card__stock {
+    min-height: 16px;
+    padding: 0 4px;
+    font-size: 0.39rem;
+  }
+
+  .catalog-pdf-card__title {
+    font-size: 0.66rem;
+  }
+
+  .catalog-pdf-card__priceBox {
+    min-height: 24px;
+    padding: 4px 5px;
+  }
+
+  .catalog-pdf-card__priceBox span {
+    font-size: 0.4rem;
+  }
+
+  .catalog-pdf-card__priceBox strong {
+    font-size: 0.58rem;
+  }
+
+  .catalog-pdf-card__sectionLabel {
+    font-size: 0.44rem;
+  }
+
+  .catalog-pdf-card__tiers {
+    gap: 4px;
+  }
+
+  .catalog-pdf-card__tier {
+    min-height: 38px;
+    border-radius: 10px;
+    padding: 5px 6px;
+  }
+
+  .catalog-pdf-card__tierLabel {
+    font-size: 0.42rem;
+  }
+
+  .catalog-pdf-card__tierPrice {
+    font-size: 0.78rem;
+  }
+
+  .catalog-pdf-card__tier--price3 {
+    min-height: 44px;
+  }
+
+  .catalog-pdf-card__tier--price3 .catalog-pdf-card__tierLabel {
+    font-size: 0.46rem;
+  }
+
+  .catalog-pdf-card__tier--price3 .catalog-pdf-card__tierPrice {
+    font-size: 0.92rem;
+  }
+
+  .catalog-pdf-card__description {
+    font-size: 0.42rem;
+    line-height: 1.12;
+  }
+}
+/* =========================================================
+   Catalog PDF Grid
+   Fase 2.2B: catálogo en 2 columnas
+   ========================================================= */
+
+.catalog-pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+@media print {
+  .catalog-pdf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalog-pdf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+}
+/* =========================================================
+   Catalog PDF Category Section
+   Bloques independientes y ordenados por categoría
+   ========================================================= */
+
+/* ===== BASE ===== */
+
+.catalog-pdf-categorySection {
+  display: block;
+  margin-top: 18px;
+}
+
+.catalog-pdf-categorySection:first-child {
+  margin-top: 0;
+}
+
+/* ===== HEADER ===== */
+
+.catalog-pdf-categorySection__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 18px;
+  padding: 11px 14px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(29, 130, 153, 0.09),
+      rgba(242, 134, 190, 0.07)
+    ),
+    #ffffff;
+
+  -moz-column-break-after: avoid;
+
+       break-after: avoid;
+  page-break-after: avoid;
+}
+
+.catalog-pdf-categorySection__identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalog-pdf-categorySection__icon {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 1.25rem;
+}
+
+.catalog-pdf-categorySection__identity p {
+  margin: 0 0 3px;
+  color: var(--w-primary, #1d8299);
+  font-size: 0.52rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.catalog-pdf-categorySection__identity h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.18rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.catalog-pdf-categorySection__count {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.66rem;
+  font-weight: 950;
+}
+
+/* ===== PRINT ===== */
+
+@media print {
+  .catalog-pdf-categorySection {
+    margin-top: 7mm;
+  }
+
+  .catalog-pdf-categorySection:first-child {
+    margin-top: 0;
+  }
+
+  .catalog-pdf-categorySection__header {
+    margin-bottom: 7px;
+    border-radius: 14px;
+    padding: 8px 11px;
+    box-shadow: none;
+
+    -moz-column-break-inside: avoid;
+
+         break-inside: avoid;
+    page-break-inside: avoid;
+    -moz-column-break-after: avoid;
+         break-after: avoid;
+    page-break-after: avoid;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .catalog-pdf-categorySection__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 11px;
+    font-size: 1rem;
+  }
+
+  .catalog-pdf-categorySection__identity h2 {
+    font-size: 1rem;
+  }
+
+  .catalog-pdf-categorySection__count {
+    font-size: 0.6rem;
+  }
+}
+
+/* ===== MOBILE PREVIEW ===== */
+
+@media (max-width: 640px) {
+  .catalog-pdf-categorySection {
+    margin-top: 14px;
+  }
+
+  .catalog-pdf-categorySection__header {
+    padding: 9px 10px;
+  }
+
+  .catalog-pdf-categorySection__icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .catalog-pdf-categorySection__identity h2 {
+    font-size: 0.9rem;
+  }
+
+  .catalog-pdf-categorySection__count {
+    padding: 6px 8px;
+    font-size: 0.56rem;
+  }
+}/* =========================================================
+   Catalog PDF Page
+   Vista imprimible mobile-first para WhatsApp / celular
+   ========================================================= */
+
+/* ===== PAGE PREVIEW ===== */
+
+.catalog-pdf-page {
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(29, 130, 153, 0.12), transparent 30%),
+    radial-gradient(circle at top right, rgba(242, 134, 190, 0.16), transparent 34%),
+    linear-gradient(135deg, #f8fafc 0%, #ffffff 52%, #eef9fb 100%);
+  color: #0f172a;
+}
+
+.catalog-pdf-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 980px;
+  margin: 0 auto 22px;
+  padding: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.05),
+    0 18px 45px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+.catalog-pdf-toolbar__eyebrow {
+  margin: 0 0 6px;
+  color: var(--w-primary, #1d8299);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.catalog-pdf-toolbar__title {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.35rem, 2.4vw, 1.95rem);
+  font-weight: 1000;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.catalog-pdf-toolbar__description {
+  max-width: 620px;
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.catalog-pdf-toolbar__warning {
+  margin: 12px 0 0;
+  color: #92400e;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.catalog-pdf-toolbar__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.catalog-pdf-toolbar__link,
+.catalog-pdf-toolbar__button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 16px;
+  font-size: 0.84rem;
+  font-weight: 950;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.catalog-pdf-toolbar__link {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: #ffffff;
+  color: #334155;
+}
+
+.catalog-pdf-toolbar__button {
+  border: 0;
+  background: linear-gradient(
+    135deg,
+    var(--w-primary, #1d8299),
+    var(--w-primary-dark, #156f84)
+  );
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(29, 130, 153, 0.18);
+}
+
+.catalog-pdf-toolbar__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ===== A4 SHEET ===== */
+
+.catalog-pdf-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 10mm;
+  background: #ffffff;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16);
+}
+
+.catalog-pdf-state {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  margin: 16px 0;
+  border: 1px dashed #cbd5e1;
+  border-radius: 24px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+}
+
+.catalog-pdf-state h2 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1.25rem;
+}
+
+.catalog-pdf-state p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+/* ===== FOOTER ===== */
+
+.catalog-pdf-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  margin-top: 14px;
+  padding: 12px 2px 0;
+  border-top: 1px dashed rgba(226, 232, 240, 0.95);
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.catalog-pdf-footer p {
+  margin: 0;
+}
+
+/* ===== PRINT ===== */
+
+@page {
+  size: A4;
+  margin: 8mm;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .catalog-pdf-page {
+    min-height: auto;
+    padding: 0;
+    background: #ffffff !important;
+  }
+
+  .catalog-pdf-sheet {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .catalog-pdf-footer {
+    -moz-column-break-inside: avoid;
+         break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== SMALL PREVIEW ===== */
+
+@media (max-width: 900px) {
+  .catalog-pdf-page {
+    padding: 14px;
+  }
+
+  .catalog-pdf-toolbar {
+    flex-direction: column;
+  }
+
+  .catalog-pdf-toolbar__actions {
+    flex-wrap: wrap;
+  }
+
+  .catalog-pdf-sheet {
+    width: 100%;
+    min-height: auto;
+    padding: 12px;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalog-pdf-page {
+    padding: 10px;
+  }
+
+  .catalog-pdf-toolbar {
+    padding: 14px;
+    border-radius: 24px;
+  }
+
+  .catalog-pdf-footer {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-size: 0.66rem;
+  }
+}
+

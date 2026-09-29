@@ -1,0 +1,45 @@
+{
+  "total": 303,
+  "passed": 303,
+  "warnings": 0,
+  "errors": 0,
+  "exportable": true,
+  "score": {
+    "total": 100,
+    "percentage": 100,
+    "grade": "A+"
+  },
+  "summary": {
+    "totalItems": 303,
+    "exportableItems": 303,
+    "blockedItems": 0,
+    "warningItems": 0,
+    "averageScore": 100,
+    "globalGrade": "A+",
+    "exportable": true
+  },
+  "gates": [
+    {
+      "key": "id",
+      "name": "Identificador único",
+      "required": true,
+      "passed": true,
+      "score": 25
+    },
+    {
+      "key": "price",
+      "name": "Precio válido",
+      "required": true,
+      "passed": true,
+      "score": 20
+    },
+    {
+      "key": "image",
+      "name": "Imagen principal",
+      "required": true,
+      "passed": true,
+      "score": 20
+    }
+  ],
+  "issues": []
+}

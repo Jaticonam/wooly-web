@@ -1,0 +1,969 @@
+{
+  "plan": {
+    "id": "meta-top-priority",
+    "name": "Meta - Top prioridad",
+    "description": "Publica los mejores productos por prioridad.",
+    "connector": "meta",
+    "enabled": true,
+    "mode": "all",
+    "filters": {
+      "excludeOutOfStock": true
+    },
+    "sorting": {
+      "by": "priority",
+      "direction": "desc"
+    },
+    "limit": 100
+  },
+  "publication": {
+    "totalItems": 310,
+    "selectedItems": 100,
+    "omittedItems": 210,
+    "generatedAt": "2026-06-10T09:40:39.331Z"
+  },
+  "quality": {
+    "exportable": true,
+    "score": {
+      "total": 100,
+      "percentage": 100,
+      "grade": "A+"
+    },
+    "summary": {
+      "totalItems": 310,
+      "exportableItems": 310,
+      "blockedItems": 0,
+      "warningItems": 0,
+      "averageScore": 100,
+      "globalGrade": "A+",
+      "exportable": true
+    },
+    "gates": [
+      {
+        "key": "id",
+        "name": "Identificador único",
+        "required": true,
+        "passed": true,
+        "score": 25
+      },
+      {
+        "key": "price",
+        "name": "Precio válido",
+        "required": true,
+        "passed": true,
+        "score": 20
+      },
+      {
+        "key": "image",
+        "name": "Imagen principal",
+        "required": true,
+        "passed": true,
+        "score": 20
+      }
+    ],
+    "errors": 0,
+    "warnings": 0
+  },
+  "items": [
+    {
+      "id": "zDqp5h8Za",
+      "title": "Set 3 cajas Trupan (25x18x10 / 23x16x9 / 20x14x8)",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 120,
+      "price": 9
+    },
+    {
+      "id": "ACETATOG001",
+      "title": "Caja acetato tapa pequeña (23x15x15)",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 60,
+      "priority": 120,
+      "price": 7.2
+    },
+    {
+      "id": "4BefejQv6",
+      "title": "Ramo de rosas premium x 9 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 200,
+      "priority": 100,
+      "price": 25.2
+    },
+    {
+      "id": "AKT-RS209",
+      "title": "Ramo de peonías pequeñas x 5 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 40,
+      "priority": 100,
+      "price": 4.5
+    },
+    {
+      "id": "861354962789",
+      "title": "Ramo de lirios x 7 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 18
+    },
+    {
+      "id": "QFwsyCBdk",
+      "title": "Ramo de crisantemos con gerberas x 5 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 5.4
+    },
+    {
+      "id": "RRGMN01",
+      "title": "Ramo de rosas grandes con margaritas nieve",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 18
+    },
+    {
+      "id": "RRA11T01",
+      "title": "Ramo de rosas abiertas x 11 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 18
+    },
+    {
+      "id": "RPMP01",
+      "title": "Ramo de peonías con margaritas primaverales",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 5.4
+    },
+    {
+      "id": "CT-554",
+      "title": "Ramo Minirosas Premium Otoñal x 6 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 600,
+      "priority": 100,
+      "price": 4.95
+    },
+    {
+      "id": "CT-553",
+      "title": "Ramo Minirosas Premium follaje x 6 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 600,
+      "priority": 100,
+      "price": 4.95
+    },
+    {
+      "id": "CT-606",
+      "title": "Ramo pequeño de Eucalipto",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 400,
+      "priority": 100,
+      "price": 4.95
+    },
+    {
+      "id": "CT-193",
+      "title": "Ramo Margarita otoñal X  6 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 400,
+      "priority": 100,
+      "price": 4.95
+    },
+    {
+      "id": "naJnvl8r",
+      "title": "Peluche Hombre Araña 23cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 18
+    },
+    {
+      "id": "70PGV08",
+      "title": "Peluche Goku 23cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 18
+    },
+    {
+      "id": "TD001",
+      "title": "Peluche Teddy con corazón 25cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 21.6
+    },
+    {
+      "id": "MKL036D",
+      "title": "Peluche oso Teddy con chompa 24CM",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 100,
+      "price": 22.5
+    },
+    {
+      "id": "P07410",
+      "title": "Peluche oso corazón 18cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 180,
+      "priority": 100,
+      "price": 12.6
+    },
+    {
+      "id": "ppbfutb0l",
+      "title": "Peluche perro blanco futbolero 25cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 100,
+      "price": 22.5
+    },
+    {
+      "id": "PSNCHO",
+      "title": "Peluche Snoopy con chompa 25cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 100,
+      "price": 22.5
+    },
+    {
+      "id": "OSF001",
+      "title": "Peluche oso futbolero económico 20cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 150,
+      "priority": 100,
+      "price": 13.5
+    },
+    {
+      "id": "PEF002",
+      "title": "Peluche cerdo equipo de fútbol 24cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 212,
+      "priority": 100,
+      "price": 19.8
+    },
+    {
+      "id": "PCU003",
+      "title": "Peluche cerdo unicornio 24cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 19.8
+    },
+    {
+      "id": "PCSH006",
+      "title": "Peluche cerdo superhéroes 24cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 177,
+      "priority": 100,
+      "price": 19.8
+    },
+    {
+      "id": "6925100606157",
+      "title": "Papel coreano con bordes dorados x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 8.1
+    },
+    {
+      "id": "6925300515013",
+      "title": "Papel coreano Stitch y Ángel x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 200,
+      "priority": 100,
+      "price": 9
+    },
+    {
+      "id": "CA5205ENV",
+      "title": "Papel coreano con rosas x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 9
+    },
+    {
+      "id": "6925300515020",
+      "title": "Papel coreano Stitch hawaiano x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 10.8
+    },
+    {
+      "id": "CA5118ENV",
+      "title": "Papel coreano transparente con bordes de color x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 200,
+      "priority": 100,
+      "price": 7.2
+    },
+    {
+      "id": "6925100606270",
+      "title": "Papel coreano degradado x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 8.1
+    },
+    {
+      "id": "6925700515026",
+      "title": "Papel coreano con bordes blancos x 20 unidades",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 9
+    },
+    {
+      "id": "6925100606158",
+      "title": "Papel coreano con bordes dorados papá",
+      "category": "papeles",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 8.1
+    },
+    {
+      "id": "jQV5XClJE2",
+      "title": "Caja envío Foldcote fútbol (30x25x10)",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 9
+    },
+    {
+      "id": "qzvUMEE4r",
+      "title": "Caja transparente borde negro/blanco (13x16)",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 3.6
+    },
+    {
+      "id": "CAJABANDE3494",
+      "title": "Set 2 cajas pino formas",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 12,
+      "priority": 100,
+      "price": 27
+    },
+    {
+      "id": "DESATRUPA23",
+      "title": "Bandeja desayunera tablero redondo",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 12,
+      "priority": 100,
+      "price": 16.2
+    },
+    {
+      "id": "CCHD2",
+      "title": "Caja corazón hueca desarmable",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 600,
+      "priority": 100,
+      "price": 4.5
+    },
+    {
+      "id": "CJFO",
+      "title": "Caja Just For You ovalada",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 600,
+      "priority": 100,
+      "price": 19.8
+    },
+    {
+      "id": "S2CM",
+      "title": "Set 2 cajas maleta básica (20x11x25)",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 80,
+      "priority": 100,
+      "price": 27
+    },
+    {
+      "id": "FVPAPA",
+      "title": "Frasco vidrio Papá",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 10.8
+    },
+    {
+      "id": "TCPAPA",
+      "title": "Tacho Papá",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 3.6
+    },
+    {
+      "id": "PBPAPA",
+      "title": "Portabotella Papá",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 2.7
+    },
+    {
+      "id": "CPAPA01",
+      "title": "Caja portalatas tapa",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 4.5
+    },
+    {
+      "id": "CJAMAl011",
+      "title": "Caja Trupan tipo cañón",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 10.8
+    },
+    {
+      "id": "CJAMAl012",
+      "title": "Caja \"Especialmente Para Ti\"",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 4.5
+    },
+    {
+      "id": "CEFD01",
+      "title": "caja camiseta hincha feliz 26cm",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 100,
+      "price": 4
+    },
+    {
+      "id": "CSRG01",
+      "title": "Caja Sobre Regalo 25cm",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 100,
+      "price": 3.5
+    },
+    {
+      "id": "CPTZ01",
+      "title": "Caja Porta Tazas 25cm",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 798,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "CCEP15",
+      "title": "Caja Circular Especial Papá 15x15",
+      "category": "cajas",
+      "status": "Publicado",
+      "stock": 100,
+      "priority": 100,
+      "price": 10
+    },
+    {
+      "id": "bnbideTkk",
+      "title": "Cinta Estilo Dior Premium",
+      "category": "cintas",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 13.5
+    },
+    {
+      "id": "Db-Q6xZlh",
+      "title": "Cinta Importada 92m",
+      "category": "cintas",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 27
+    },
+    {
+      "id": "NACI100MTRS",
+      "title": "Cinta Satinada Nacional 4cm x 100m",
+      "category": "cintas",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 40.5
+    },
+    {
+      "id": "GB-001N18",
+      "title": "Globo Metálico Color Entero N°18",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 5
+    },
+    {
+      "id": "GB-002N10",
+      "title": "Globo Metálico Color Entero N°10",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "GLOMAN12",
+      "title": "Globo Metálico Papá N°10",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 2500,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "GLOMAN13",
+      "title": "Globo Metálico Papá N°5",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 2000,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "GMFP01",
+      "title": "Globo Metálico Futbolero Pelotas N° 10",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 1000,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "GMFC01",
+      "title": "Globo Metálico Futbolero Camisetas N° 10",
+      "category": "globos",
+      "status": "Publicado",
+      "stock": 1000,
+      "priority": 100,
+      "price": 3
+    },
+    {
+      "id": "eGWrnlXU6",
+      "title": "Tul Perlado Decorativo",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 12,
+      "priority": 100,
+      "price": 8.1
+    },
+    {
+      "id": "mJIcucnk2",
+      "title": "Moño Fácil Pequeño x10",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 45,
+      "priority": 100,
+      "price": 3.6
+    },
+    {
+      "id": "LUC1M8650",
+      "title": "luces hada dorada 1m pila reloj",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 500,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "5WurWASps",
+      "title": "Toper brillante papa",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 0.9
+    },
+    {
+      "id": "DPSTK01",
+      "title": "sticker dìa del padre",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "DPTAR01",
+      "title": "tarjeta dìa del  padre",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 0.9
+    },
+    {
+      "id": "DPCER01",
+      "title": "sticker para lata o botella de cerveza",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "DPTOP01",
+      "title": "topper  de papa e hijo pan oro",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "DPTOP02",
+      "title": "Pelota decorativa",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 2.7
+    },
+    {
+      "id": "WOOLY-8",
+      "title": "topper scaft economic",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "WOOLY-1",
+      "title": "topper scaft camiseta",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 300,
+      "priority": 100,
+      "price": 1.8
+    },
+    {
+      "id": "LUC1M8655",
+      "title": "luces hada dorada 3m pila reloj",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 500,
+      "priority": 100,
+      "price": 3.6
+    },
+    {
+      "id": "TPVEP01",
+      "title": "Toppers Variados Especial Papá",
+      "category": "accesorios",
+      "status": "Publicado",
+      "stock": 2198,
+      "priority": 100,
+      "price": 2
+    },
+    {
+      "id": "A-41X",
+      "title": "Llavero Stitch Sentado",
+      "category": "llaveros",
+      "status": "Publicado",
+      "stock": 36,
+      "priority": 100,
+      "price": 13.5
+    },
+    {
+      "id": "A-CONEJAX",
+      "title": "Llavero Stitch Coneja",
+      "category": "llaveros",
+      "status": "Publicado",
+      "stock": 120,
+      "priority": 100,
+      "price": 13.5
+    },
+    {
+      "id": "LS67",
+      "title": "Llavero superheroe",
+      "category": "llaveros",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 100,
+      "price": 10.8
+    },
+    {
+      "id": "HWC001",
+      "title": "Caja Hot Wheels Classic 72U Modelos 2025",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 100,
+      "price": 520
+    },
+    {
+      "id": "HWC002",
+      "title": "Caja Hot Wheels Classic 72U Modelos 2026",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 540
+    },
+    {
+      "id": "HWC0022",
+      "title": "Pack 2 Cajas Hot wheels Classic 72u  Modelos 2026",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 1040
+    },
+    {
+      "id": "HWC0026",
+      "title": "Pack 6 Cajas Hot wheels Classic 72u  Modelos 2026",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 10,
+      "priority": 100,
+      "price": 2999
+    },
+    {
+      "id": "70FF25",
+      "title": "Flores de foamy x 25 unidades",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 45,
+      "priority": 90,
+      "price": 18
+    },
+    {
+      "id": "FP9010OTR",
+      "title": "Flores de foamy x 50 unidades",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 60,
+      "priority": 90,
+      "price": 31.5
+    },
+    {
+      "id": "FNT002",
+      "title": "La Liebre (Legends Tour)",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 2,
+      "priority": 90,
+      "price": 20
+    },
+    {
+      "id": "SPT002",
+      "title": "Ferrari SF90 Stradale",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 2,
+      "priority": 90,
+      "price": 20
+    },
+    {
+      "id": "CLS001",
+      "title": "Ferrari F40 Competizione",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 2,
+      "priority": 90,
+      "price": 20
+    },
+    {
+      "id": "SPT004",
+      "title": "McLaren W1",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 2,
+      "priority": 90,
+      "price": 16
+    },
+    {
+      "id": "CLS002",
+      "title": "Ferrari 365 GTB4 Competizione",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 2,
+      "priority": 90,
+      "price": 16
+    },
+    {
+      "id": "RCE003",
+      "title": "HW450F Extreme Sports",
+      "category": "hotwheels",
+      "status": "Publicado",
+      "stock": 1,
+      "priority": 90,
+      "price": 20
+    },
+    {
+      "id": "AKT-RS007",
+      "title": "Ramo de eucalipto x 16 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 10.8
+    },
+    {
+      "id": "AKT-RS901",
+      "title": "Ramo de gipsófila x 5 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 4.5
+    },
+    {
+      "id": "465321862525",
+      "title": "Ramo de helecho x 5 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 4.5
+    },
+    {
+      "id": "Vhq1CvnmS",
+      "title": "Ramo de llamaplata x 5 tallos",
+      "category": "flores",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 4.5
+    },
+    {
+      "id": "PSCOP",
+      "title": "Peluche Snoopy con overol y polo 25cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 22.5
+    },
+    {
+      "id": "7017G09",
+      "title": "Peluche Teddy con capucha y logo verde/amarillo 26cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 22.5
+    },
+    {
+      "id": "7017G708",
+      "title": "Peluche pingüino (pintor, pescador y cocinero) 22cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 22.5
+    },
+    {
+      "id": "7017GL667",
+      "title": "Peluche pingüino Luck 19cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 18
+    },
+    {
+      "id": "PAR18CM",
+      "title": "Peluche oso con parche y chaleco 17cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 32.4
+    },
+    {
+      "id": "OmspEvkTI",
+      "title": "Peluche oso con parche y chompa 18cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 20,
+      "priority": 80,
+      "price": 13.5
+    },
+    {
+      "id": "OS002",
+      "title": "Peluche oso con corazón y letra nacional 15cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 30,
+      "priority": 80,
+      "price": 11.7
+    },
+    {
+      "id": "NQKZxcxNh",
+      "title": "Peluche monito con manito 25cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 80,
+      "price": 19.8
+    },
+    {
+      "id": "GpxGCJSkf",
+      "title": "Peluche vaca de patas largas 20cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 60,
+      "priority": 80,
+      "price": 22.5
+    },
+    {
+      "id": "14654645",
+      "title": "Peluche oso con overol a rayas 18cm",
+      "category": "peluches",
+      "status": "Publicado",
+      "stock": 50,
+      "priority": 80,
+      "price": 10.8
+    }
+  ],
+  "issues": []
+}

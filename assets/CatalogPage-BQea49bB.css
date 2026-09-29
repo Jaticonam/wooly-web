@@ -1,0 +1,909 @@
+/* =========================================================
+   HEADER CAMPAIGN FILTER
+   Campañas temporales del catálogo Wooly.
+   Regla de negocio:
+   - Categorías mandan.
+   - Campañas son efímeras.
+   - Máximo 3 o 4 campañas visibles.
+   - El conteo se comunica como valor comercial.
+   ========================================================= */
+
+/* ===== CONTENEDOR DE CAMPAÑAS ===== */
+
+.catalogTopNav .header-campaign-filter {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  padding: 0 4px 2px;
+}
+
+.catalogTopNav .header-campaign-filter::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== CHIP / MINI CARD DE CAMPAÑA ===== */
+
+.catalogTopNav .header-campaign-chip {
+  position: relative;
+
+  width: clamp(190px, 17vw, 230px);
+  height: 58px;
+  padding: 0 46px 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 0;
+  border-radius: 18px;
+
+  color: #ffffff;
+  cursor: pointer;
+
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+
+  opacity: 0.97;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease,
+    filter 0.18s ease;
+}
+
+.catalogTopNav .header-campaign-chip:hover {
+  transform: translateY(-1px);
+
+  opacity: 1;
+
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+
+  filter: saturate(1.03);
+}
+
+.catalogTopNav .header-campaign-chip.active {
+  background: linear-gradient(
+    135deg,
+    var(--w-primary),
+    var(--w-primary-dark)
+  ) !important;
+
+  color: #ffffff;
+
+  box-shadow: 0 12px 28px rgba(29, 130, 153, 0.24);
+
+  opacity: 1;
+}
+
+/* ===== CONTENIDO CENTRAL ===== */
+
+.catalogTopNav .header-campaign-content {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.catalogTopNav .header-campaign-name {
+  max-width: 100%;
+
+  font-size: 14px;
+  font-weight: 950;
+  line-height: 1.05;
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.catalogTopNav .header-campaign-count {
+  max-width: 100%;
+
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1;
+  opacity: 0.93;
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== ÍCONO A LA DERECHA ===== */
+
+.catalogTopNav .header-campaign-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 25px;
+  line-height: 1;
+  opacity: 0.92;
+
+  pointer-events: none;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .catalogTopNav .header-campaign-filter {
+    justify-content: flex-start;
+    gap: 8px;
+
+    padding-bottom: 1px;
+
+    animation: catalogTopNavFadeSlide 0.28s ease both;
+  }
+
+  .catalogTopNav .header-campaign-chip {
+    width: auto;
+    min-width: 176px;
+    max-width: 215px;
+    height: 52px;
+    padding: 0 40px 0 14px;
+
+    border-radius: 16px;
+
+    animation: catalogTopNavChipIn 0.24s ease both;
+  }
+
+  .catalogTopNav .header-campaign-name {
+    font-size: 12px;
+  }
+
+  .catalogTopNav .header-campaign-count {
+    font-size: 9px;
+  }
+
+  .catalogTopNav .header-campaign-icon {
+    right: 12px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 420px) {
+  .catalogTopNav .header-campaign-chip {
+    min-width: 162px;
+    max-width: 190px;
+    height: 50px;
+    padding: 0 36px 0 12px;
+  }
+
+  .catalogTopNav .header-campaign-name {
+    font-size: 11px;
+  }
+
+  .catalogTopNav .header-campaign-count {
+    font-size: 8.5px;
+  }
+
+  .catalogTopNav .header-campaign-icon {
+    right: 10px;
+    font-size: 20px;
+  }
+}
+/* =========================================================
+   HEADER CATEGORY FILTER
+   Categorías permanentes del catálogo.
+   Regla de negocio: las categorías mandan.
+   ========================================================= */
+
+.catalogTopNav .header-category-filter {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  padding: 1px 0 2px;
+}
+
+.catalogTopNav .header-category-filter::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== CHIP DE CATEGORÍA ===== */
+
+.catalogTopNav .header-category-chip {
+  height: 38px;
+  min-width: 118px;
+  padding: 0 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+
+  background: #ffffff;
+  color: #334155;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.035);
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
+}
+
+.catalogTopNav .header-category-chip:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(29, 130, 153, 0.28);
+
+  box-shadow:
+    0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.catalogTopNav .header-category-chip.active {
+  border-color: transparent;
+
+  background: linear-gradient(
+    135deg,
+    var(--w-primary),
+    var(--w-primary-dark)
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 18px rgba(29, 130, 153, 0.2);
+}
+
+/* ===== TEXTO ===== */
+
+.catalogTopNav .header-category-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.catalogTopNav .header-category-name {
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.catalogTopNav .header-category-count {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.74;
+  line-height: 1;
+}
+
+.catalogTopNav .header-category-chip.active .header-category-count {
+  opacity: 0.95;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .catalogTopNav .header-category-filter {
+    justify-content: flex-start;
+    gap: 6px;
+
+    padding-bottom: 1px;
+
+    animation: catalogTopNavFadeSlide 0.28s ease both;
+  }
+
+  .catalogTopNav .header-category-chip {
+    min-width: auto;
+    height: 34px;
+    padding: 0 10px;
+
+    border-radius: 999px;
+
+    animation: catalogTopNavChipIn 0.24s ease both;
+  }
+
+  .catalogTopNav .header-category-icon {
+    font-size: 12px;
+  }
+
+  .catalogTopNav .header-category-name,
+  .catalogTopNav .header-category-count {
+    font-size: 10px;
+  }
+}/* =========================================================
+   CATALOG TOP NAV
+   Navegación superior del catálogo Wooly.
+   Jerarquía visual:
+   Logo → Categorías → Campañas activas → Buscador
+   ========================================================= */
+
+.catalogTopNav {
+  width: 100%;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
+
+  backdrop-filter: blur(18px);
+}
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.catalogTopNavInner {
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+  padding: 8px 16px 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+}
+
+/* =========================================================
+   ZONA DE LOGO
+   El logo tiene su propio espacio visual para que no parezca sticker.
+   ========================================================= */
+
+.catalogTopNavLogo {
+  width: 100%;
+  max-width: 1320px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 0 8px;
+  margin: 0;
+
+  border: 0;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.catalogTopNavLogo img {
+  width: 142px;
+  height: auto;
+  display: block;
+}
+
+/* =========================================================
+   SECCIONES DEL TOP NAV
+   ========================================================= */
+
+.catalogTopNavSection {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ===== CATEGORÍAS PRINCIPALES ===== */
+
+.catalogTopNavCategories {
+  width: 100%;
+  max-width: 1320px;
+
+  padding-top: 1px;
+}
+
+/* ===== CAMPAÑAS ACTIVAS ===== */
+
+.catalogTopNavCampaigns {
+  width: 100%;
+  max-width: 1200px;
+
+  padding-top: 2px;
+}
+
+/* ===== BUSCADOR ===== */
+
+.catalogTopNavSearch {
+  width: 100%;
+  max-width: 1280px;
+
+  margin-top: 3px;
+  padding-top: 10px;
+
+  border-top: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+/* =========================================================
+   BUSCADOR DENTRO DEL TOP NAV
+   ========================================================= */
+
+.catalogTopNav .search-wrapper {
+  width: 100%;
+}
+
+.catalogTopNav .search-input {
+  width: 100%;
+  height: 48px;
+
+  border-radius: 18px;
+  border-color: #dbe5ee;
+
+  color: #0f172a;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.035);
+
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.catalogTopNav .search-input:focus {
+  border-color: rgba(29, 130, 153, 0.38);
+
+  box-shadow: 0 12px 28px rgba(29, 130, 153, 0.12);
+}
+
+.catalogTopNav .search-icon {
+  color: #8ca0b8;
+}
+
+/* =========================================================
+   CAMPAIGN COLOR VARIANTS
+   Clases visuales generadas desde Campaigns Sheet.
+   ========================================================= */
+
+.catalog-campaign-purple {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  color: #ffffff;
+}
+
+.catalog-campaign-pink {
+  background: linear-gradient(135deg, #d946ef, #f58ac8);
+  color: #ffffff;
+}
+
+.catalog-campaign-blue {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: #ffffff;
+}
+
+.catalog-campaign-green {
+  background: linear-gradient(135deg, #38b56a, #68d391);
+  color: #ffffff;
+}
+
+.catalog-campaign-red {
+  background: linear-gradient(135deg, #e5484d, #ff7a7f);
+  color: #ffffff;
+}
+
+.catalog-campaign-gold {
+  background: linear-gradient(135deg, #b7791f, #f6c453);
+  color: #3f2d0b;
+}
+
+.catalog-campaign-teal {
+  background: linear-gradient(135deg, #44ada0, #2f8f84);
+  color: #ffffff;
+}
+
+.catalog-campaign-dark {
+  background: linear-gradient(135deg, #2c2c2c, #555555);
+  color: #ffffff;
+}
+
+.catalog-campaign-yellow {
+  background: linear-gradient(135deg, #ffd84d, #f9c95b);
+  color: #4b3510;
+}
+
+.catalog-campaign-sky {
+  background: linear-gradient(135deg, #7cc8f8, #a8ddff);
+  color: #17415f;
+}
+
+.catalog-campaign-copper {
+  background: linear-gradient(135deg, #c97a56, #e9a47f);
+  color: #ffffff;
+}
+
+.catalog-campaign-emerald {
+  background: linear-gradient(135deg, #0f9d7a, #34c9a6);
+  color: #ffffff;
+}
+
+.catalog-campaign-fuchsia {
+  background: linear-gradient(135deg, #e94fb5, #ff8bd4);
+  color: #ffffff;
+}
+
+.catalog-campaign-lavender {
+  background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+  color: #ffffff;
+}
+
+.catalog-campaign-orange {
+  background: linear-gradient(135deg, #f28c28, #ffb347);
+  color: #ffffff;
+}
+
+.catalog-campaign-silver {
+  background: linear-gradient(135deg, #bfc5d2, #e5e7eb);
+  color: #2c2c2c;
+}
+
+.catalog-campaign-wine {
+  background: linear-gradient(135deg, #8b1e3f, #b8325f);
+  color: #ffffff;
+}
+
+.catalog-campaign-coral {
+  background: linear-gradient(135deg, #fb7185, #fda4af);
+  color: #ffffff;
+}
+
+/* =========================================================
+   ANIMACIONES LOCALES
+   Usadas por categorías y campañas.
+   ========================================================= */
+
+@keyframes catalogTopNavFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes catalogTopNavChipIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .catalogTopNavInner {
+    padding: 8px 10px 10px;
+    gap: 7px;
+  }
+
+  .catalogTopNavLogo {
+    display: none;
+  }
+
+  .catalogTopNavCategories,
+  .catalogTopNavCampaigns,
+  .catalogTopNavSearch {
+    max-width: 100%;
+  }
+
+  .catalogTopNavCampaigns {
+    padding-top: 0;
+  }
+
+  .catalogTopNavSearch {
+    margin-top: 2px;
+    padding-top: 8px;
+  }
+
+  .catalogTopNav .search-input {
+    height: 44px;
+    border-radius: 16px;
+
+    font-size: 13px;
+  }
+}
+.catalog-explore-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(15, 23, 42, 0.48);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+}
+.catalog-explore-panel {
+  width: min(940px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 28px;
+  background: #fff;
+  padding: 16px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.3);
+}
+.catalog-explore-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  margin: 0 auto 14px;
+}
+.catalog-explore-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.catalog-explore-title {
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+}
+.catalog-explore-subtitle {
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748b;
+}
+.catalog-explore-close {
+  border: none;
+  border-radius: 16px;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 10px 13px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.catalog-explore-active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.catalog-explore-active button {
+  border: none;
+  border-radius: 999px;
+  background: #e6f6f8;
+  color: var(--w-primary);
+  padding: 8px 11px;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.catalog-explore-section {
+  margin-top: 16px;
+}
+.catalog-explore-section h4 {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.catalog-explore-campaign-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.catalog-explore-campaign {
+  height: 72px;
+  padding: 0 13px;
+  border: none;
+  border-radius: 18px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  transition: 0.2s;
+}
+.catalog-explore-campaign.active {
+  background: linear-gradient(
+    135deg,
+    var(--w-primary),
+    var(--w-primary-dark)
+  ) !important;
+  box-shadow: 0 12px 28px rgba(29, 130, 153, 0.25);
+}
+.catalog-explore-campaign strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 950;
+  line-height: 1.05;
+}
+.catalog-explore-campaign small {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 850;
+  opacity: 0.95;
+}
+.catalog-explore-campaign b {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 5px 10px rgba(15, 23, 42, 0.18));
+}
+
+.catalog-explore-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+.catalog-explore-category {
+  min-height: 86px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 18px;
+  background: #fff;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+  transition: 0.18s;
+}
+.catalog-explore-category.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--w-primary), var(--w-primary-dark));
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(29, 130, 153, 0.22);
+}
+.catalog-explore-category-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.catalog-explore-category strong {
+  font-size: 11px;
+  font-weight: 950;
+  line-height: 1;
+  text-align: center;
+}
+.catalog-explore-category small {
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.8;
+}
+.catalog-explore-category.active small {
+  opacity: 0.95;
+}
+
+.catalog-explore-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.catalog-explore-quick-grid button {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  padding: 11px;
+  font-size: 12px;
+  font-weight: 950;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+}
+
+.catalog-explore-footer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 18px;
+}
+.catalog-explore-footer-actions button,
+.catalog-explore-footer-actions a {
+  border: none;
+  border-radius: 18px;
+  padding: 14px 12px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 950;
+  color: #0f172a;
+  background: #eef9fb;
+}
+.catalog-explore-footer-actions a {
+  background: #edfdf5;
+  color: #047857;
+}
+
+.explore-campaign-teal {
+  background: linear-gradient(135deg, #44ada0, #2f8f84);
+}
+.explore-campaign-pink {
+  background: linear-gradient(135deg, #f286be, #ffb7d5);
+}
+.explore-campaign-blue {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+.explore-campaign-purple {
+  background: linear-gradient(135deg, #d946ef, #f9a8d4);
+}
+.explore-campaign-rose {
+  background: linear-gradient(135deg, #be185d, #fb7185);
+}
+.explore-campaign-green {
+  background: linear-gradient(135deg, #0f766e, #22c55e);
+}
+.explore-campaign-violet {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+}
+.explore-campaign-yellow {
+  background: linear-gradient(135deg, #f5b025, #facc15);
+}
+.explore-campaign-red {
+  background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+@media (max-width: 420px) {
+  .catalog-explore-panel {
+    padding: 14px;
+    border-radius: 26px;
+  }
+  .catalog-explore-category-grid {
+    gap: 7px;
+  }
+  .catalog-explore-category {
+    min-height: 78px;
+    border-radius: 16px;
+  }
+  .catalog-explore-category-icon {
+    font-size: 19px;
+  }
+  .catalog-explore-category strong,
+  .catalog-explore-category small {
+    font-size: 10px;
+  }
+  .catalog-explore-campaign {
+    height: 66px;
+    border-radius: 16px;
+  }
+  .catalog-explore-campaign strong {
+    font-size: 13px;
+  }
+}

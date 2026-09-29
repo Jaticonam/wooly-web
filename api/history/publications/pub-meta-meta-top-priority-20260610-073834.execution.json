@@ -1,0 +1,15 @@
+{
+  "id": "pub-meta-meta-top-priority-20260610-073834",
+  "connector": "meta",
+  "planId": "meta-top-priority",
+  "planName": "Meta - Top prioridad",
+  "executedAt": "2026-06-10T07:38:34.234Z",
+  "totalItems": 310,
+  "selectedItems": 100,
+  "exportedItems": 100,
+  "omittedItems": 210,
+  "status": "success",
+  "outputFile": "/api/exports/meta.csv",
+  "statusFile": "/api/exports/meta-status.json",
+  "notes": "Publicación generada desde el plan Meta - Top prioridad."
+}

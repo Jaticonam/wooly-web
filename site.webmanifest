@@ -1,0 +1,15 @@
+{
+  "name": "Wooly Import Perú",
+  "short_name": "Wooly",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d8299",
+  "icons": [
+    {
+      "src": "/favicon-wooly.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -218,7 +218,7 @@ describe(
     );
 
     it(
-      "oculta escalas mayoristas y mantiene la oferta para la cantidad proyectada",
+      "oculta precios por escala y mantiene la oferta para la cantidad proyectada",
       () => {
         renderModal({
           product:
@@ -234,14 +234,34 @@ describe(
         ).toBeInTheDocument();
 
         expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 3 unidades",
+            },
+          ),
+        ).not.toHaveClass("tier");
+
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 12 unidades",
+            },
+          ),
+        ).not.toHaveClass("tier");
+
+        expect(
           screen.queryByText(
-            "3u",
+            "S/ 9.00",
           ),
         ).not.toBeInTheDocument();
 
         expect(
           screen.queryByText(
-            "12u",
+            "S/ 7.00",
           ),
         ).not.toBeInTheDocument();
 

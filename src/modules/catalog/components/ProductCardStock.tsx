@@ -30,6 +30,7 @@ export function ProductCardStock({
 
   let stockText = "";
   let stockColorClass = "";
+  let stockStateClass = "";
   let StockIcon:
     typeof CheckCircle =
       CheckCircle;
@@ -45,6 +46,7 @@ export function ProductCardStock({
     stockText = "Preventa";
     stockColorClass =
       "bg-green-100 text-green-700";
+    stockStateClass = "is-preorder";
     StockIcon = Clock;
   } else if (
     normalizedStatus ===
@@ -53,6 +55,7 @@ export function ProductCardStock({
     stockText = "Agotado";
     stockColorClass =
       "bg-destructive/10 text-destructive";
+    stockStateClass = "is-soldout";
     StockIcon = XCircle;
   } else if (
     !price ||
@@ -63,6 +66,7 @@ export function ProductCardStock({
     stockText = "No disponible";
     stockColorClass =
       "bg-muted text-muted-foreground";
+    stockStateClass = "is-unavailable";
     StockIcon = XCircle;
   } else if (
     stock <= 12
@@ -72,6 +76,7 @@ export function ProductCardStock({
 
     stockColorClass =
       "bg-red-100 text-red-600";
+    stockStateClass = "is-critical";
 
     StockIcon =
       AlertTriangle;
@@ -83,6 +88,7 @@ export function ProductCardStock({
 
     stockColorClass =
       "bg-orange-100 text-orange-600";
+    stockStateClass = "is-limited";
 
     StockIcon =
       AlertTriangle;
@@ -94,6 +100,7 @@ export function ProductCardStock({
 
     stockColorClass =
       "bg-green-100 text-green-700";
+    stockStateClass = "is-available";
 
     StockIcon =
       CheckCircle;
@@ -103,6 +110,7 @@ export function ProductCardStock({
 
     stockColorClass =
       "bg-emerald-100 text-emerald-700";
+    stockStateClass = "is-high";
 
     StockIcon =
       CheckCircle;
@@ -113,6 +121,7 @@ export function ProductCardStock({
       className={[
         "card-product-stock mx-auto mt-2 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black md:text-[11px]",
         stockColorClass,
+        stockStateClass,
       ].join(" ")}
     >
       <StockIcon

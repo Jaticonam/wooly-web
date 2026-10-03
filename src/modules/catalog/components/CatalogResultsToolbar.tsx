@@ -5,8 +5,9 @@ import type { CatalogSortMode } from "@/modules/catalog/domain/CatalogResultsSor
 import "./CatalogResultsToolbar.css";
 
 interface CatalogResultsToolbarProps {
-  title: string;
+  title?: string;
   count: number;
+  compact?: boolean;
   filterCount?: number;
   sortMode: CatalogSortMode;
   onSortChange: (mode: CatalogSortMode) => void;
@@ -14,8 +15,9 @@ interface CatalogResultsToolbarProps {
 }
 
 export function CatalogResultsToolbar({
-  title,
+  title = "",
   count,
+  compact = false,
   filterCount = 0,
   sortMode,
   onSortChange,
@@ -23,11 +25,17 @@ export function CatalogResultsToolbar({
 }: CatalogResultsToolbarProps) {
   return (
     <section
-      className="catalogResultsToolbar"
+      className={[
+        "catalogResultsToolbar",
+        compact ? "catalogResultsToolbarCompact" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       aria-label="Controles de resultados del catálogo"
     >
       <div className="catalogResultsToolbarCopy">
-        <h1>{title}</h1>
+        {title && <h1>{title}</h1>}
+
         <span>
           {count} {count === 1 ? "producto" : "productos"}
         </span>

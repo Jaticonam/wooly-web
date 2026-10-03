@@ -103,6 +103,11 @@ const CatalogPage = () => {
     ? CATALOG_CAMPAIGNS.find((c) => c.id === activeCampaign)
     : null;
 
+  const isDefaultCatalogContext =
+    activeCategory === "todas" &&
+    !activeCampaign &&
+    !searchQuery.trim();
+
   const resultsTitle = useMemo(() => {
     const term = searchQuery.trim();
 
@@ -122,7 +127,7 @@ const CatalogPage = () => {
       return activeCat.name;
     }
 
-    return "Todos los productos";
+    return "";
   }, [searchQuery, activeCat, activeCampaignData]);
 
   const activeFilterCount =
@@ -241,7 +246,7 @@ const CatalogPage = () => {
         />
       </header>
 
-      <main className="mx-auto mt-5 w-full max-w-[1680px] px-2 sm:px-3 md:mt-7 md:px-4 xl:px-5">
+      <main className="mx-auto mt-3 w-full max-w-[1680px] px-2 sm:px-3 md:mt-4 md:px-4 xl:px-5">
         {loading ? (
           <CatalogSkeleton />
         ) : isCategoryLoading && filteredProducts.length === 0 ? (
@@ -269,10 +274,11 @@ const CatalogPage = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-5">
             <CatalogResultsToolbar
               title={resultsTitle}
               count={filteredProducts.length}
+              compact={isDefaultCatalogContext}
               filterCount={activeFilterCount}
               sortMode={sortMode}
               onSortChange={setSortMode}
@@ -280,14 +286,11 @@ const CatalogPage = () => {
             />
 
             {displayPriorityBlocks && topProducts.length > 0 && (
-              <section className="space-y-3">
-                <div className="px-2 md:px-0">
-                  <h2 className="text-lg font-black text-foreground md:text-xl">
-                    🔥 Lo más vendido hoy
+              <section className="space-y-2">
+                <div className="px-1 md:px-0">
+                  <h2 className="text-[15px] font-black text-foreground md:text-base">
+                    🔥 Más vendidos
                   </h2>
-                  <p className="text-[12px] font-medium text-muted-foreground">
-                    Productos con mayor rotación ahora mismo.
-                  </p>
                 </div>
 
                 {renderGrid(topProducts)}
@@ -295,14 +298,11 @@ const CatalogPage = () => {
             )}
 
             {displayPriorityBlocks && strongProducts.length > 0 && (
-              <section className="space-y-3">
-                <div className="px-2 md:px-0">
-                  <h2 className="text-lg font-black text-foreground md:text-xl">
-                    ⭐ Recomendados para vender rápido
+              <section className="space-y-2">
+                <div className="px-1 md:px-0">
+                  <h2 className="text-[15px] font-black text-foreground md:text-base">
+                    ⭐ Recomendados
                   </h2>
-                  <p className="text-[12px] font-medium text-muted-foreground">
-                    Seleccionados para vender fácil y mover stock.
-                  </p>
                 </div>
 
                 {renderGrid(strongProducts)}
@@ -310,14 +310,11 @@ const CatalogPage = () => {
             )}
 
             {displayPriorityBlocks && highlightProducts.length > 0 && (
-              <section className="space-y-3">
-                <div className="px-2 md:px-0">
-                  <h2 className="text-lg font-black text-foreground md:text-xl">
-                    🟡 Oportunidades del catálogo
+              <section className="space-y-2">
+                <div className="px-1 md:px-0">
+                  <h2 className="text-[15px] font-black text-foreground md:text-base">
+                    🟡 Oportunidades
                   </h2>
-                  <p className="text-[12px] font-medium text-muted-foreground">
-                    Opciones para ampliar tu oferta y comprar con estrategia.
-                  </p>
                 </div>
 
                 {renderGrid(highlightProducts)}
@@ -325,16 +322,12 @@ const CatalogPage = () => {
             )}
 
             {displayRegularProducts.length > 0 && (
-              <section className="space-y-3">
+              <section className="space-y-2">
                 {displayPriorityBlocks && (
-                  <div className="px-2 md:px-0">
-                    <h2 className="text-lg font-black text-foreground md:text-xl">
-                      🛍️ Todo el catálogo
+                  <div className="px-1 md:px-0">
+                    <h2 className="text-[15px] font-black text-foreground md:text-base">
+                      🛍️ Catálogo
                     </h2>
-
-                    <p className="text-[12px] font-medium text-muted-foreground">
-                      Explora todos los productos disponibles para tu negocio.
-                    </p>
                   </div>
                 )}
 

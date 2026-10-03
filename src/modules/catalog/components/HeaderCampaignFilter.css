@@ -15,6 +15,8 @@
   gap: 7px;
 
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 0;
 }
@@ -83,20 +85,21 @@
 
 @media (max-width: 768px) {
   .catalogTopNav .header-campaign-filter {
-    gap: 6px;
+    gap: 5px;
   }
 
   .catalogTopNav .header-campaign-chip {
-    height: 30px;
-    padding: 0 10px;
+    height: 28px;
+    padding: 0 9px;
+    gap: 5px;
   }
 
   .catalogTopNav .header-campaign-name {
-    max-width: 145px;
-    font-size: 10px;
+    max-width: 132px;
+    font-size: 9.5px;
   }
 
   .catalogTopNav .header-campaign-icon {
-    font-size: 12px;
+    font-size: 11px;
   }
 }

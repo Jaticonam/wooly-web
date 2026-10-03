@@ -3,6 +3,7 @@
    Lote 1: shell principal.
    Lote 2: navegación estructural + campañas.
    Lote 2.1: refinamiento de densidad y alineación.
+   Lote 5A: shell móvil premium y compacto.
    ========================================================= */
 
 .catalogTopNav {
@@ -308,21 +309,21 @@
 
 @media (max-width: 640px) {
   .catalogTopNavInner {
-    padding: 7px 10px 0;
+    padding: 5px 8px 0;
   }
 
   .catalogTopNavMain {
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 7px 9px;
-    padding-bottom: 7px;
+    gap: 5px 8px;
+    padding-bottom: 5px;
   }
 
   .catalogTopNavBrand {
-    min-height: 36px;
+    min-height: 32px;
   }
 
   .catalogTopNavBrand img {
-    width: 98px;
+    width: 92px;
   }
 
   .catalogTopNavSearch {
@@ -332,34 +333,38 @@
   }
 
   .catalogTopNav .search-box-shell {
-    min-height: 42px;
-    border-radius: 14px;
-    padding-inline: 12px;
+    min-height: 40px;
+    border-radius: 13px;
+    padding-inline: 11px;
   }
 
   .catalogTopNav .search-box-input {
-    font-size: 12.5px;
+    font-size: 12px;
+  }
+
+  .catalogTopNav .search-box-shortcut {
+    display: none;
   }
 
   .catalogTopNavCart {
     width: auto;
-    min-width: 88px;
-    min-height: 39px;
-    grid-template-columns: 27px auto;
-    gap: 6px;
-    padding: 5px 7px;
-    border-radius: 14px;
+    min-width: 76px;
+    min-height: 36px;
+    grid-template-columns: 25px auto;
+    gap: 5px;
+    padding: 4px 6px;
+    border-radius: 13px;
   }
 
   .catalogTopNavCartIcon {
-    width: 27px;
-    height: 27px;
-    border-radius: 9px;
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
   }
 
   .catalogTopNavCartIcon svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
   }
 
   .catalogTopNavCartCopy {
@@ -367,33 +372,57 @@
   }
 
   .catalogTopNavCartCount {
-    min-width: 21px;
-    height: 21px;
+    min-width: 20px;
+    height: 20px;
     padding-inline: 5px;
+    font-size: 9px;
+  }
+
+  .catalogTopNavCategoryBar {
+    min-width: 0;
   }
 
   .catalogTopNavExplore {
-    min-width: 92px;
-    height: 36px;
-    padding: 0 11px;
-    gap: 6px;
-    font-size: 10.5px;
+    min-width: 84px;
+    height: 34px;
+    padding: 0 10px;
+    gap: 5px;
+    font-size: 10px;
   }
 
   .catalogTopNavExplore svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
   .catalogTopNavCampaignBar {
-    min-height: 37px;
+    min-height: 34px;
     grid-template-columns: auto minmax(0, 1fr);
-    gap: 4px;
-    padding: 4px 0;
+    gap: 3px;
+    padding: 3px 0;
   }
 
   .catalogTopNavCampaignLabel {
-    padding: 0 9px 0 4px;
-    font-size: 8.5px;
+    padding: 0 7px 0 3px;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .catalogTopNavInner {
+    padding-inline: 7px;
+  }
+
+  .catalogTopNavBrand img {
+    width: 88px;
+  }
+
+  .catalogTopNavCart {
+    min-width: 72px;
+  }
+
+  .catalogTopNavExplore {
+    min-width: 80px;
+    padding-inline: 8px;
   }
 }

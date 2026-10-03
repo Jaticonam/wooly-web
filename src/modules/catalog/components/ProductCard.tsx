@@ -82,7 +82,7 @@ export function ProductCard({
   return (
     <div
       onClick={handleCardClick}
-      className="card-product group flex h-full min-w-0 flex-col p-2 text-center md:p-2.5"
+      className="card-product group flex min-w-0 flex-col p-2 text-center md:p-2.5"
     >
       <div
         onClick={(e) => {

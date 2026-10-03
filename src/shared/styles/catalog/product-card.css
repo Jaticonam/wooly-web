@@ -1,6 +1,5 @@
 .card-product {
   min-width: 0;
-  height: 100%;
   border: 1px solid rgba(216, 226, 236, 0.92);
   border-radius: 24px;
   background: #ffffff;
@@ -138,8 +137,6 @@
 /* Pricing mayorista */
 .card-product-wholesale {
   margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(226, 232, 240, 0.72);
 }
 
 .wholesale-title {
@@ -297,7 +294,6 @@
 
   .card-product-wholesale {
     margin-top: 7px;
-    padding-top: 7px;
   }
 
   .wholesale-title {

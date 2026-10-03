@@ -13,8 +13,12 @@ export function CatalogSectionHeader({
     <div className="catalogSectionHeader">
       <h2>{title}</h2>
 
-      <span>
-        · {count} {count === 1 ? "producto" : "productos"}
+      <span className="catalogSectionHeaderCount">
+        <span aria-hidden="true">·</span>
+        <strong>{count}</strong>
+        <span className="catalogSectionHeaderCountLabel">
+          {count === 1 ? "producto" : "productos"}
+        </span>
       </span>
     </div>
   );

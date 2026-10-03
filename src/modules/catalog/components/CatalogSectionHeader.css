@@ -25,8 +25,12 @@
   letter-spacing: -0.015em;
 }
 
-.catalogSectionHeader span {
+.catalogSectionHeaderCount {
   flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
 
   color: #94a3b8;
 
@@ -34,6 +38,12 @@
   font-weight: 800;
   line-height: 1;
   white-space: nowrap;
+}
+
+.catalogSectionHeaderCount strong {
+  color: inherit;
+  font-size: inherit;
+  font-weight: 900;
 }
 
 @media (min-width: 768px) {
@@ -45,7 +55,27 @@
     font-size: 14px;
   }
 
-  .catalogSectionHeader span {
+  .catalogSectionHeaderCount {
     font-size: 9.5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogSectionHeader {
+    min-height: 21px;
+    gap: 4px;
+  }
+
+  .catalogSectionHeader h2 {
+    font-size: 12px;
+  }
+
+  .catalogSectionHeaderCount {
+    gap: 2px;
+    font-size: 8.5px;
+  }
+
+  .catalogSectionHeaderCountLabel {
+    display: none;
   }
 }

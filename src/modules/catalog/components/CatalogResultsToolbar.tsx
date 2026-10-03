@@ -30,7 +30,11 @@ export function CatalogResultsToolbar({
         <h1>{title}</h1>
 
         <span className="catalogResultsToolbarCount">
-          · {count} {count === 1 ? "producto" : "productos"}
+          <span aria-hidden="true">·</span>
+          <strong>{count}</strong>
+          <span className="catalogResultsToolbarCountLabel">
+            {count === 1 ? "producto" : "productos"}
+          </span>
         </span>
       </div>
 
@@ -39,6 +43,7 @@ export function CatalogResultsToolbar({
           type="button"
           className="catalogResultsFilterButton"
           onClick={onOpenFilters}
+          aria-label="Abrir filtros del catálogo"
         >
           <SlidersHorizontal aria-hidden="true" />
           <span>Filtros</span>

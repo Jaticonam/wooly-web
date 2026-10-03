@@ -79,10 +79,23 @@ export function ProductCard({
         ? `Sumar (${qtyInCart})`
         : "Agregar";
 
+  const cardStateClass = isAgotado
+    ? "is-soldout"
+    : isPreventa
+      ? "is-preorder"
+      : isInCart
+        ? "is-in-cart"
+        : "";
+
   return (
     <div
       onClick={handleCardClick}
-      className="card-product group flex min-w-0 flex-col p-2 text-center md:p-2.5"
+      className={[
+        "card-product group flex min-w-0 flex-col p-2 text-center md:p-2.5",
+        cardStateClass,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       <div
         onClick={(e) => {
@@ -94,14 +107,17 @@ export function ProductCard({
         <ProductCardBadges product={p} />
 
         {isInCart && (
-          <div className="absolute right-2 top-2 z-20 rounded-full bg-[#1d8299] px-2.5 py-1 text-[10px] font-black leading-none text-white shadow-[0_6px_16px_rgba(29,130,153,.25)]">
+          <div
+            className="card-product-cart-qty absolute right-2 top-2 z-20 rounded-full bg-[#1d8299] px-2.5 py-1 text-[10px] font-black leading-none text-white shadow-[0_6px_16px_rgba(29,130,153,.25)]"
+            aria-label={`${qtyInCart} unidades en Mi Caja`}
+          >
             +{qtyInCart}
           </div>
         )}
 
         {isAgotado && (
           <div className="absolute inset-0 z-10 flex items-center justify-center">
-            <span className="rounded-full border-2 border-white bg-orange-500 px-5 py-2 text-[12px] font-black uppercase tracking-wide text-white shadow-xl">
+            <span className="card-product-soldout-label rounded-full border-2 border-white bg-orange-500 px-5 py-2 text-[12px] font-black uppercase tracking-wide text-white shadow-xl">
               Agotado
             </span>
           </div>

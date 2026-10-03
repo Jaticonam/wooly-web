@@ -158,9 +158,9 @@ const CatalogPage = () => {
     : 0;
 
   const renderGrid = (items: Product[]) => (
-    <div className="grid grid-cols-2 gap-[3px] md:grid-cols-3 md:gap-2 xl:grid-cols-5 xl:gap-2">
+    <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 sm:gap-1.5 md:grid-cols-4 md:gap-2 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
       {items.map((p, index) => (
-        <div key={p.id} data-aos="fade-up" data-aos-delay={(index % 5) * 40}>
+        <div key={p.id} data-aos="fade-up" data-aos-delay={(index % 7) * 30}>
           <ProductCard
             product={p}
             cart={cart}
@@ -241,7 +241,7 @@ const CatalogPage = () => {
         />
       </header>
 
-      <main className="mx-auto mt-6 max-w-7xl px-2 md:mt-8 md:px-4">
+      <main className="mx-auto mt-5 w-full max-w-[1680px] px-2 sm:px-3 md:mt-7 md:px-4 xl:px-5">
         {loading ? (
           <CatalogSkeleton />
         ) : isCategoryLoading && filteredProducts.length === 0 ? (

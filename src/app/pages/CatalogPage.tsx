@@ -159,9 +159,9 @@ const CatalogPage = () => {
     : 0;
 
   const renderGrid = (items: Product[]) => (
-    <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 sm:gap-1.5 md:grid-cols-4 md:gap-2 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+    <div className="grid grid-cols-2 items-stretch gap-1 sm:grid-cols-3 sm:gap-1.5 md:grid-cols-4 md:gap-2 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
       {items.map((p, index) => (
-        <div key={p.id} data-aos="fade-up" data-aos-delay={(index % 7) * 30}>
+        <div key={p.id} className="min-w-0 h-full" data-aos="fade-up" data-aos-delay={(index % 7) * 30}>
           <ProductCard
             product={p}
             cart={cart}

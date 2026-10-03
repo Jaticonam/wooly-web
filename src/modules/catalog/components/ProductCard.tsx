@@ -82,14 +82,14 @@ export function ProductCard({
   return (
     <div
       onClick={handleCardClick}
-      className="card-product group flex flex-col p-2 text-center md:p-2.5"
+      className="card-product group flex h-full min-w-0 flex-col p-2 text-center md:p-2.5"
     >
       <div
         onClick={(e) => {
           e.stopPropagation();
           onImageClick?.(p);
         }}
-        className="card-product-image relative mb-2 h-[140px] cursor-zoom-in overflow-hidden rounded-[18px] sm:h-[160px] md:h-[250px] xl:h-[220px]"
+        className="card-product-image relative mb-2 w-full cursor-zoom-in overflow-hidden rounded-[18px]"
       >
         <ProductCardBadges product={p} />
 
@@ -141,7 +141,7 @@ export function ProductCard({
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col justify-between px-1">
+      <div className="card-product-body flex flex-1 flex-col justify-between px-1">
         <div>
           <div
             data-no-card-click

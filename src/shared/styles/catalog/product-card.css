@@ -1,4 +1,6 @@
 .card-product {
+  min-width: 0;
+  height: 100%;
   border: 1px solid rgba(216, 226, 236, 0.92);
   border-radius: 24px;
   background: #ffffff;
@@ -21,6 +23,8 @@
 }
 
 .card-product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 18px;
   background: #f8fafc;
@@ -72,6 +76,10 @@
 
 .card-product-category {
   letter-spacing: 0.01em;
+}
+
+.card-product-body {
+  min-width: 0;
 }
 
 .card-product-title {
@@ -242,7 +250,9 @@
   }
 
   .card-product-image {
-    height: clamp(145px, 44vw, 180px) !important;
+    width: 100%;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
     border-radius: 15px;
   }
 
@@ -332,5 +342,127 @@
     min-height: 27px;
     padding-inline: 10px !important;
     font-size: 9.5px !important;
+  }
+}
+
+
+/* =========================================================
+   PRODUCT CARD — RESPONSIVE FINO
+   La tarjeta conserva toda su información comercial.
+   La densidad se adapta por ancho, no reduciendo contenido.
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .card-product {
+    padding: 8px;
+    border-radius: 21px;
+  }
+
+  .card-product-image {
+    border-radius: 16px;
+  }
+
+  .card-product-title {
+    min-height: 38px;
+    font-size: 14px;
+  }
+
+  .wholesale-chip,
+  .wholesale-chip span {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-product {
+    padding: 6px;
+    border-radius: 18px;
+  }
+
+  .card-product-image {
+    border-radius: 14px;
+  }
+
+  .card-product-body {
+    padding-inline: 2px !important;
+  }
+
+  .card-product-meta {
+    gap: 2px !important;
+  }
+
+  .card-product-code,
+  .card-product-category {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    font-size: 8px !important;
+  }
+
+  .card-product-title {
+    min-height: 36px;
+    font-size: 13px;
+    line-height: 1.22;
+  }
+
+  .card-product-price-block > div > span:nth-child(2) {
+    font-size: 25px !important;
+  }
+
+  .card-product-stock {
+    min-height: 24px;
+    padding-inline: 7px !important;
+    font-size: 9px !important;
+  }
+
+  .wholesale-title {
+    letter-spacing: 0.075em;
+  }
+
+  .wholesale-chip {
+    min-height: 29px;
+    padding-inline: 6px;
+  }
+
+  .wholesale-chip,
+  .wholesale-chip span {
+    font-size: 9px;
+  }
+
+  .card-product-button {
+    min-height: 36px;
+    padding-inline: 7px;
+    font-size: 10.5px;
+  }
+
+  .card-product-capture {
+    max-width: calc(100% - 12px) !important;
+    padding-inline: 9px !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .card-product {
+    padding: 5px;
+  }
+
+  .card-product-title {
+    font-size: 12.5px;
+  }
+
+  .card-product-price-block > div > span:nth-child(2) {
+    font-size: 23px !important;
+  }
+
+  .card-product-stock {
+    font-size: 8.5px !important;
+  }
+
+  .wholesale-chip,
+  .wholesale-chip span {
+    font-size: 8.5px;
+  }
+
+  .card-product-button {
+    font-size: 10px;
   }
 }

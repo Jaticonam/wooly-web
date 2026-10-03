@@ -29,30 +29,24 @@ export function ProductCardStock({
       .toLowerCase();
 
   let stockText = "";
-  let stockColorClass = "";
+  let stockState = "";
   let StockIcon:
     typeof CheckCircle =
       CheckCircle;
 
-  /*
-   * El estado comercial tiene prioridad
-   * sobre el número almacenado en stock.
-   */
   if (
     normalizedStatus ===
     "preventa"
   ) {
     stockText = "Preventa";
-    stockColorClass =
-      "bg-green-100 text-green-700";
+    stockState = "is-preorder";
     StockIcon = Clock;
   } else if (
     normalizedStatus ===
     "agotado"
   ) {
     stockText = "Agotado";
-    stockColorClass =
-      "bg-destructive/10 text-destructive";
+    stockState = "is-soldout";
     StockIcon = XCircle;
   } else if (
     !price ||
@@ -61,8 +55,7 @@ export function ProductCardStock({
     stock <= 0
   ) {
     stockText = "No disponible";
-    stockColorClass =
-      "bg-muted text-muted-foreground";
+    stockState = "is-unavailable";
     StockIcon = XCircle;
   } else if (
     stock <= 12
@@ -70,9 +63,7 @@ export function ProductCardStock({
     stockText =
       `Últimas ${stock}`;
 
-    stockColorClass =
-      "bg-red-100 text-red-600";
-
+    stockState = "is-critical";
     StockIcon =
       AlertTriangle;
   } else if (
@@ -81,9 +72,7 @@ export function ProductCardStock({
     stockText =
       "Stock limitado";
 
-    stockColorClass =
-      "bg-orange-100 text-orange-600";
-
+    stockState = "is-limited";
     StockIcon =
       AlertTriangle;
   } else if (
@@ -92,18 +81,14 @@ export function ProductCardStock({
     stockText =
       "Disponible";
 
-    stockColorClass =
-      "bg-green-100 text-green-700";
-
+    stockState = "is-available";
     StockIcon =
       CheckCircle;
   } else {
     stockText =
       "Alto stock";
 
-    stockColorClass =
-      "bg-emerald-100 text-emerald-700";
-
+    stockState = "is-high";
     StockIcon =
       CheckCircle;
   }
@@ -111,17 +96,14 @@ export function ProductCardStock({
   return (
     <div
       className={[
-        "mx-auto mt-2 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black md:text-[11px]",
-        stockColorClass,
-      ].join(" ")}
+        "card-product-stock",
+        stockState,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <StockIcon
-        className="h-3.5 w-3.5"
-      />
-
-      <span>
-        {stockText}
-      </span>
+      <StockIcon aria-hidden="true" />
+      <span>{stockText}</span>
     </div>
   );
 }

@@ -18,10 +18,6 @@ export function ProductCardPrice({
       product,
     );
 
-  /*
-   * El helper canónico solo devuelve un valor distinto de
-   * price_1 cuando existe una oferta válida y menor.
-   */
   const hasOffer =
     Number.isFinite(
       product.price_1,
@@ -32,43 +28,28 @@ export function ProductCardPrice({
 
   if (isPreventa) {
     return (
-      <div className="mt-2.5 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2.5">
-        <span className="text-[12px] font-bold text-muted-foreground">
-          Próximamente
-        </span>
-        <span className="text-[21px] font-black tracking-tight text-green-600">
-          💬 Consultar
-        </span>
-        <span className="text-[10px] font-semibold text-muted-foreground">
-          Más información por WhatsApp
-        </span>
+      <div className="card-product-price is-preorder">
+        <span>Próximamente</span>
+        <strong>Consultar</strong>
       </div>
     );
   }
 
   return (
-    <div className="mt-2 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2">
-      <span className="text-[10px] font-black text-slate-500">
-        💰 Precio unitario
-      </span>
+    <div className="card-product-price">
+      <span className="card-product-currency">S/</span>
 
-      <div className="flex items-end justify-center gap-2">
-        <span className="text-[12px] font-bold text-muted-foreground">S/</span>
+      <strong
+        className={hasOffer ? "is-offer" : ""}
+      >
+        {finalPrice.toFixed(1)}
+      </strong>
 
-        <span
-          className={`text-[27px] font-black leading-none tracking-tight md:text-[30px] ${
-            hasOffer ? "text-red-600" : "text-[#1d8299]"
-          }`}
-        >
-          {finalPrice.toFixed(1)}
-        </span>
-
-        {hasOffer && (
-          <span className="mb-[2px] text-[12px] font-bold text-slate-400 line-through decoration-2">
-            S/{product.price_1.toFixed(1)}
-          </span>
-        )}
-      </div>
+      {hasOffer && (
+        <del>
+          S/{product.price_1.toFixed(1)}
+        </del>
+      )}
     </div>
   );
 }

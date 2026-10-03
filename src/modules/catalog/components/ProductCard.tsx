@@ -115,14 +115,6 @@ export function ProductCard({
           </div>
         )}
 
-        {isAgotado && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center">
-            <span className="card-product-soldout-label rounded-full border-2 border-white bg-orange-500 px-5 py-2 text-[12px] font-black uppercase tracking-wide text-white shadow-xl">
-              Agotado
-            </span>
-          </div>
-        )}
-
         <img
           src={p.img || "/placeholder.svg"}
           alt={p.title}

@@ -56,7 +56,7 @@ export function CatalogTopNav({
   onCartClick,
   onExploreClick,
 
-  searchPlaceholder = "¿Qué producto estás buscando?",
+  searchPlaceholder = "Buscar productos...",
 }: CatalogTopNavProps) {
   const hasCampaignSection = showCampaigns && campaigns.length > 0;
   const cartLabel =
@@ -106,7 +106,6 @@ export function CatalogTopNav({
 
             <span className="catalogTopNavCartCopy">
               <strong>Mi Caja</strong>
-              <small>{cartLabel}</small>
             </span>
 
             <span

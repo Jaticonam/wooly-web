@@ -7,6 +7,7 @@ import { CATEGORY_CONFIG } from "@/modules/catalog";
 import { CountdownTimer } from "@/shared/components/commerce/CountdownTimer";
 import { CatalogTopNav } from "@/modules/catalog/components/CatalogTopNav";
 import { CatalogResultsToolbar } from "@/modules/catalog/components/CatalogResultsToolbar";
+import { CatalogSectionHeader } from "@/modules/catalog/components/CatalogSectionHeader";
 import { FloatingButtons } from "@/shared/components/layout/FloatingButtons";
 import { ImageZoomModal } from "@/shared/components/media/ImageZoomModal";
 import { CatalogSkeleton } from "@/shared/components/skeletons/CatalogSkeleton";
@@ -103,11 +104,6 @@ const CatalogPage = () => {
     ? CATALOG_CAMPAIGNS.find((c) => c.id === activeCampaign)
     : null;
 
-  const isDefaultCatalogContext =
-    activeCategory === "todas" &&
-    !activeCampaign &&
-    !searchQuery.trim();
-
   const resultsTitle = useMemo(() => {
     const term = searchQuery.trim();
 
@@ -127,7 +123,7 @@ const CatalogPage = () => {
       return activeCat.name;
     }
 
-    return "";
+    return "Todos los productos";
   }, [searchQuery, activeCat, activeCampaignData]);
 
   const activeFilterCount =
@@ -274,11 +270,10 @@ const CatalogPage = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-5">
+          <div className="space-y-3">
             <CatalogResultsToolbar
               title={resultsTitle}
               count={filteredProducts.length}
-              compact={isDefaultCatalogContext}
               filterCount={activeFilterCount}
               sortMode={sortMode}
               onSortChange={setSortMode}
@@ -286,49 +281,45 @@ const CatalogPage = () => {
             />
 
             {displayPriorityBlocks && topProducts.length > 0 && (
-              <section className="space-y-2">
-                <div className="px-1 md:px-0">
-                  <h2 className="text-[15px] font-black text-foreground md:text-base">
-                    🔥 Más vendidos
-                  </h2>
-                </div>
+              <section className="space-y-1.5">
+                <CatalogSectionHeader
+                  title="🔥 Más vendidos"
+                  count={topProducts.length}
+                />
 
                 {renderGrid(topProducts)}
               </section>
             )}
 
             {displayPriorityBlocks && strongProducts.length > 0 && (
-              <section className="space-y-2">
-                <div className="px-1 md:px-0">
-                  <h2 className="text-[15px] font-black text-foreground md:text-base">
-                    ⭐ Recomendados
-                  </h2>
-                </div>
+              <section className="space-y-1.5">
+                <CatalogSectionHeader
+                  title="⭐ Recomendados"
+                  count={strongProducts.length}
+                />
 
                 {renderGrid(strongProducts)}
               </section>
             )}
 
             {displayPriorityBlocks && highlightProducts.length > 0 && (
-              <section className="space-y-2">
-                <div className="px-1 md:px-0">
-                  <h2 className="text-[15px] font-black text-foreground md:text-base">
-                    🟡 Oportunidades
-                  </h2>
-                </div>
+              <section className="space-y-1.5">
+                <CatalogSectionHeader
+                  title="🟡 Oportunidades"
+                  count={highlightProducts.length}
+                />
 
                 {renderGrid(highlightProducts)}
               </section>
             )}
 
             {displayRegularProducts.length > 0 && (
-              <section className="space-y-2">
+              <section className="space-y-1.5">
                 {displayPriorityBlocks && (
-                  <div className="px-1 md:px-0">
-                    <h2 className="text-[15px] font-black text-foreground md:text-base">
-                      🛍️ Catálogo
-                    </h2>
-                  </div>
+                  <CatalogSectionHeader
+                    title="🛍️ Catálogo"
+                    count={displayRegularProducts.length}
+                  />
                 )}
 
                 {renderGrid(displayRegularProducts)}

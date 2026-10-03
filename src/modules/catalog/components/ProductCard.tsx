@@ -124,7 +124,7 @@ export function ProductCard({
           disabled={isCapturing}
           onClick={handleCapture}
           className={[
-            "absolute bottom-2.5 left-1/2 z-20 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/70 bg-white/95 px-3 py-1.5 text-[10px] font-black text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,.22)] backdrop-blur-md transition-all active:scale-[.96] sm:text-[11px]",
+            "card-product-capture absolute bottom-2.5 left-1/2 z-20 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/70 bg-white/95 px-3 py-1.5 text-[10px] font-black text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,.22)] backdrop-blur-md transition-all active:scale-[.96] sm:text-[11px]",
             isCapturing
               ? "cursor-wait opacity-90"
               : "hover:-translate-y-[1px] hover:bg-white hover:shadow-[0_8px_22px_rgba(15,23,42,.28)]",
@@ -145,14 +145,14 @@ export function ProductCard({
         <div>
           <div
             data-no-card-click
-            className="mb-1.5 flex flex-wrap items-center justify-center gap-0.5"
+            className="card-product-meta mb-1.5 flex flex-wrap items-center justify-center gap-0.5"
           >
-            <span className="rounded-full bg-slate-100 px-2 py-[3px] text-[9px] font-black uppercase text-slate-500">
+            <span className="card-product-code rounded-full bg-slate-100 px-2 py-[3px] text-[9px] font-black uppercase text-slate-500">
               {p.id}
             </span>
 
             <span
-              className={`rounded-full px-2 py-[3px] text-[9px] font-black uppercase ${getCategoryColor(p.category)}`}
+              className={`card-product-category rounded-full px-2 py-[3px] text-[9px] font-black uppercase ${getCategoryColor(p.category)}`}
             >
               {p.category}
             </span>

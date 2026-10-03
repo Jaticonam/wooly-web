@@ -32,7 +32,7 @@ export function ProductCardPrice({
 
   if (isPreventa) {
     return (
-      <div className="mt-2.5 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2.5">
+      <div className="card-product-price-block card-product-price-preorder mt-2.5 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2.5">
         <span className="text-[12px] font-bold text-muted-foreground">
           Próximamente
         </span>
@@ -47,7 +47,7 @@ export function ProductCardPrice({
   }
 
   return (
-    <div className="mt-2 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2">
+    <div className="card-product-price-block mt-2 flex flex-col items-center gap-1 border-t border-[#eef2f6] pt-2">
       <span className="text-[10px] font-black text-slate-500">
         💰 Precio unitario
       </span>

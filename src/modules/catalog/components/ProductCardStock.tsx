@@ -111,7 +111,7 @@ export function ProductCardStock({
   return (
     <div
       className={[
-        "mx-auto mt-2 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black md:text-[11px]",
+        "card-product-stock mx-auto mt-2 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black md:text-[11px]",
         stockColorClass,
       ].join(" ")}
     >

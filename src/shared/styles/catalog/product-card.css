@@ -1,80 +1,146 @@
 .card-product {
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 28px;
-  background: #fff;
+  border: 1px solid rgba(216, 226, 236, 0.92);
+  border-radius: 24px;
+  background: #ffffff;
   overflow: hidden;
   box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.05),
-    0 18px 45px rgba(15, 23, 42, 0.06);
-  transition: 0.28s;
+    0 8px 24px rgba(15, 23, 42, 0.045),
+    0 18px 42px rgba(15, 23, 42, 0.055);
+  transition:
+    transform 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease;
 }
 
 .card-product:hover {
-  transform: translateY(-5px);
-  border-color: rgba(29, 130, 153, 0.22);
+  transform: translateY(-4px);
+  border-color: rgba(29, 130, 153, 0.2);
   box-shadow:
-    0 18px 40px rgba(15, 23, 42, 0.1),
-    0 30px 70px rgba(29, 130, 153, 0.12);
+    0 16px 36px rgba(15, 23, 42, 0.085),
+    0 26px 58px rgba(29, 130, 153, 0.09);
 }
 
 .card-product-image {
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: 18px;
   background: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(226, 232, 240, 0.3);
 }
 
 .card-product-image img {
-  transition: 0.7s;
+  transition: transform 0.58s ease;
 }
 
 .card-product:hover .card-product-image img {
-  transform: scale(1.08);
+  transform: scale(1.045);
+}
+
+/* Captura: conserva la acción completa, pero se integra mejor
+   con la fotografía y pierde peso frente al producto. */
+.card-product-capture {
+  min-height: 29px;
+  border-color: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #475569 !important;
+  box-shadow:
+    0 5px 14px rgba(15, 23, 42, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset !important;
+}
+
+.card-product-capture:hover {
+  background: #ffffff !important;
+  box-shadow:
+    0 7px 18px rgba(15, 23, 42, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset !important;
+}
+
+/* Meta comercial */
+.card-product-meta {
+  min-height: 20px;
+}
+
+.card-product-code,
+.card-product-category {
+  border: 1px solid rgba(226, 232, 240, 0.62);
+  box-shadow: none;
+}
+
+.card-product-code {
+  background: #f5f7fa !important;
+  color: #64748b !important;
+}
+
+.card-product-category {
+  letter-spacing: 0.01em;
 }
 
 .card-product-title {
-  font-size: 16px;
+  min-height: 40px;
+  font-size: 15px;
   font-weight: 900;
-  line-height: 1.25;
-  color: #334155;
-  transition: 0.2s;
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+  color: #2f4057;
+  transition: color 0.18s ease;
 }
 
-.card-product-title:hover {
+.card-product-title:hover,
+.card-product:hover .card-product-title {
   color: #1d8299;
 }
 
-.card-product-button {
-  min-height: 40px;
-  border-radius: 18px;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.15px;
-  box-shadow: 0 6px 16px rgba(29, 130, 153, 0.16);
-  transition: 0.18s;
+/* Precio: conserva el contenido original y mejora la jerarquía. */
+.card-product-price-block {
+  margin-top: 7px !important;
+  padding-top: 8px !important;
+  border-top-color: rgba(226, 232, 240, 0.78) !important;
 }
 
-.card-product-button:hover {
-  transform: translateY(-1px);
+.card-product-price-block > span:first-child {
+  color: #64748b !important;
+  font-size: 9px !important;
+  letter-spacing: 0.01em;
 }
 
-/* Precio mayorista */
-.wholesale-pricing {
-  margin-top: 10px;
-  border-top: 1px dashed rgba(226, 232, 240, 0.95);
-  padding-top: 9px;
+.card-product-price-block > div {
+  margin-top: 1px;
+}
+
+.card-product-price-block > div > span:nth-child(2) {
+  letter-spacing: -0.045em;
+}
+
+.card-product-price-preorder {
+  min-height: 76px;
+}
+
+/* Stock: sigue siendo dato protagonista, no decoración secundaria. */
+.card-product-stock {
+  min-height: 27px;
+  padding-inline: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: 0 3px 9px rgba(15, 23, 42, 0.035);
+}
+
+.card-product-stock svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Pricing mayorista */
+.card-product-wholesale {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(226, 232, 240, 0.72);
 }
 
 .wholesale-title {
-  margin-bottom: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #64748b;
+  margin-bottom: 6px;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.095em;
+  color: #718096;
 }
 
 .wholesale-list {
@@ -84,61 +150,80 @@
 }
 
 .wholesale-chip {
+  min-height: 31px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 6px;
   width: 100%;
   border: 1px solid;
-  border-radius: 14px;
-  padding: 7px 9px;
-  font-size: 11px;
+  border-radius: 12px;
+  padding: 6px 9px;
+  font-size: 10.5px;
   font-weight: 900;
-  line-height: 1.2;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  line-height: 1.15;
+  box-shadow: none;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.wholesale-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.045);
 }
 
 .wholesale-chip span {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
-/* Colores por tier */
 .wholesale-chip-price-3 {
-  border-color: #f5b025;
-  background: rgba(245, 176, 37, 0.12);
-  color: #92400e;
+  border-color: rgba(245, 176, 37, 0.72);
+  background: rgba(245, 176, 37, 0.055);
+  color: #a45b08;
 }
 
 .wholesale-chip-price-12 {
-  border-color: #f286be;
-  background: rgba(242, 134, 190, 0.13);
-  color: #9d174d;
+  border-color: rgba(242, 134, 190, 0.76);
+  background: rgba(242, 134, 190, 0.055);
+  color: #c24082;
 }
 
 .wholesale-chip-price-50 {
-  border-color: #7c3aed;
-  background: rgba(124, 58, 237, 0.11);
-  color: #5b21b6;
+  border-color: rgba(124, 58, 237, 0.52);
+  background: rgba(124, 58, 237, 0.05);
+  color: #6d28d9;
 }
 
 .wholesale-chip-price-100 {
-  border-color: #22c55e;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.1),
-    rgba(74, 222, 128, 0.18)
-  );
+  border-color: rgba(34, 197, 94, 0.58);
+  background: rgba(34, 197, 94, 0.055);
   color: #15803d;
-  box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.08),
-    0 6px 14px rgba(34, 197, 94, 0.12);
+  box-shadow: none;
 }
 
-/* ================================
-   Product Card - Selección de texto
-================================ */
+/* CTA */
+.card-product-button {
+  min-height: 39px;
+  border-radius: 13px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  box-shadow: 0 6px 15px rgba(29, 130, 153, 0.14);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.card-product-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 19px rgba(29, 130, 153, 0.19);
+  filter: saturate(1.04);
+}
 
 .card-product [data-no-card-click] {
   user-select: text;
@@ -152,13 +237,13 @@
 
 @media (max-width: 767px) {
   .card-product {
-    border-radius: 22px;
-    padding: 8px;
+    border-radius: 19px;
+    padding: 7px;
   }
 
   .card-product-image {
-    height: 180px !important;
-    border-radius: 18px;
+    height: clamp(145px, 44vw, 180px) !important;
+    border-radius: 15px;
   }
 
   .card-product-image img {
@@ -168,37 +253,46 @@
     object-position: center;
   }
 
+  .card-product-meta {
+    min-height: 18px;
+    margin-bottom: 5px !important;
+  }
+
   .card-product-title {
-    font-size: 15px;
-    line-height: 1.18;
+    min-height: 36px;
+    font-size: 13.5px;
+    line-height: 1.2;
   }
 
-  .card-product-button {
-    min-height: 38px;
-    border-radius: 16px;
-    font-size: 12px;
-    line-height: 1;
-    padding: 8px 10px;
+  .card-product-price-block {
+    margin-top: 6px !important;
+    padding-top: 7px !important;
   }
 
-  .card-product-button span {
-    gap: 6px;
-    white-space: nowrap;
+  .card-product-price-block > span:first-child {
+    font-size: 8.5px !important;
   }
 
-  .card-product-button svg {
-    width: 14px;
-    height: 14px;
+  .card-product-stock {
+    min-height: 25px;
+    margin-top: 7px !important;
+    padding-inline: 8px !important;
+    font-size: 9.5px !important;
   }
 
-  .wholesale-pricing {
-    margin-top: 8px;
-    padding-top: 8px;
+  .card-product-stock svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .card-product-wholesale {
+    margin-top: 7px;
+    padding-top: 7px;
   }
 
   .wholesale-title {
-    margin-bottom: 6px;
-    font-size: 9px;
+    margin-bottom: 5px;
+    font-size: 8.5px;
   }
 
   .wholesale-list {
@@ -206,12 +300,37 @@
   }
 
   .wholesale-chip {
-    border-radius: 12px;
-    padding: 7px 8px;
-    font-size: 10px;
+    min-height: 29px;
+    border-radius: 11px;
+    padding: 6px 7px;
+    font-size: 9.5px;
   }
 
   .wholesale-chip span {
-    font-size: 10px;
+    font-size: 9.5px;
+  }
+
+  .card-product-button {
+    min-height: 37px;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1;
+    padding: 8px 9px;
+  }
+
+  .card-product-button span {
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .card-product-button svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .card-product-capture {
+    min-height: 27px;
+    padding-inline: 10px !important;
+    font-size: 9.5px !important;
   }
 }

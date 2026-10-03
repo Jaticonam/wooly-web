@@ -50,7 +50,7 @@ export function ProductVolumePriceBadges({
     visibleTiers.length;
 
   return (
-    <div className="wholesale-list">
+    <div className="wholesale-list card-product-wholesale">
       <div className="wholesale-title mt-1 border-t border-dashed border-slate-300 pt-1.5">
         <span>📦</span>
         <span>Precios mayorista</span>

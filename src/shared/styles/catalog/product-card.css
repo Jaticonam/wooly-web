@@ -583,3 +583,144 @@
     font-size: 10px !important;
   }
 }
+
+
+/* =========================================================
+   PRODUCT CARD — MOBILE GRID HARDENING (LOTE 5C)
+   Mantiene 2 columnas y toda la información comercial.
+   ========================================================= */
+
+.card-product,
+.card-product-body,
+.card-product-wholesale,
+.wholesale-list,
+.wholesale-chip,
+.wholesale-chip span {
+  min-width: 0;
+}
+
+.card-product button {
+  touch-action: manipulation;
+}
+
+.wholesale-chip span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+@media (max-width: 767px) {
+  .card-product {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .card-product-badges {
+    max-width: 72% !important;
+  }
+
+  .card-product-capture {
+    min-width: 88px;
+    min-height: 32px;
+  }
+
+  .card-product-button {
+    min-height: 40px;
+  }
+
+  .wholesale-chip {
+    min-height: 30px;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-product-title {
+    font-size: 13px;
+  }
+
+  .card-product-price-block > div > span:nth-child(2) {
+    font-size: 25px !important;
+  }
+
+  .card-product-stock {
+    font-size: 9px !important;
+  }
+
+  .wholesale-chip,
+  .wholesale-chip span {
+    font-size: 9px;
+  }
+
+  .card-product-button {
+    min-height: 40px;
+    font-size: 10.5px;
+  }
+
+  .card-product-capture {
+    min-height: 32px;
+  }
+}
+
+@media (max-width: 350px) {
+  .card-product {
+    padding: 5px;
+  }
+
+  .card-product-title {
+    font-size: 13px;
+  }
+
+  .card-product-price-block > div > span:nth-child(2) {
+    font-size: 25px !important;
+  }
+
+  .card-product-stock {
+    font-size: 9px !important;
+  }
+
+  .wholesale-chip,
+  .wholesale-chip span {
+    font-size: 9px;
+  }
+
+  .card-product-button {
+    min-height: 40px;
+    font-size: 10.5px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card-product:hover {
+    transform: none;
+    border-color: rgba(216, 226, 236, 0.92);
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.045),
+      0 18px 42px rgba(15, 23, 42, 0.055);
+  }
+
+  .card-product.is-in-cart:hover {
+    border-color: rgba(29, 130, 153, 0.28);
+    box-shadow:
+      0 8px 24px rgba(15, 23, 42, 0.045),
+      0 0 0 1px rgba(29, 130, 153, 0.055),
+      0 18px 42px rgba(29, 130, 153, 0.07);
+  }
+
+  .card-product.is-preorder:hover {
+    border-color: rgba(22, 163, 74, 0.2);
+  }
+
+  .card-product.is-soldout:hover {
+    border-color: rgba(249, 115, 22, 0.24);
+  }
+
+  .card-product:hover .card-product-image img {
+    transform: none;
+  }
+
+  .wholesale-chip:hover,
+  .card-product-button:hover,
+  .card-product-capture:hover {
+    transform: none;
+  }
+}

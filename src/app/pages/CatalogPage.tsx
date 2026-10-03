@@ -159,7 +159,7 @@ const CatalogPage = () => {
     : 0;
 
   const renderGrid = (items: Product[]) => (
-    <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 sm:gap-1.5 md:grid-cols-4 md:gap-2 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+    <div className="grid min-w-0 grid-cols-2 gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
       {items.map((p, index) => (
         <div key={p.id} className="min-w-0" data-aos="fade-up" data-aos-delay={(index % 7) * 30}>
           <ProductCard
@@ -281,7 +281,7 @@ const CatalogPage = () => {
             />
 
             {displayPriorityBlocks && topProducts.length > 0 && (
-              <section className="space-y-1.5">
+              <section className="min-w-0 space-y-1.5">
                 <CatalogSectionHeader
                   title="🔥 Más vendidos"
                   count={topProducts.length}
@@ -292,7 +292,7 @@ const CatalogPage = () => {
             )}
 
             {displayPriorityBlocks && strongProducts.length > 0 && (
-              <section className="space-y-1.5">
+              <section className="min-w-0 space-y-1.5">
                 <CatalogSectionHeader
                   title="⭐ Recomendados"
                   count={strongProducts.length}
@@ -303,7 +303,7 @@ const CatalogPage = () => {
             )}
 
             {displayPriorityBlocks && highlightProducts.length > 0 && (
-              <section className="space-y-1.5">
+              <section className="min-w-0 space-y-1.5">
                 <CatalogSectionHeader
                   title="🟡 Oportunidades"
                   count={highlightProducts.length}
@@ -314,7 +314,7 @@ const CatalogPage = () => {
             )}
 
             {displayRegularProducts.length > 0 && (
-              <section className="space-y-1.5">
+              <section className="min-w-0 space-y-1.5">
                 {displayPriorityBlocks && (
                   <CatalogSectionHeader
                     title="🛍️ Catálogo"

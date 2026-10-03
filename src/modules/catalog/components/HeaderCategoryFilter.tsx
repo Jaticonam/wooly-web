@@ -1,5 +1,6 @@
 import type { Category } from "@/shared/types/product";
 import "./HeaderCategoryFilter.css";
+
 interface Props {
   categories: Category[];
   active: string;
@@ -21,23 +22,18 @@ export function HeaderCategoryFilter({
 
   return (
     <div className="header-category-filter">
-      {visible.map((c) => {
-        const count = counts[c.id] ?? 0;
-        const isActive = active === c.id;
+      {visible.map((category) => {
+        const isActive = active === category.id;
 
         return (
           <button
-            key={c.id}
+            key={category.id}
             type="button"
-            onClick={() => onSelect(c.id)}
+            onClick={() => onSelect(category.id)}
             className={`header-category-chip ${isActive ? "active" : ""}`}
+            aria-pressed={isActive}
           >
-            <span className="header-category-icon">{c.icon}</span>
-            <span className="header-category-name">{c.name}</span>
-
-            {hasCounts && (
-              <span className="header-category-count">({count})</span>
-            )}
+            <span className="header-category-name">{category.name}</span>
           </button>
         );
       })}

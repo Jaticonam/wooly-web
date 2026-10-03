@@ -1,203 +1,102 @@
 /* =========================================================
-   HEADER CAMPAIGN FILTER
-   Campañas temporales del catálogo Wooly.
-   Regla de negocio:
-   - Categorías mandan.
-   - Campañas son efímeras.
-   - Máximo 3 o 4 campañas visibles.
-   - El conteo se comunica como valor comercial.
+   HEADER CAMPAIGN FILTER — V2
+   Campañas = navegación comercial temporal.
+   Compactas, máximo cuatro visibles y visualmente subordinadas
+   a la navegación estructural.
    ========================================================= */
-
-/* ===== CONTENEDOR DE CAMPAÑAS ===== */
 
 .catalogTopNav .header-campaign-filter {
   width: 100%;
+  min-width: 0;
 
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 7px;
 
   overflow-x: auto;
   scrollbar-width: none;
-
-  padding: 0 4px 2px;
+  padding: 0;
 }
 
 .catalogTopNav .header-campaign-filter::-webkit-scrollbar {
   display: none;
 }
 
-/* ===== CHIP / MINI CARD DE CAMPAÑA ===== */
-
 .catalogTopNav .header-campaign-chip {
-  position: relative;
+  min-width: max-content;
+  height: 32px;
+  padding: 0 11px;
 
-  width: clamp(190px, 17vw, 230px);
-  height: 58px;
-  padding: 0 46px 0 18px;
-
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
 
   flex-shrink: 0;
 
-  border: 0;
-  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 999px;
 
-  color: #ffffff;
-  cursor: pointer;
+  background: #ffffff;
+  color: #64748b;
 
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
-
-  opacity: 0.97;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.035);
 
   transition:
     transform 0.18s ease,
-    box-shadow 0.18s ease,
-    opacity 0.18s ease,
-    filter 0.18s ease;
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .catalogTopNav .header-campaign-chip:hover {
   transform: translateY(-1px);
-
-  opacity: 1;
-
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
-
-  filter: saturate(1.03);
+  border-color: rgba(242, 134, 190, 0.38);
+  color: #c65391;
+  box-shadow: 0 5px 14px rgba(242, 134, 190, 0.09);
 }
 
 .catalogTopNav .header-campaign-chip.active {
-  background: linear-gradient(
-    135deg,
-    var(--w-primary),
-    var(--w-primary-dark)
-  ) !important;
-
-  color: #ffffff;
-
-  box-shadow: 0 12px 28px rgba(29, 130, 153, 0.24);
-
-  opacity: 1;
+  border-color: rgba(29, 130, 153, 0.2);
+  background: rgba(29, 130, 153, 0.09);
+  color: var(--w-primary);
+  box-shadow: 0 5px 14px rgba(29, 130, 153, 0.08);
 }
 
-/* ===== CONTENIDO CENTRAL ===== */
-
-.catalogTopNav .header-campaign-content {
-  width: 100%;
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-
-  text-align: center;
-
-  pointer-events: none;
+.catalogTopNav .header-campaign-icon {
+  font-size: 13px;
+  line-height: 1;
 }
 
 .catalogTopNav .header-campaign-name {
-  max-width: 100%;
-
-  font-size: 14px;
-  font-weight: 950;
-  line-height: 1.05;
-  white-space: nowrap;
-
+  max-width: 170px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
 
-.catalogTopNav .header-campaign-count {
-  max-width: 100%;
-
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 850;
   line-height: 1;
-  opacity: 0.93;
   white-space: nowrap;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-
-/* ===== ÍCONO A LA DERECHA ===== */
-
-.catalogTopNav .header-campaign-icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  font-size: 25px;
-  line-height: 1;
-  opacity: 0.92;
-
-  pointer-events: none;
-}
-
-/* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
   .catalogTopNav .header-campaign-filter {
-    justify-content: flex-start;
-    gap: 8px;
-
-    padding-bottom: 1px;
-
-    animation: catalogTopNavFadeSlide 0.28s ease both;
+    gap: 6px;
   }
 
   .catalogTopNav .header-campaign-chip {
-    width: auto;
-    min-width: 176px;
-    max-width: 215px;
-    height: 52px;
-    padding: 0 40px 0 14px;
-
-    border-radius: 16px;
-
-    animation: catalogTopNavChipIn 0.24s ease both;
+    height: 30px;
+    padding: 0 10px;
   }
 
   .catalogTopNav .header-campaign-name {
+    max-width: 145px;
+    font-size: 10px;
+  }
+
+  .catalogTopNav .header-campaign-icon {
     font-size: 12px;
-  }
-
-  .catalogTopNav .header-campaign-count {
-    font-size: 9px;
-  }
-
-  .catalogTopNav .header-campaign-icon {
-    right: 12px;
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 420px) {
-  .catalogTopNav .header-campaign-chip {
-    min-width: 162px;
-    max-width: 190px;
-    height: 50px;
-    padding: 0 36px 0 12px;
-  }
-
-  .catalogTopNav .header-campaign-name {
-    font-size: 11px;
-  }
-
-  .catalogTopNav .header-campaign-count {
-    font-size: 8.5px;
-  }
-
-  .catalogTopNav .header-campaign-icon {
-    right: 10px;
-    font-size: 20px;
   }
 }

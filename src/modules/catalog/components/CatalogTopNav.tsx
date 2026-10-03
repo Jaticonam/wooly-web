@@ -1,4 +1,4 @@
-import { Package } from "lucide-react";
+import { Menu, Package, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { HeaderCampaignFilter } from "@/modules/catalog/components/HeaderCampaignFilter";
@@ -31,6 +31,7 @@ interface CatalogTopNavProps {
 
   cartCount: number;
   onCartClick: () => void;
+  onExploreClick: () => void;
 
   searchPlaceholder?: string;
 }
@@ -53,6 +54,7 @@ export function CatalogTopNav({
 
   cartCount,
   onCartClick,
+  onExploreClick,
 
   searchPlaceholder = "¿Qué producto estás buscando?",
 }: CatalogTopNavProps) {
@@ -117,31 +119,50 @@ export function CatalogTopNav({
         </div>
 
         <div className="catalogTopNavDiscovery">
-          <section
-            className="catalogTopNavSection catalogTopNavCategories"
-            aria-label="Categorías del catálogo"
-          >
-            <HeaderCategoryFilter
-              categories={categories}
-              active={activeCategory}
-              counts={categoryCounts}
-              onSelect={onCategorySelect}
-            />
-          </section>
-
-          {hasCampaignSection && (
-            <section
-              className="catalogTopNavSection catalogTopNavCampaigns"
-              aria-label="Campañas activas"
+          <div className="catalogTopNavCategoryBar">
+            <button
+              type="button"
+              className="catalogTopNavExplore"
+              onClick={onExploreClick}
+              aria-label="Explorar categorías y campañas"
             >
-              <HeaderCampaignFilter
-                campaigns={campaigns}
-                active={activeCampaign}
-                counts={campaignCounts}
-                show={hasCampaignSection}
-                onSelect={onCampaignSelect}
+              <Menu aria-hidden="true" />
+              <span>Explorar</span>
+            </button>
+
+            <section
+              className="catalogTopNavSection catalogTopNavCategories"
+              aria-label="Categorías del catálogo"
+            >
+              <HeaderCategoryFilter
+                categories={categories}
+                active={activeCategory}
+                counts={categoryCounts}
+                onSelect={onCategorySelect}
               />
             </section>
+          </div>
+
+          {hasCampaignSection && (
+            <div className="catalogTopNavCampaignBar">
+              <div className="catalogTopNavCampaignLabel">
+                <Sparkles aria-hidden="true" />
+                <span>Campañas</span>
+              </div>
+
+              <section
+                className="catalogTopNavSection catalogTopNavCampaigns"
+                aria-label="Campañas activas"
+              >
+                <HeaderCampaignFilter
+                  campaigns={campaigns}
+                  active={activeCampaign}
+                  counts={campaignCounts}
+                  show={hasCampaignSection}
+                  onSelect={onCampaignSelect}
+                />
+              </section>
+            </div>
           )}
         </div>
       </div>

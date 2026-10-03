@@ -190,6 +190,7 @@ const CatalogPage = () => {
           onCampaignSelect={handleCampaignSelect}
           cartCount={totalItems}
           onCartClick={() => setCartOpen(true)}
+          onExploreClick={() => setExploreOpen(true)}
         />
       </header>
 
@@ -313,7 +314,6 @@ const CatalogPage = () => {
       <FloatingButtons
         cartCount={totalItems}
         onCartClick={() => setCartOpen(true)}
-        onExploreClick={() => setExploreOpen(true)}
         showCart={false}
       />
 

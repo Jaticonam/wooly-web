@@ -1,137 +1,99 @@
 /* =========================================================
-   HEADER CATEGORY FILTER
-   Categorías permanentes del catálogo.
-   Regla de negocio: las categorías mandan.
+   HEADER CATEGORY FILTER — V2
+   Categorías = navegación estructural.
+   Sin conteos, sin mini-cards y sin ruido visual.
    ========================================================= */
 
 .catalogTopNav .header-category-filter {
   width: 100%;
-
+  min-width: 0;
   display: flex;
+  align-items: stretch;
   justify-content: center;
-  align-items: center;
-  gap: 7px;
-
+  gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
-
-  padding: 1px 0 2px;
+  padding: 0;
 }
 
 .catalogTopNav .header-category-filter::-webkit-scrollbar {
   display: none;
 }
 
-/* ===== CHIP DE CATEGORÍA ===== */
-
 .catalogTopNav .header-category-chip {
-  height: 38px;
-  min-width: 118px;
-  padding: 0 11px;
+  position: relative;
+  min-width: max-content;
+  height: 42px;
+  padding: 0 15px;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
 
   flex-shrink: 0;
 
-  border-radius: 12px;
-  border: 1px solid rgba(226, 232, 240, 0.95);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #475569;
 
-  background: #ffffff;
-  color: #334155;
-
+  font-size: 12px;
   font-weight: 800;
-
-  box-shadow:
-    0 4px 10px rgba(15, 23, 42, 0.035);
+  letter-spacing: -0.01em;
 
   transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease,
-    color 0.18s ease;
+    color 0.18s ease,
+    background 0.18s ease;
+}
+
+.catalogTopNav .header-category-chip::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--w-primary);
+  opacity: 0;
+  transform: scaleX(0.45);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .catalogTopNav .header-category-chip:hover {
-  transform: translateY(-1px);
-
-  border-color: rgba(29, 130, 153, 0.28);
-
-  box-shadow:
-    0 6px 14px rgba(15, 23, 42, 0.06);
+  color: var(--w-primary);
+  background: rgba(29, 130, 153, 0.035);
 }
 
 .catalogTopNav .header-category-chip.active {
-  border-color: transparent;
-
-  background: linear-gradient(
-    135deg,
-    var(--w-primary),
-    var(--w-primary-dark)
-  );
-
-  color: #ffffff;
-
-  box-shadow:
-    0 8px 18px rgba(29, 130, 153, 0.2);
+  color: var(--w-primary);
+  font-weight: 900;
 }
 
-/* ===== TEXTO ===== */
-
-.catalogTopNav .header-category-icon {
-  font-size: 13px;
-  line-height: 1;
+.catalogTopNav .header-category-chip.active::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 .catalogTopNav .header-category-name {
-  font-size: 11px;
-  font-weight: 850;
-  line-height: 1;
   white-space: nowrap;
 }
-
-.catalogTopNav .header-category-count {
-  font-size: 11px;
-  font-weight: 800;
-  opacity: 0.74;
-  line-height: 1;
-}
-
-.catalogTopNav .header-category-chip.active .header-category-count {
-  opacity: 0.95;
-}
-
-/* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
   .catalogTopNav .header-category-filter {
     justify-content: flex-start;
-    gap: 6px;
-
-    padding-bottom: 1px;
-
-    animation: catalogTopNavFadeSlide 0.28s ease both;
   }
 
   .catalogTopNav .header-category-chip {
-    min-width: auto;
-    height: 34px;
-    padding: 0 10px;
-
-    border-radius: 999px;
-
-    animation: catalogTopNavChipIn 0.24s ease both;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 11px;
   }
 
-  .catalogTopNav .header-category-icon {
-    font-size: 12px;
-  }
-
-  .catalogTopNav .header-category-name,
-  .catalogTopNav .header-category-count {
-    font-size: 10px;
+  .catalogTopNav .header-category-chip::after {
+    left: 12px;
+    right: 12px;
   }
 }

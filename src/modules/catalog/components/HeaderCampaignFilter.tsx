@@ -1,9 +1,11 @@
 import "./HeaderCampaignFilter.css";
+
 export interface HeaderCampaignOption {
   id: string;
   name: string;
   icon: string;
   colorClass: string;
+  themeToken?: string;
 }
 
 interface HeaderCampaignFilterProps {
@@ -11,6 +13,7 @@ interface HeaderCampaignFilterProps {
   active: string;
   counts?: Record<string, number>;
   show?: boolean;
+  maxVisible?: number;
   onSelect: (id: string) => void;
 }
 
@@ -19,11 +22,20 @@ export function HeaderCampaignFilter({
   active,
   counts = {},
   show = true,
+  maxVisible = 4,
   onSelect,
 }: HeaderCampaignFilterProps) {
-  const visibleCampaigns = campaigns.filter(
+  const available = campaigns.filter(
     (campaign) => (counts[campaign.id] ?? 0) > 0,
   );
+
+  const first = available.slice(0, Math.max(1, maxVisible));
+  const activeCampaign = available.find((campaign) => campaign.id === active);
+
+  const visibleCampaigns =
+    activeCampaign && !first.some((campaign) => campaign.id === activeCampaign.id)
+      ? [...first.slice(0, Math.max(0, maxVisible - 1)), activeCampaign]
+      : first;
 
   if (!show || visibleCampaigns.length === 0) {
     return null;
@@ -33,34 +45,22 @@ export function HeaderCampaignFilter({
     <div className="header-campaign-filter" aria-label="Filtros de campaña">
       {visibleCampaigns.map((campaign) => {
         const isActive = active === campaign.id;
-        const count = counts[campaign.id] ?? 0;
 
         return (
           <button
             key={campaign.id}
             type="button"
             onClick={() => onSelect(isActive ? "" : campaign.id)}
-            className={[
-              "header-campaign-chip",
-              campaign.colorClass,
-              isActive ? "active" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+            className={`header-campaign-chip ${isActive ? "active" : ""}`}
             aria-pressed={isActive}
             title={campaign.name}
+            data-theme-token={campaign.themeToken || undefined}
           >
-            <div className="header-campaign-content">
-              <span className="header-campaign-name">{campaign.name}</span>
-
-              <span className="header-campaign-count">
-                {count} {count === 1 ? "producto" : "productos"}
-              </span>
-            </div>
-
             <span className="header-campaign-icon" aria-hidden="true">
               {campaign.icon}
             </span>
+
+            <span className="header-campaign-name">{campaign.name}</span>
           </button>
         );
       })}

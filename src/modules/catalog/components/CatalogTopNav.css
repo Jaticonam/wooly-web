@@ -1,150 +1,244 @@
 /* =========================================================
-   CATALOG TOP NAV
-   Navegación superior del catálogo Wooly.
-   Jerarquía visual:
-   Logo → Categorías → Campañas activas → Buscador
+   CATALOG TOP NAV — V2 SHELL
+   Lote 1:
+   Marca + buscador + Mi Caja como jerarquía principal.
+   Categorías y campañas permanecen temporalmente debajo
+   hasta su reestructuración específica en el Lote 2.
    ========================================================= */
 
 .catalogTopNav {
   width: 100%;
-
-  border-bottom: 1px solid #e2e8f0;
-
+  border-bottom: 1px solid rgba(226, 232, 240, 0.92);
   background: rgba(255, 255, 255, 0.97);
-
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
-
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.055);
   backdrop-filter: blur(18px);
 }
 
-/* =========================================================
-   CONTENEDOR PRINCIPAL
-   ========================================================= */
-
 .catalogTopNavInner {
   width: 100%;
-  max-width: 1500px;
-
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 8px 16px 12px;
+  padding: 10px 20px 12px;
+}
 
+/* =========================================================
+   SHELL PRINCIPAL
+   ========================================================= */
+
+.catalogTopNavMain {
+  display: grid;
+  grid-template-columns: minmax(116px, 150px) minmax(320px, 1fr) minmax(132px, 154px);
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.catalogTopNavBrand {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 16px;
+  outline: none;
+}
+
+.catalogTopNavBrand:focus-visible {
+  box-shadow: 0 0 0 4px rgba(29, 130, 153, 0.14);
+}
+
+.catalogTopNavBrand img {
+  display: block;
+  width: 124px;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+.catalogTopNavBrand:hover img {
+  transform: translateY(-1px) scale(1.015);
+}
+
+/* =========================================================
+   BUSCADOR PRINCIPAL
+   ========================================================= */
+
+.catalogTopNavSearch {
+  width: 100%;
+  max-width: 860px;
+  min-width: 0;
+  justify-self: center;
+}
+
+.catalogTopNavSearch > .relative {
+  width: 100%;
+}
+
+.catalogTopNav .search-box-shell {
+  min-height: 50px;
+  border-radius: 18px;
+  border-color: #dbe5ee;
+  padding-inline: 16px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.045),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+}
+
+.catalogTopNav .search-box-shell:focus-within {
+  border-color: rgba(29, 130, 153, 0.42);
+  box-shadow:
+    0 12px 30px rgba(29, 130, 153, 0.12),
+    0 0 0 4px rgba(29, 130, 153, 0.08);
+}
+
+.catalogTopNav .search-box-input {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.catalogTopNav .search-box-shortcut {
+  border: 1px solid rgba(203, 213, 225, 0.88);
+  background: #f8fafc;
+  color: #64748b;
+}
+
+/* =========================================================
+   MI CAJA
+   ========================================================= */
+
+.catalogTopNavCart {
+  position: relative;
+  min-height: 50px;
+  width: 100%;
+  padding: 7px 11px;
+
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 18px;
+
+  background: #ffffff;
+  color: #334155;
+
+  box-shadow: 0 7px 18px rgba(15, 23, 42, 0.045);
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
+}
+
+.catalogTopNavCart:hover {
+  transform: translateY(-1px);
+  border-color: rgba(29, 130, 153, 0.3);
+  color: #1d8299;
+  box-shadow: 0 11px 24px rgba(29, 130, 153, 0.1);
+}
+
+.catalogTopNavCart:focus-visible {
+  outline: none;
+  border-color: rgba(29, 130, 153, 0.42);
+  box-shadow: 0 0 0 4px rgba(29, 130, 153, 0.1);
+}
+
+.catalogTopNavCartIcon {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(29, 130, 153, 0.1);
+  color: #1d8299;
+}
+
+.catalogTopNavCartIcon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.catalogTopNavCartCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1;
+}
+
+.catalogTopNavCartCopy strong {
+  font-size: 12px;
+  font-weight: 900;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+.catalogTopNavCartCopy small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 9px;
+  font-weight: 750;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.catalogTopNavCartCount {
+  display: inline-flex;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 7px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f286be;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 950;
+  box-shadow: 0 5px 12px rgba(242, 134, 190, 0.25);
+}
+
+/* =========================================================
+   DISCOVERY TRANSITORIO
+   Lote 2 reemplazará esta composición visual.
+   ========================================================= */
+
+.catalogTopNavDiscovery {
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 9px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
   gap: 7px;
+  border-top: 1px solid rgba(226, 232, 240, 0.82);
 }
-
-/* =========================================================
-   ZONA DE LOGO
-   El logo tiene su propio espacio visual para que no parezca sticker.
-   ========================================================= */
-
-.catalogTopNavLogo {
-  width: 100%;
-  max-width: 1320px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 0 8px;
-  margin: 0;
-
-  border: 0;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
-
-  background: transparent;
-
-  cursor: pointer;
-}
-
-.catalogTopNavLogo img {
-  width: 142px;
-  height: auto;
-  display: block;
-}
-
-/* =========================================================
-   SECCIONES DEL TOP NAV
-   ========================================================= */
 
 .catalogTopNavSection {
   width: 100%;
   min-width: 0;
 }
 
-/* ===== CATEGORÍAS PRINCIPALES ===== */
-
 .catalogTopNavCategories {
   width: 100%;
   max-width: 1320px;
-
-  padding-top: 1px;
 }
-
-/* ===== CAMPAÑAS ACTIVAS ===== */
 
 .catalogTopNavCampaigns {
   width: 100%;
   max-width: 1200px;
-
-  padding-top: 2px;
-}
-
-/* ===== BUSCADOR ===== */
-
-.catalogTopNavSearch {
-  width: 100%;
-  max-width: 1280px;
-
-  margin-top: 3px;
-  padding-top: 10px;
-
-  border-top: 1px solid rgba(226, 232, 240, 0.9);
-}
-
-/* =========================================================
-   BUSCADOR DENTRO DEL TOP NAV
-   ========================================================= */
-
-.catalogTopNav .search-wrapper {
-  width: 100%;
-}
-
-.catalogTopNav .search-input {
-  width: 100%;
-  height: 48px;
-
-  border-radius: 18px;
-  border-color: #dbe5ee;
-
-  color: #0f172a;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.035);
-
-  transition:
-    border-color 0.22s ease,
-    box-shadow 0.22s ease;
-}
-
-.catalogTopNav .search-input:focus {
-  border-color: rgba(29, 130, 153, 0.38);
-
-  box-shadow: 0 12px 28px rgba(29, 130, 153, 0.12);
-}
-
-.catalogTopNav .search-icon {
-  color: #8ca0b8;
 }
 
 /* =========================================================
    CAMPAIGN COLOR VARIANTS
-   Clases visuales generadas desde Campaigns Sheet.
+   Compatibilidad temporal con el registro actual.
+   themeToken permanece como contrato futuro con JUNG CORE.
    ========================================================= */
 
 .catalog-campaign-purple {
@@ -238,8 +332,7 @@
 }
 
 /* =========================================================
-   ANIMACIONES LOCALES
-   Usadas por categorías y campañas.
+   ANIMACIONES COMPARTIDAS CON CATEGORÍAS/CAMPAÑAS
    ========================================================= */
 
 @keyframes catalogTopNavFadeSlide {
@@ -270,35 +363,106 @@
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .catalogTopNavInner {
-    padding: 8px 10px 10px;
-    gap: 7px;
+    padding: 9px 12px 10px;
   }
 
-  .catalogTopNavLogo {
+  .catalogTopNavMain {
+    grid-template-columns: minmax(100px, 128px) minmax(0, 1fr) minmax(116px, 136px);
+    gap: 10px;
+  }
+
+  .catalogTopNavBrand img {
+    width: 108px;
+  }
+
+  .catalogTopNavCart {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    min-height: 48px;
+    padding-inline: 8px;
+  }
+
+  .catalogTopNavCartIcon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogTopNavInner {
+    padding: 8px 10px 9px;
+  }
+
+  .catalogTopNavMain {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 10px;
+  }
+
+  .catalogTopNavBrand {
+    min-height: 40px;
+    align-items: center;
+  }
+
+  .catalogTopNavBrand img {
+    width: 104px;
+  }
+
+  .catalogTopNavSearch {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+  }
+
+  .catalogTopNav .search-box-shell {
+    min-height: 44px;
+    border-radius: 15px;
+    padding-inline: 13px;
+  }
+
+  .catalogTopNav .search-box-input {
+    font-size: 13px;
+  }
+
+  .catalogTopNavCart {
+    width: auto;
+    min-width: 96px;
+    min-height: 42px;
+    grid-template-columns: 29px auto;
+    gap: 7px;
+    padding: 6px 8px;
+    border-radius: 15px;
+  }
+
+  .catalogTopNavCartIcon {
+    width: 29px;
+    height: 29px;
+    border-radius: 10px;
+  }
+
+  .catalogTopNavCartIcon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .catalogTopNavCartCopy {
     display: none;
   }
 
-  .catalogTopNavCategories,
-  .catalogTopNavCampaigns,
-  .catalogTopNavSearch {
-    max-width: 100%;
+  .catalogTopNavCartCount {
+    min-width: 23px;
+    height: 23px;
+    padding-inline: 6px;
   }
 
-  .catalogTopNavCampaigns {
-    padding-top: 0;
-  }
-
-  .catalogTopNavSearch {
-    margin-top: 2px;
+  .catalogTopNavDiscovery {
+    margin-top: 8px;
     padding-top: 8px;
+    gap: 6px;
   }
 
-  .catalogTopNav .search-input {
-    height: 44px;
-    border-radius: 16px;
-
-    font-size: 13px;
+  .catalogTopNavCategories,
+  .catalogTopNavCampaigns {
+    max-width: 100%;
   }
 }

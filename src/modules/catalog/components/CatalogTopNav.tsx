@@ -1,9 +1,16 @@
-import { SearchInput } from "@/modules/search/components/SearchInput";
+import { Package } from "lucide-react";
+import { Link } from "react-router-dom";
+
 import { HeaderCampaignFilter } from "@/modules/catalog/components/HeaderCampaignFilter";
-import { HeaderCategoryFilter } from "@/modules/catalog/components/HeaderCategoryFilter";
 import type { HeaderCampaignOption } from "@/modules/catalog/components/HeaderCampaignFilter";
+import { HeaderCategoryFilter } from "@/modules/catalog/components/HeaderCategoryFilter";
+import { SearchInput } from "@/modules/search/components/SearchInput";
+import { getApplicationConfig } from "@/shared/config/application";
 import type { Category, Product } from "@/shared/types/product";
+
 import "./CatalogTopNav.css";
+
+const applicationConfig = getApplicationConfig();
 
 interface CatalogTopNavProps {
   products: Product[];
@@ -21,6 +28,9 @@ interface CatalogTopNavProps {
   campaignCounts?: Record<string, number>;
   showCampaigns?: boolean;
   onCampaignSelect: (id: string) => void;
+
+  cartCount: number;
+  onCartClick: () => void;
 
   searchPlaceholder?: string;
 }
@@ -41,9 +51,16 @@ export function CatalogTopNav({
   showCampaigns = false,
   onCampaignSelect,
 
-  searchPlaceholder = "Busca flores, cajas, peluches o código...",
+  cartCount,
+  onCartClick,
+
+  searchPlaceholder = "¿Qué producto estás buscando?",
 }: CatalogTopNavProps) {
   const hasCampaignSection = showCampaigns && campaigns.length > 0;
+  const cartLabel =
+    cartCount === 0
+      ? "Sin productos"
+      : `${cartCount} ${cartCount === 1 ? "producto" : "productos"}`;
 
   return (
     <nav
@@ -51,44 +68,82 @@ export function CatalogTopNav({
       aria-label="Navegación principal del catálogo"
     >
       <div className="catalogTopNavInner">
-        <section
-          className="catalogTopNavSection catalogTopNavCategories"
-          aria-label="Categorías del catálogo"
-        >
-          <HeaderCategoryFilter
-            categories={categories}
-            active={activeCategory}
-            counts={categoryCounts}
-            onSelect={onCategorySelect}
-          />
-        </section>
-
-        {hasCampaignSection && (
-          <section
-            className="catalogTopNavSection catalogTopNavCampaigns"
-            aria-label="Campañas activas"
+        <div className="catalogTopNavMain">
+          <Link
+            to="/"
+            className="catalogTopNavBrand"
+            aria-label="Ir al inicio de Wooly"
           >
-            <HeaderCampaignFilter
-              campaigns={campaigns}
-              active={activeCampaign}
-              counts={campaignCounts}
-              show={hasCampaignSection}
-              onSelect={onCampaignSelect}
+            <img
+              src={applicationConfig.assets.logoUrl}
+              alt="Wooly Imports"
+            />
+          </Link>
+
+          <section
+            className="catalogTopNavSearch"
+            aria-label="Buscador del catálogo"
+          >
+            <SearchInput
+              value={searchQuery}
+              onChange={onSearchChange}
+              products={products}
+              placeholder={searchPlaceholder}
             />
           </section>
-        )}
 
-        <section
-          className="catalogTopNavSection catalogTopNavSearch"
-          aria-label="Buscador del catálogo"
-        >
-          <SearchInput
-            value={searchQuery}
-            onChange={onSearchChange}
-            products={products}
-            placeholder={searchPlaceholder}
-          />
-        </section>
+          <button
+            type="button"
+            className="catalogTopNavCart"
+            onClick={onCartClick}
+            aria-label={`Abrir Mi Caja. ${cartLabel}`}
+          >
+            <span className="catalogTopNavCartIcon" aria-hidden="true">
+              <Package />
+            </span>
+
+            <span className="catalogTopNavCartCopy">
+              <strong>Mi Caja</strong>
+              <small>{cartLabel}</small>
+            </span>
+
+            <span
+              className="catalogTopNavCartCount"
+              aria-hidden="true"
+            >
+              {cartCount}
+            </span>
+          </button>
+        </div>
+
+        <div className="catalogTopNavDiscovery">
+          <section
+            className="catalogTopNavSection catalogTopNavCategories"
+            aria-label="Categorías del catálogo"
+          >
+            <HeaderCategoryFilter
+              categories={categories}
+              active={activeCategory}
+              counts={categoryCounts}
+              onSelect={onCategorySelect}
+            />
+          </section>
+
+          {hasCampaignSection && (
+            <section
+              className="catalogTopNavSection catalogTopNavCampaigns"
+              aria-label="Campañas activas"
+            >
+              <HeaderCampaignFilter
+                campaigns={campaigns}
+                active={activeCampaign}
+                counts={campaignCounts}
+                show={hasCampaignSection}
+                onSelect={onCampaignSelect}
+              />
+            </section>
+          )}
+        </div>
       </div>
     </nav>
   );

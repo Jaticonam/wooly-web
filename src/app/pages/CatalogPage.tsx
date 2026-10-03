@@ -167,11 +167,12 @@ const CatalogPage = () => {
 
     return () => clearTimeout(timer);
   }, [loading, products.length]);
+
   return (
     <div className="min-h-screen bg-background pb-40">
       <CatalogSeo seo={seo} />
 
-      <header className="sticky top-0 z-[100] flex w-full flex-col shadow-sm">
+      <header className="sticky top-0 z-[100] flex w-full flex-col">
         <CountdownTimer />
 
         <CatalogTopNav
@@ -187,6 +188,8 @@ const CatalogPage = () => {
           campaignCounts={campaignCounts}
           showCampaigns={CATALOG_CAMPAIGNS.length > 0}
           onCampaignSelect={handleCampaignSelect}
+          cartCount={totalItems}
+          onCartClick={() => setCartOpen(true)}
         />
       </header>
 
@@ -311,6 +314,7 @@ const CatalogPage = () => {
         cartCount={totalItems}
         onCartClick={() => setCartOpen(true)}
         onExploreClick={() => setExploreOpen(true)}
+        showCart={false}
       />
 
       <CartSidebar

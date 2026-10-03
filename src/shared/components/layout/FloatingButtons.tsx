@@ -8,6 +8,7 @@ interface FloatingButtonsProps {
   onCartClick: () => void;
   onExploreClick?: () => void;
   variant?: "shop" | "home";
+  showCart?: boolean;
 }
 
 export function FloatingButtons({
@@ -15,6 +16,7 @@ export function FloatingButtons({
   onCartClick,
   onExploreClick,
   variant = "shop",
+  showCart = true,
 }: FloatingButtonsProps) {
   const showCatalog = variant === "home";
 
@@ -24,19 +26,21 @@ export function FloatingButtons({
 
   return (
     <div className="floating-buttons">
-      <button
-        type="button"
-        onClick={onCartClick}
-        className="floating-btn floating-btn-cart"
-        aria-label={`Abrir mi caja con ${cartCount} producto${cartCount === 1 ? "" : "s"}`}
-      >
-        <Package className="floating-btn-icon" />
-        <span className="floating-btn-label">Mi Caja</span>
+      {showCart && (
+        <button
+          type="button"
+          onClick={onCartClick}
+          className="floating-btn floating-btn-cart"
+          aria-label={`Abrir mi caja con ${cartCount} producto${cartCount === 1 ? "" : "s"}`}
+        >
+          <Package className="floating-btn-icon" />
+          <span className="floating-btn-label">Mi Caja</span>
 
-        {cartCount > 0 && (
-          <strong className="floating-btn-count">{cartCount}</strong>
-        )}
-      </button>
+          {cartCount > 0 && (
+            <strong className="floating-btn-count">{cartCount}</strong>
+          )}
+        </button>
+      )}
 
       {onExploreClick && (
         <button

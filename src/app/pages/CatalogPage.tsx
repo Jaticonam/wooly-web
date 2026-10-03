@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchX } from "lucide-react";
 import { useCartStore } from "@/modules/cart/store";
 import { useCatalogData } from "@/modules/catalog/hooks/useCatalogData";
@@ -6,6 +6,7 @@ import { Product } from "@/shared/types/product";
 import { CATEGORY_CONFIG } from "@/modules/catalog";
 import { CountdownTimer } from "@/shared/components/commerce/CountdownTimer";
 import { CatalogTopNav } from "@/modules/catalog/components/CatalogTopNav";
+import { CatalogResultsToolbar } from "@/modules/catalog/components/CatalogResultsToolbar";
 import { FloatingButtons } from "@/shared/components/layout/FloatingButtons";
 import { ImageZoomModal } from "@/shared/components/media/ImageZoomModal";
 import { CatalogSkeleton } from "@/shared/components/skeletons/CatalogSkeleton";
@@ -22,6 +23,10 @@ import { CatalogSeo } from "@/shared/seo/catalogSeoComponent";
 import { getCatalogSeo } from "@/shared/seo/catalogSeo";
 import { getProductMedia, ProductMedia } from "@/shared/lib/productMedia";
 import AOS from "aos";
+import {
+  sortCatalogProducts,
+  type CatalogSortMode,
+} from "@/modules/catalog/domain/CatalogResultsSort";
 import {
   useCatalogNavigation,
 } from "@/modules/catalog/hooks/useCatalogNavigation";
@@ -53,6 +58,7 @@ const CatalogPage = () => {
     product: Product;
   } | null>(null);
   const [exploreOpen, setExploreOpen] = useState(false);
+  const [sortMode, setSortMode] = useState<CatalogSortMode>("featured");
 
   const {
     cart,
@@ -96,6 +102,39 @@ const CatalogPage = () => {
   const activeCampaignData = activeCampaign
     ? CATALOG_CAMPAIGNS.find((c) => c.id === activeCampaign)
     : null;
+
+  const resultsTitle = useMemo(() => {
+    const term = searchQuery.trim();
+
+    if (term) {
+      return `Resultados para “${term}”`;
+    }
+
+    if (activeCat && activeCampaignData) {
+      return `${activeCat.name} · ${activeCampaignData.name}`;
+    }
+
+    if (activeCampaignData) {
+      return activeCampaignData.name;
+    }
+
+    if (activeCat) {
+      return activeCat.name;
+    }
+
+    return "Todos los productos";
+  }, [searchQuery, activeCat, activeCampaignData]);
+
+  const activeFilterCount =
+    (activeCategory !== "todas" ? 1 : 0) +
+    (activeCampaign ? 1 : 0);
+
+  const sortedFilteredProducts = useMemo(
+    () => sortCatalogProducts(filteredProducts, sortMode),
+    [filteredProducts, sortMode],
+  );
+
+  const hasCustomSort = sortMode !== "featured";
 
   const handleAddToCart = useCallback(
     (product: Product) => {
@@ -155,6 +194,14 @@ const CatalogPage = () => {
     activeCampaign,
     searchQuery,
   });
+
+  const displayPriorityBlocks =
+    showPriorityBlocks && !hasCustomSort;
+
+  const displayRegularProducts =
+    hasCustomSort
+      ? sortedFilteredProducts
+      : regularProducts;
 
   const seo = getCatalogSeo(activeCategory);
 
@@ -223,7 +270,16 @@ const CatalogPage = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            {showPriorityBlocks && topProducts.length > 0 && (
+            <CatalogResultsToolbar
+              title={resultsTitle}
+              count={filteredProducts.length}
+              filterCount={activeFilterCount}
+              sortMode={sortMode}
+              onSortChange={setSortMode}
+              onOpenFilters={() => setExploreOpen(true)}
+            />
+
+            {displayPriorityBlocks && topProducts.length > 0 && (
               <section className="space-y-3">
                 <div className="px-2 md:px-0">
                   <h2 className="text-lg font-black text-foreground md:text-xl">
@@ -238,7 +294,7 @@ const CatalogPage = () => {
               </section>
             )}
 
-            {showPriorityBlocks && strongProducts.length > 0 && (
+            {displayPriorityBlocks && strongProducts.length > 0 && (
               <section className="space-y-3">
                 <div className="px-2 md:px-0">
                   <h2 className="text-lg font-black text-foreground md:text-xl">
@@ -253,7 +309,7 @@ const CatalogPage = () => {
               </section>
             )}
 
-            {showPriorityBlocks && highlightProducts.length > 0 && (
+            {displayPriorityBlocks && highlightProducts.length > 0 && (
               <section className="space-y-3">
                 <div className="px-2 md:px-0">
                   <h2 className="text-lg font-black text-foreground md:text-xl">
@@ -268,23 +324,21 @@ const CatalogPage = () => {
               </section>
             )}
 
-            {regularProducts.length > 0 && (
+            {displayRegularProducts.length > 0 && (
               <section className="space-y-3">
-                <div className="px-2 md:px-0">
-                  <h2 className="text-lg font-black text-foreground md:text-xl">
-                    {showPriorityBlocks
-                      ? "🛍️ Todo el catálogo"
-                      : "🛍️ Resultados"}
-                  </h2>
+                {displayPriorityBlocks && (
+                  <div className="px-2 md:px-0">
+                    <h2 className="text-lg font-black text-foreground md:text-xl">
+                      🛍️ Todo el catálogo
+                    </h2>
 
-                  <p className="text-[12px] font-medium text-muted-foreground">
-                    {showPriorityBlocks
-                      ? "Explora todos los productos disponibles para tu negocio."
-                      : "Productos encontrados según tu búsqueda, campaña o categoría."}
-                  </p>
-                </div>
+                    <p className="text-[12px] font-medium text-muted-foreground">
+                      Explora todos los productos disponibles para tu negocio.
+                    </p>
+                  </div>
+                )}
 
-                {renderGrid(regularProducts)}
+                {renderGrid(displayRegularProducts)}
               </section>
             )}
           </div>

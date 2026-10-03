@@ -17,7 +17,7 @@ export function ProductCardBadges({
       maxVisible={2}
       includePricingBadges
       variant="card"
-      className="absolute left-2 top-2 z-10 flex max-w-[75%] flex-col items-start gap-1.5"
+      className="card-product-badges absolute left-2 top-2 z-10 flex max-w-[78%] flex-col items-start gap-1.5"
     />
   );
 }

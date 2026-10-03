@@ -25,7 +25,7 @@ export function FloatingButtons({
   };
 
   return (
-    <div className="floating-buttons">
+    <div className={`floating-buttons floating-buttons-${variant}`}>
       {showCart && (
         <button
           type="button"

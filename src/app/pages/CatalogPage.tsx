@@ -217,7 +217,7 @@ const CatalogPage = () => {
   }, [loading, products.length]);
 
   return (
-    <div className="min-h-screen bg-background pb-40">
+    <div className="min-h-screen bg-background pb-28 md:pb-36">
       <CatalogSeo seo={seo} />
 
       <header className="sticky top-0 z-[100] flex w-full flex-col">

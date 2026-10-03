@@ -78,21 +78,23 @@
 
  @media(max-width:640px){
     .recent-activity{
-      top:calc(env(safe-area-inset-top) + 76px);
-      bottom:auto;
-      left:0;
-      right:0;
-      width:100%;
-      max-width:260px;
+      top:auto;
+      bottom:calc(env(safe-area-inset-bottom) + 4.75rem);
+      left:.75rem;
+      right:.75rem;
+      width:auto;
+      max-width:280px;
       margin-inline:auto;
-      z-index:1001;
+      z-index:999;
+      pointer-events:none;
     }
 
     .recent-activity-card{
       width:100%;
-      padding:.65rem .75rem;
-      gap:.55rem;
-      border-radius:18px;
+      padding:.6rem .7rem;
+      gap:.5rem;
+      border-radius:17px;
+      box-shadow:0 14px 34px rgba(15,23,42,.12);
     }
 
     .recent-activity-avatar{

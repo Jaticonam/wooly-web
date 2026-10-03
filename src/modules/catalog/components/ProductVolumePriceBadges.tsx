@@ -16,7 +16,6 @@ interface Props {
   available: boolean;
   isPreventa: boolean;
   maxTiers?: number;
-  compact?: boolean;
 }
 
 export function ProductVolumePriceBadges({
@@ -24,7 +23,6 @@ export function ProductVolumePriceBadges({
   available,
   isPreventa,
   maxTiers,
-  compact = false,
 }: Props) {
   if (!available || isPreventa) return null;
 
@@ -50,33 +48,6 @@ export function ProductVolumePriceBadges({
   const hiddenTierCount =
     tiers.length -
     visibleTiers.length;
-
-  if (compact) {
-    const tier = visibleTiers[0];
-
-    if (!tier) return null;
-
-    const totalPrice =
-      tier.unitPrice *
-      tier.qty;
-
-    return (
-      <div className="card-product-wholesale">
-        <span className="card-product-wholesale-main">
-          <span aria-hidden="true">📦</span>
-          <span>
-            {TIER_LABELS[tier.key]} ({tier.label}) × S/{totalPrice.toFixed(0)}
-          </span>
-        </span>
-
-        {hiddenTierCount > 0 && (
-          <span className="card-product-wholesale-more">
-            +{hiddenTierCount}
-          </span>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="wholesale-list">
@@ -113,3 +84,4 @@ export function ProductVolumePriceBadges({
     </div>
   );
 }
+

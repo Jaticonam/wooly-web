@@ -24,10 +24,12 @@ interface Props {
   onSelectQuantity: (quantity: number) => void;
 }
 
-const QUICK_QUANTITIES = [
+const OFFER_QUICK_QUANTITIES = [
   1,
   3,
   12,
+  50,
+  100,
 ] as const;
 
 export function AddToCartModalInfo({
@@ -67,7 +69,16 @@ export function AddToCartModalInfo({
         );
 
   const quickQuantities =
-    QUICK_QUANTITIES.filter(
+    (
+      hasOffer
+        ? [
+            ...OFFER_QUICK_QUANTITIES,
+          ]
+        : volumePrices.map(
+            (tier) =>
+              tier.qty,
+          )
+    ).filter(
       (quantity) =>
         quantity >=
           minimumQty &&
@@ -170,7 +181,23 @@ export function AddToCartModalInfo({
           </button>
         </div>
 
-        <div className="mt-2.5 grid grid-cols-3 gap-2">
+        <div className="mt-2.5">
+          <p className="mb-1.5 text-center text-[9px] font-black uppercase tracking-[0.07em] text-slate-400">
+            {hasOffer
+              ? "Cantidades rápidas"
+              : "Escalas disponibles"}
+          </p>
+
+          <div
+            className="grid gap-1.5 sm:gap-2"
+            style={{
+              gridTemplateColumns:
+                `repeat(${Math.max(
+                  quickQuantities.length,
+                  1,
+                )}, minmax(0, 1fr))`,
+            }}
+          >
           {quickQuantities.map(
             (quantity) => {
               const shortcutProjectedQty =
@@ -233,7 +260,7 @@ export function AddToCartModalInfo({
                     )
                   }
                   className={[
-                    "min-h-[46px] rounded-xl px-2 py-1.5 text-center transition active:scale-[.98]",
+                    "min-h-[48px] min-w-0 rounded-xl px-1.5 py-1.5 text-center transition active:scale-[.98] sm:px-2",
                     hasOffer
                       ? active
                         ? "border border-[#1d8299] bg-[#e6f6f8] text-[#16697a] shadow-sm"
@@ -253,12 +280,12 @@ export function AddToCartModalInfo({
                     " ",
                   )}
                 >
-                  <span className="block text-[13px] font-black">
+                  <span className="block text-[12px] font-black sm:text-[13px]">
                     {quantity}u
                   </span>
 
                   {!hasOffer ? (
-                    <span className="mt-0.5 block text-[10px] font-extrabold">
+                    <span className="mt-0.5 block truncate text-[9px] font-extrabold sm:text-[10px]">
                       S/{" "}
                       {shortcutUnitPrice.toFixed(
                         2,
@@ -269,6 +296,7 @@ export function AddToCartModalInfo({
               );
             },
           )}
+          </div>
         </div>
 
         <div className="mt-2.5 grid grid-cols-2 gap-2">

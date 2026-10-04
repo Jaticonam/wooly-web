@@ -25,7 +25,7 @@ import {
 } from "@/modules/cart/components/AddToCartModalInfo";
 
 const QUICK_ADD_MIN = 1;
-const QUICK_ADD_MAX = 12;
+const QUICK_ADD_MAX = 100;
 
 interface AddToCartModalProps {
   open: boolean;

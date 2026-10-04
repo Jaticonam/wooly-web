@@ -75,7 +75,7 @@ describe(
   "AddToCartModal",
   () => {
     it(
-      "limita el agregado rápido entre 1 y 12",
+      "permite seleccionar las cinco escalas comerciales hasta 100 unidades",
       () => {
         renderModal();
 
@@ -109,22 +109,22 @@ describe(
           "1",
         );
 
-        for (
-          let index = 0;
-          index < 11;
-          index++
-        ) {
-          fireEvent.click(
-            increase,
-          );
-        }
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 100 unidades a S/ 5.00 c/u",
+            },
+          ),
+        );
 
         expect(
           screen.getByTestId(
             "quick-add-quantity",
           ),
         ).toHaveTextContent(
-          "12",
+          "100",
         );
 
         expect(
@@ -319,6 +319,18 @@ describe(
           ),
         ).toBeInTheDocument();
 
+        expect(
+          screen.getByText(
+            "50u",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            "100u",
+          ),
+        ).toBeInTheDocument();
+
         const unitShortcut =
           screen.getByRole(
             "button",
@@ -396,6 +408,49 @@ describe(
         ).toHaveTextContent(
           /PU\s*=\s*S\/\s*9\.00/,
         );
+      },
+    );
+
+    it(
+      "oculta escalas sin precio válido",
+      () => {
+        renderModal({
+          product:
+            createProduct({
+              price_50: null,
+              price_100: null,
+            }),
+        });
+
+        expect(
+          screen.getByTestId(
+            "quick-quantity-1",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByTestId(
+            "quick-quantity-3",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByTestId(
+            "quick-quantity-12",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.queryByTestId(
+            "quick-quantity-50",
+          ),
+        ).not.toBeInTheDocument();
+
+        expect(
+          screen.queryByTestId(
+            "quick-quantity-100",
+          ),
+        ).not.toBeInTheDocument();
       },
     );
 

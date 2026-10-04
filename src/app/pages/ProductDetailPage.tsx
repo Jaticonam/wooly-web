@@ -85,6 +85,14 @@ import {
 } from "@/modules/product-detail/components/ProductDetailHeader";
 
 import {
+  ProductShareSheet,
+} from "@/modules/product-detail/components/ProductShareSheet";
+
+import {
+  resolveProductShareImage,
+} from "@/modules/product-detail/utils/ProductShareAsset";
+
+import {
   ProductGallery,
 } from "@/modules/product-detail/components/ProductGallery";
 
@@ -176,6 +184,12 @@ const ProductDetailPage =
   const [
     addModalOpen,
     setAddModalOpen,
+  ] =
+    useState(false);
+
+  const [
+    shareOpen,
+    setShareOpen,
   ] =
     useState(false);
 
@@ -337,6 +351,39 @@ const ProductDetailPage =
       product,
       id,
     );
+
+  const productPublicUrl =
+    product
+      ? buildProductPublicUrl(
+          product.id,
+          product.category,
+        )
+      : "";
+
+  /*
+   * Seam provider-neutral para compartir imágenes:
+   *
+   * 1) futuro artefacto comercial generado/publicado por JUNG CORE;
+   * 2) media ya resuelta del producto (incluye override actual de CORE);
+   * 3) imagen primaria vigente.
+   *
+   * Cuando CORE exponga una imagen específica para redes, solo debe
+   * entregarse como commercialImageUrl al resolver; ProductShareSheet
+   * no necesita conocer endpoints, R2 ni proveedores.
+   */
+  const productShareImage =
+    product
+      ? resolveProductShareImage({
+          product,
+          media:
+            productMedia,
+        })
+      : {
+          url:
+            null,
+          source:
+            "none" as const,
+        };
 
   const selectedRelatedQty =
     selectedRelated
@@ -592,36 +639,16 @@ const ProductDetailPage =
 
   const handleShare =
     useCallback(
-      async () => {
-        const url =
-          window.location.href;
-
-        try {
-          if (
-            navigator.share
-          ) {
-            await navigator.share({
-              title:
-                product?.title,
-
-              text:
-                product?.description,
-
-              url,
-            });
-
-            return;
-          }
-
-          await navigator.clipboard
-            .writeText(
-              url,
-            );
-        } catch {
-          console.warn(
-            "No se pudo compartir el producto",
-          );
+      () => {
+        if (
+          !product
+        ) {
+          return;
         }
+
+        setShareOpen(
+          true,
+        );
       },
       [
         product,
@@ -1076,6 +1103,35 @@ const ProductDetailPage =
         />
       </main>
 
+      <ProductShareSheet
+        open={
+          shareOpen
+        }
+        title={
+          product.title
+        }
+        description={
+          product.description
+        }
+        url={
+          productPublicUrl
+        }
+        imageUrl={
+          productShareImage.url
+        }
+        imageSource={
+          productShareImage.source
+        }
+        pinterestEnabled={
+          false
+        }
+        onClose={() =>
+          setShareOpen(
+            false,
+          )
+        }
+      />
+
       <FloatingButtons
         cartCount={
           totalItems
@@ -1196,4 +1252,7 @@ const ProductDetailPage =
 };
 
 export default ProductDetailPage;
-import { buildProductPublicPath } from "@/shared/config/application";
+import {
+  buildProductPublicPath,
+  buildProductPublicUrl,
+} from "@/shared/config/application";

@@ -37,8 +37,11 @@ export function ProductDetailHeader({
           </div>
 
           <button
+            type="button"
             onClick={onShare}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#334155] shadow-sm transition-colors hover:bg-[#f8fafc]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#334155] shadow-sm transition-colors hover:border-[#1d8299]/30 hover:bg-[#f3fafb] hover:text-[#1d8299]"
+            aria-label="Compartir producto"
+            title="Compartir producto"
           >
             <Share2 className="h-4 w-4" />
           </button>

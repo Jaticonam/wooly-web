@@ -26,7 +26,17 @@ export function ProductPurchaseActions({
       <button
         type="button"
         onClick={onWhatsApp}
-        className="btn-shop-whatsapp flex min-h-[50px] w-full items-center justify-center gap-2.5 py-3.5 text-[14px] font-black"
+        data-testid={
+          isPreventa
+            ? "product-detail-preorder-action"
+            : "product-detail-restock-action"
+        }
+        className={[
+          "flex min-h-[50px] w-full items-center justify-center gap-2.5 rounded-2xl px-4 py-3.5 text-[14px] font-black text-white shadow-lg transition-all active:scale-[.98]",
+          isPreventa
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-orange-500 hover:bg-orange-600",
+        ].join(" ")}
       >
         <MessageCircle className="h-5 w-5" />
         {isPreventa ? "Consultar por WhatsApp" : "Pedir reposición"}

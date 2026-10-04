@@ -13,6 +13,7 @@ interface ProductPriceBlockProps {
   nextVolumePrice: NextVolumePrice | null;
   isQtyInputValid: boolean;
   hasOffer: boolean;
+  showTotal?: boolean;
 }
 
 export function ProductPriceBlock({
@@ -24,6 +25,7 @@ export function ProductPriceBlock({
   basePrice,
   isQtyInputValid,
   hasOffer,
+  showTotal = true,
 }: ProductPriceBlockProps) {
   return (
     <div className="text-center md:text-left">
@@ -39,7 +41,13 @@ export function ProductPriceBlock({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div
+        className={
+          showTotal
+            ? "grid grid-cols-2 gap-2"
+            : "grid grid-cols-1 gap-2"
+        }
+      >
         <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
           <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-500">
             Precio unitario
@@ -61,21 +69,23 @@ export function ProductPriceBlock({
           </strong>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
-          <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-500">
-            Total · {effectiveQty}u
-          </span>
+        {showTotal && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
+            <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-500">
+              Total · {effectiveQty}u
+            </span>
 
-          <strong
-            data-testid="product-detail-total"
-            className="mt-0.5 block text-[21px] font-black tracking-tight text-slate-900 md:text-[23px]"
-          >
-            S/ {total.toFixed(2)}
-          </strong>
-        </div>
+            <strong
+              data-testid="product-detail-total"
+              className="mt-0.5 block text-[21px] font-black tracking-tight text-slate-900 md:text-[23px]"
+            >
+              S/ {total.toFixed(2)}
+            </strong>
+          </div>
+        )}
       </div>
 
-      {savingsByQty > 0 && (
+      {showTotal && savingsByQty > 0 && (
         <p
           data-testid="product-detail-savings"
           className="mt-2 text-[11px] font-black text-emerald-600"

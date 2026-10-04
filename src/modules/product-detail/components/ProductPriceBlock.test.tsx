@@ -173,6 +173,47 @@ describe(
     );
 
     it(
+      "muestra solo el precio unitario cuando el producto no es transaccionable",
+      () => {
+        render(
+          <ProductPriceBlock
+            unitPrice={10}
+            total={10}
+            effectiveQty={1}
+            pricePulse={false}
+            showUnlock={false}
+            savingsByQty={0}
+            basePrice={10}
+            nextVolumePrice={null}
+            isQtyInputValid
+            hasOffer={false}
+            showTotal={false}
+          />,
+        );
+
+        expect(
+          screen.getByTestId(
+            "product-detail-unit-price",
+          ),
+        ).toHaveTextContent(
+          "S/ 10.00",
+        );
+
+        expect(
+          screen.queryByTestId(
+            "product-detail-total",
+          ),
+        ).not.toBeInTheDocument();
+
+        expect(
+          screen.queryByTestId(
+            "product-detail-savings",
+          ),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
       "muestra la validación cuando la cantidad es inválida",
       () => {
         render(

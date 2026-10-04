@@ -1042,6 +1042,7 @@ const ProductDetailPage =
             isQtyInputValid={isQtyInputValid}
             showWhatsAppButton={showWhatsAppButton}
             isPreventa={isPreventa}
+            isAgotado={isAgotado}
             onSelectQty={updateQty}
             onQtyInputChange={handleQtyInputChange}
             onQtyInputBlur={handleQtyInputBlur}

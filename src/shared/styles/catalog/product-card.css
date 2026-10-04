@@ -724,3 +724,24 @@
     transform: none;
   }
 }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .card-product,
+  .card-product-image img,
+  .card-product-button,
+  .card-product-capture,
+  .wholesale-chip {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .card-product:hover,
+  .card-product:hover .card-product-image img,
+  .card-product-button:hover,
+  .card-product-capture:hover,
+  .wholesale-chip:hover {
+    transform: none !important;
+  }
+}

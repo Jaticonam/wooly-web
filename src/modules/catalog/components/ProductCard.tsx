@@ -91,7 +91,26 @@ export function ProductCard({
 
   return (
     <div
+      role="link"
+      tabIndex={0}
+      aria-label={`Ver detalle de ${p.title}`}
       onClick={handleCardClick}
+      onKeyDown={(event) => {
+        if (
+          event.target !==
+          event.currentTarget
+        ) {
+          return;
+        }
+
+        if (
+          event.key ===
+          "Enter"
+        ) {
+          event.preventDefault();
+          goToDetail();
+        }
+      }}
       className={[
         "card-product group flex min-w-0 flex-col p-2 text-center md:p-2.5",
         cardStateClass,

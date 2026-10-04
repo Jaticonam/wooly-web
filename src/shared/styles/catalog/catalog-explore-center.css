@@ -264,3 +264,18 @@
     font-size: 13px;
   }
 }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-explore-panel,
+  .catalog-explore-close,
+  .catalog-explore-campaign,
+  .catalog-explore-category,
+  .catalog-explore-quick-grid button,
+  .catalog-explore-footer-actions button,
+  .catalog-explore-footer-actions a {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

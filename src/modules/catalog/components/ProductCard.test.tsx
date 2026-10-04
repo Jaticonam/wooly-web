@@ -6,6 +6,8 @@ import {
 
 import {
   MemoryRouter,
+  Route,
+  Routes,
 } from "react-router-dom";
 
 import {
@@ -147,6 +149,69 @@ describe(
     );
   },
 );
+describe(
+  "ProductCard accessibility",
+  () => {
+    it(
+      "permite abrir el detalle con teclado desde la tarjeta",
+      () => {
+        render(
+          <MemoryRouter
+            initialEntries={[
+              "/",
+            ]}
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProductCard
+                    product={createProduct()}
+                    onAddToCart={vi.fn()}
+                  />
+                }
+              />
+
+              <Route
+                path="/catalogo/producto.html"
+                element={
+                  <div>
+                    Detalle destino
+                  </div>
+                }
+              />
+            </Routes>
+          </MemoryRouter>,
+        );
+
+        fireEvent.keyDown(
+          screen.getByRole(
+            "link",
+            {
+              name:
+                "Ver detalle de Rosa premium",
+            },
+          ),
+          {
+            key:
+              "Enter",
+          },
+        );
+
+        expect(
+          screen.getByText(
+            "Detalle destino",
+          ),
+        ).toBeInTheDocument();
+      },
+    );
+  },
+);
+
 describe(
   "ProductCard image loading",
   () => {

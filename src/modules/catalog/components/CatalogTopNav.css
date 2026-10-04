@@ -426,3 +426,17 @@
     padding-inline: 8px;
   }
 }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .catalogTopNavBrand img,
+  .catalogTopNavCart,
+  .catalogTopNavExplore {
+    transition-duration: 0.01ms !important;
+  }
+
+  .catalogTopNavBrand:hover img,
+  .catalogTopNavCart:hover {
+    transform: none !important;
+  }
+}

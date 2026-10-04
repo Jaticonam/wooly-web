@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { Campaign, Category } from "@/shared/types/product";
 
 import "@/shared/styles/catalog/catalog-explore-center.css";
@@ -48,6 +49,52 @@ export function CatalogExploreCenter({
   onCategorySelect,
   onOpenCart,
 }: Props) {
+  useEffect(
+    () => {
+      if (!open) {
+        return;
+      }
+
+      const previousOverflow =
+        document.body.style.overflow;
+
+      document.body.style.overflow =
+        "hidden";
+
+      const handleKeyDown =
+        (
+          event:
+            KeyboardEvent,
+        ) => {
+          if (
+            event.key ===
+            "Escape"
+          ) {
+            onClose();
+          }
+        };
+
+      window.addEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+
+      return () => {
+        document.body.style.overflow =
+          previousOverflow;
+
+        window.removeEventListener(
+          "keydown",
+          handleKeyDown,
+        );
+      };
+    },
+    [
+      open,
+      onClose,
+    ],
+  );
+
   if (!open) return null;
 
   const visibleCampaigns = campaigns.filter((campaign) => {
@@ -76,6 +123,9 @@ export function CatalogExploreCenter({
   return (
     <div className="catalog-explore-overlay" onClick={onClose}>
       <aside
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="catalog-explore-title"
         className="catalog-explore-panel"
         onClick={(e) => e.stopPropagation()}
       >
@@ -83,7 +133,12 @@ export function CatalogExploreCenter({
 
         <header className="catalog-explore-head">
           <div>
-            <h3 className="catalog-explore-title">Explorar catálogo</h3>
+            <h3
+              id="catalog-explore-title"
+              className="catalog-explore-title"
+            >
+              Explorar catálogo
+            </h3>
             <p className="catalog-explore-subtitle">
               Campañas, categorías y accesos rápidos
             </p>
@@ -93,6 +148,7 @@ export function CatalogExploreCenter({
             type="button"
             onClick={onClose}
             className="catalog-explore-close"
+            aria-label="Cerrar explorar catálogo"
           >
             Cerrar
           </button>

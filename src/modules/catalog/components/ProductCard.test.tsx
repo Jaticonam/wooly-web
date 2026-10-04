@@ -148,6 +148,81 @@ describe(
   },
 );
 describe(
+  "ProductCard image loading",
+  () => {
+    it(
+      "prioriza explícitamente imágenes del primer viewport",
+      () => {
+        const {
+          getByAltText,
+        } = render(
+          <MemoryRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <ProductCard
+              product={createProduct()}
+              onAddToCart={vi.fn()}
+              imagePriority
+            />
+          </MemoryRouter>,
+        );
+
+        expect(
+          getByAltText(
+            "Rosa premium",
+          ),
+        ).toHaveAttribute(
+          "loading",
+          "eager",
+        );
+
+        expect(
+          getByAltText(
+            "Rosa premium",
+          ),
+        ).toHaveAttribute(
+          "decoding",
+          "async",
+        );
+      },
+    );
+
+    it(
+      "mantiene lazy loading por defecto",
+      () => {
+        const {
+          getByAltText,
+        } = render(
+          <MemoryRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
+            <ProductCard
+              product={createProduct()}
+              onAddToCart={vi.fn()}
+            />
+          </MemoryRouter>,
+        );
+
+        expect(
+          getByAltText(
+            "Rosa premium",
+          ),
+        ).toHaveAttribute(
+          "loading",
+          "lazy",
+        );
+      },
+    );
+  },
+);
+
+describe(
   "ProductCard capture",
   () => {
     it(

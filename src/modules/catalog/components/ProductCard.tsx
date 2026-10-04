@@ -18,6 +18,7 @@ interface Props {
   cart?: CartItem[];
   onAddToCart: (product: Product) => void;
   onImageClick?: (product: Product) => void;
+  imagePriority?: boolean;
 }
 
 export function ProductCard({
@@ -25,6 +26,7 @@ export function ProductCard({
   cart = [],
   onAddToCart,
   onImageClick,
+  imagePriority = false,
 }: Props) {
   const navigate = useNavigate();
   const captureRef = useRef<HTMLDivElement | null>(null);
@@ -122,7 +124,9 @@ export function ProductCard({
             "h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.035]",
             isAgotado ? "opacity-90 saturate-[.9]" : "",
           ].join(" ")}
-          loading="lazy"
+          loading={imagePriority ? "eager" : "lazy"}
+          fetchPriority={imagePriority ? "high" : "auto"}
+          decoding="async"
         />
 
         <button

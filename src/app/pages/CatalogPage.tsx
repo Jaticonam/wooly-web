@@ -23,7 +23,6 @@ import { CatalogExploreCenter } from "@/modules/catalog/components/CatalogExplor
 import { CatalogSeo } from "@/shared/seo/catalogSeoComponent";
 import { getCatalogSeo } from "@/shared/seo/catalogSeo";
 import { getProductMedia, ProductMedia } from "@/shared/lib/productMedia";
-import AOS from "aos";
 import {
   sortCatalogProducts,
   type CatalogSortMode,
@@ -160,11 +159,12 @@ const CatalogPage = () => {
 
   const renderGrid = (items: Product[]) => (
     <div className="grid min-w-0 grid-cols-2 gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-      {items.map((p, index) => (
-        <div key={p.id} className="min-w-0" data-aos="fade-up" data-aos-delay={(index % 7) * 30}>
+      {items.map((p) => (
+        <div key={p.id} className="min-w-0">
           <ProductCard
             product={p}
             cart={cart}
+            imagePriority={priorityImageIds.has(p.id)}
             onAddToCart={handleAddToCart}
             onImageClick={(product) => {
               const gallery = getProductMedia(product);
@@ -204,17 +204,31 @@ const CatalogPage = () => {
       ? sortedFilteredProducts
       : regularProducts;
 
+  const firstVisibleProducts =
+    displayPriorityBlocks
+      ? topProducts.length > 0
+        ? topProducts
+        : strongProducts.length > 0
+          ? strongProducts
+          : highlightProducts.length > 0
+            ? highlightProducts
+            : displayRegularProducts
+      : displayRegularProducts;
+
+  const priorityImageIds = useMemo(
+    () =>
+      new Set(
+        firstVisibleProducts
+          .slice(0, 6)
+          .map(
+            (product) =>
+              product.id,
+          ),
+      ),
+    [firstVisibleProducts],
+  );
+
   const seo = getCatalogSeo(activeCategory);
-
-  useEffect(() => {
-    if (loading || products.length === 0) return;
-
-    const timer = setTimeout(() => {
-      AOS.refresh();
-    }, 120);
-
-    return () => clearTimeout(timer);
-  }, [loading, products.length]);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-36">

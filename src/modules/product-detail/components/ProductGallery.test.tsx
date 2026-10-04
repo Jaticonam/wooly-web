@@ -91,7 +91,7 @@ describe("ProductGallery capture integration", () => {
       ),
     ).toHaveClass(
       "absolute",
-      "bottom-4",
+      "bottom-3",
       "left-1/2",
       "z-30",
       "-translate-x-1/2",
@@ -116,6 +116,64 @@ describe("ProductGallery capture integration", () => {
     );
 
     expect(onZoom).not.toHaveBeenCalled();
+  });
+
+  it("el swipe horizontal cambia de imagen sin abrir el zoom", () => {
+    const onZoom = vi.fn();
+
+    const { container } = render(
+      <ProductGallery
+        product={product}
+        available
+        onZoom={onZoom}
+      />,
+    );
+
+    const captureHost =
+      container.querySelector(
+        "[data-product-detail-capture]",
+      );
+
+    const hero =
+      captureHost?.parentElement as HTMLElement;
+
+    fireEvent.touchStart(
+      hero,
+      {
+        touches: [
+          {
+            clientX: 240,
+            clientY: 180,
+          },
+        ],
+      },
+    );
+
+    fireEvent.touchEnd(
+      hero,
+      {
+        changedTouches: [
+          {
+            clientX: 120,
+            clientY: 185,
+          },
+        ],
+      },
+    );
+
+    expect(
+      screen.getByAltText(
+        "Producto 2",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      hero,
+    );
+
+    expect(
+      onZoom,
+    ).not.toHaveBeenCalled();
   });
 
   it("la imagen principal conserva la apertura del zoom", () => {

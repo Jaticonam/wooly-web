@@ -19,7 +19,11 @@ export function ProductGallery({
   const media = useMemo(() => getProductMedia(product), [product]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [heroLoaded, setHeroLoaded] = useState(false);
-  const touchStartX = useRef<number | null>(null);
+  const touchStartRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const didSwipeRef = useRef(false);
   const activeMedia = media[activeIndex] ?? media[0];
   const hasMany = media.length > 1;
 
@@ -34,32 +38,83 @@ export function ProductGallery({
 
   useEffect(() => {
     setActiveIndex(0);
+    setHeroLoaded(false);
   }, [product.id]);
 
+  useEffect(() => {
+    setHeroLoaded(false);
+  }, [activeIndex]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
+    const touch = e.touches[0];
+
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+
+    didSwipeRef.current = false;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!hasMany || touchStartX.current === null) return;
+    const start =
+      touchStartRef.current;
 
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (
+      !hasMany ||
+      !start
+    ) {
+      touchStartRef.current = null;
+      return;
+    }
 
-    if (Math.abs(diff) > 45) {
-      if (diff > 0) {
+    const touch =
+      e.changedTouches[0];
+
+    const diffX =
+      start.x -
+      touch.clientX;
+
+    const diffY =
+      start.y -
+      touch.clientY;
+
+    const isHorizontalSwipe =
+      Math.abs(diffX) > 45 &&
+      Math.abs(diffX) >
+        Math.abs(diffY) * 1.2;
+
+    if (isHorizontalSwipe) {
+      didSwipeRef.current = true;
+
+      if (diffX > 0) {
         goNext();
       } else {
         goPrev();
       }
     }
 
-    touchStartX.current = null;
+    touchStartRef.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    touchStartRef.current = null;
+    didSwipeRef.current = false;
+  };
+
+  const handleHeroClick = () => {
+    if (didSwipeRef.current) {
+      didSwipeRef.current = false;
+      return;
+    }
+
+    onZoom(activeIndex);
   };
 
   return (
     <div className="relative flex min-w-0 flex-col gap-2.5 md:grid md:grid-cols-[78px_minmax(0,1fr)] md:gap-3 xl:grid-cols-[82px_minmax(0,1fr)] xl:gap-4">
       {hasMany && (
-        <div className="order-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] md:order-1 md:max-h-[620px] md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0">
+        <div className="order-2 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [scrollbar-width:none] md:order-1 md:max-h-[620px] md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0">
           {visibleMedia.map((item, index) => {
             const isActive = index === activeIndex;
 
@@ -73,8 +128,10 @@ export function ProductGallery({
                   }
                 }}
                 onClick={() => setActiveIndex(index)}
+                aria-label={`Ver imagen ${index + 1} de ${media.length}`}
+                aria-current={isActive ? "true" : undefined}
                 className={[
-                  "relative h-[74px] w-[58px] shrink-0 overflow-hidden rounded-xl border bg-white transition-all duration-200 sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]",
+                  "relative h-[74px] w-[58px] shrink-0 snap-start overflow-hidden rounded-xl border bg-white transition-all duration-200 sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]",
                   isActive
                     ? "z-10 scale-105 border-[#1d8299] opacity-100 ring-2 ring-[#1d8299]/25 shadow-xl"
                     : "border-[#e2e8f0] opacity-70 hover:scale-[1.02] hover:opacity-100",
@@ -93,7 +150,7 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => onZoom(maxVisibleThumbs)}
-              className="relative h-[74px] w-[58px] shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]"
+              className="relative h-[74px] w-[58px] shrink-0 snap-start overflow-hidden rounded-xl sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]"
             >
               <img
                 src={
@@ -114,9 +171,13 @@ export function ProductGallery({
 
       <div
         className="group relative order-1 aspect-[3/4] min-w-0 cursor-zoom-in overflow-hidden rounded-[22px] border border-[#e2e8f0] bg-white shadow-[0_16px_42px_rgba(15,23,42,.11)] sm:rounded-3xl md:order-2"
-        onClick={() => onZoom(activeIndex)}
+        style={{
+          touchAction: "pan-y",
+        }}
+        onClick={handleHeroClick}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
       >
         <img
           key={activeMedia.id}
@@ -135,7 +196,7 @@ export function ProductGallery({
           maxVisible={3}
           includePricingBadges={false}
           variant="detail"
-          className="absolute left-4 top-4 z-10 flex max-w-[75%] flex-col items-start gap-2"
+          className="absolute left-3 top-3 z-10 flex max-w-[72%] flex-col items-start gap-1.5 sm:left-4 sm:top-4 sm:max-w-[75%] sm:gap-2"
         />
 
         {hasMany && (
@@ -166,8 +227,8 @@ export function ProductGallery({
           </>
         )}
 
-        <div className="absolute bottom-4 right-4 rounded-2xl border border-[#e2e8f0] bg-white/90 p-2.5 text-[#334155] shadow-lg backdrop-blur-md transition-all group-hover:scale-105">
-          <ZoomIn className="h-5 w-5" />
+        <div className="absolute bottom-3 right-3 rounded-xl border border-[#e2e8f0] bg-white/90 p-2 text-[#334155] shadow-md backdrop-blur-md transition-all group-hover:scale-105 sm:bottom-4 sm:right-4 sm:rounded-2xl sm:p-2.5">
+          <ZoomIn className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
 
         {hasMany && (

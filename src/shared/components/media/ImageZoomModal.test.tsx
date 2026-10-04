@@ -49,6 +49,35 @@ describe("ImageZoomModal footerAction", () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
+  it("bloquea el scroll del documento mientras está abierto y lo restaura al cerrar", () => {
+    document.body.style.overflow =
+      "auto";
+
+    const {
+      unmount,
+    } = render(
+      <ImageZoomModal
+        src="https://example.com/product.jpg"
+        title="Producto de prueba"
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(
+      document.body.style.overflow,
+    ).toBe(
+      "hidden",
+    );
+
+    unmount();
+
+    expect(
+      document.body.style.overflow,
+    ).toBe(
+      "auto",
+    );
+  });
+
   it("sigue funcionando sin footerAction", () => {
     render(
       <ImageZoomModal

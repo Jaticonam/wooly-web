@@ -126,6 +126,21 @@ export function ImageZoomModal({
   }, [open, onClose]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow =
+      "hidden";
+
+    return () => {
+      document.body.style.overflow =
+        previousOverflow;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!open) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -285,7 +300,7 @@ export function ImageZoomModal({
 
   return (
     <div
-      className="fixed inset-0 z-[2500] flex items-center justify-center bg-slate-950/95 p-2 backdrop-blur-md transition-opacity duration-300 md:p-4"
+      className="fixed inset-0 z-[2500] flex items-center justify-center bg-slate-950/95 p-0 backdrop-blur-md transition-opacity duration-300 sm:p-2 md:p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeModal();
       }}
@@ -295,13 +310,13 @@ export function ImageZoomModal({
     >
       <div
         ref={containerRef}
-        className="relative flex aspect-[3/4] h-auto max-h-[92vh] w-[94vw] max-w-[430px] touch-none select-none items-center justify-center overflow-hidden rounded-3xl bg-slate-900 shadow-2xl ring-1 ring-white/10 md:h-[78vh] md:w-full md:max-w-5xl md:aspect-auto"
+        className="relative flex h-[100dvh] w-full max-w-none touch-none select-none items-center justify-center overflow-hidden rounded-none bg-slate-900 shadow-2xl ring-1 ring-white/10 sm:aspect-[3/4] sm:h-auto sm:max-h-[94dvh] sm:w-[94vw] sm:max-w-[430px] sm:rounded-3xl md:aspect-auto md:h-[82vh] md:w-full md:max-w-5xl"
         onDoubleClick={handleDoubleClick}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="absolute left-0 top-0 z-30 flex min-h-16 w-full items-center justify-between gap-3 bg-gradient-to-b from-black/75 via-black/45 to-transparent px-4 py-3 md:min-h-20 md:px-5">
+        <div className="absolute left-0 top-0 z-30 flex min-h-16 w-full items-center justify-between gap-3 bg-gradient-to-b from-black/75 via-black/45 to-transparent px-4 pb-3 pt-[calc(12px+env(safe-area-inset-top))] sm:pt-3 md:min-h-20 md:px-5">
           <h2 className="line-clamp-2 max-w-[68%] text-sm font-black leading-tight text-white md:max-w-[75%] md:text-lg">
             {title}
           </h2>
@@ -335,8 +350,10 @@ export function ImageZoomModal({
         {normalizedMedia.length > 1 && (
           <div
             className={[
-              "absolute left-1/2 z-40 flex max-w-[88vw] -translate-x-1/2 gap-2 overflow-x-auto rounded-2xl bg-black/25 p-2 backdrop-blur-md lg:bottom-6 lg:left-4 lg:top-20 lg:max-w-none lg:translate-x-0 lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden",
-              footerAction ? "bottom-28" : "bottom-14",
+              "absolute left-1/2 z-40 flex max-w-[88vw] -translate-x-1/2 snap-x snap-mandatory gap-2 overflow-x-auto rounded-2xl bg-black/25 p-2 backdrop-blur-md [scrollbar-width:none] lg:bottom-6 lg:left-4 lg:top-20 lg:max-w-none lg:translate-x-0 lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden",
+              footerAction
+                ? "bottom-[calc(88px+env(safe-area-inset-bottom))] sm:bottom-28"
+                : "bottom-[calc(54px+env(safe-area-inset-bottom))] sm:bottom-14",
             ].join(" ")}
           >
             {normalizedMedia.map((item, index) => (
@@ -354,7 +371,7 @@ export function ImageZoomModal({
                   reset();
                 }}
                 className={[
-                  "overflow-hidden rounded-xl border transition-all h-10 w-10 md:h-12 md:w-12 lg:h-20 lg:w-20",
+                  "h-10 w-10 shrink-0 snap-start overflow-hidden rounded-xl border transition-all md:h-12 md:w-12 lg:h-20 lg:w-20",
                   activeIndex === index
                     ? "border-cyan-400 ring-2 ring-cyan-400/30 scale-105"
                     : "border-white/10 opacity-70 hover:opacity-100",
@@ -402,7 +419,7 @@ export function ImageZoomModal({
         {(footerAction || (hasMany && scale <= 1)) && (
           <div
             data-image-zoom-footer
-            className="absolute bottom-4 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2"
+            className="absolute bottom-[calc(12px+env(safe-area-inset-bottom))] left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-4"
           >
             {hasMany && scale <= 1 && (
               <div className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-black text-white backdrop-blur-md">

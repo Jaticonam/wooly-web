@@ -57,9 +57,9 @@ export function ProductGallery({
   };
 
   return (
-    <div className="relative flex flex-col gap-3 md:grid md:grid-cols-[96px_minmax(0,1fr)] xl:grid-cols-[100px_minmax(0,1fr)] md:gap-3 xl:gap-5">
+    <div className="relative flex min-w-0 flex-col gap-2.5 md:grid md:grid-cols-[78px_minmax(0,1fr)] md:gap-3 xl:grid-cols-[82px_minmax(0,1fr)] xl:gap-4">
       {hasMany && (
-        <div className="order-2 flex gap-2 overflow-x-auto pb-1 md:order-1 md:flex-col md:max-h-[560px] md:overflow-x-visible md:overflow-y-auto md:pb-0">
+        <div className="order-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] md:order-1 md:max-h-[620px] md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0">
           {visibleMedia.map((item, index) => {
             const isActive = index === activeIndex;
 
@@ -74,7 +74,7 @@ export function ProductGallery({
                 }}
                 onClick={() => setActiveIndex(index)}
                 className={[
-                  "relative h-20 w-16 shrink-0 overflow-hidden rounded-2xl border bg-white transition-all duration-200 md:h-[100px] md:w-[75px] xl:h-[100px] xl:w-[75px]",
+                  "relative h-[74px] w-[58px] shrink-0 overflow-hidden rounded-xl border bg-white transition-all duration-200 sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]",
                   isActive
                     ? "z-10 scale-105 border-[#1d8299] opacity-100 ring-2 ring-[#1d8299]/25 shadow-xl"
                     : "border-[#e2e8f0] opacity-70 hover:scale-[1.02] hover:opacity-100",
@@ -93,7 +93,7 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => onZoom(maxVisibleThumbs)}
-              className="relative h-20 w-16 shrink-0 overflow-hidden rounded-2xl md:h-[100px] md:w-[75px] xl:h-[100px] xl:w-[75px]"
+              className="relative h-[74px] w-[58px] shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-16 md:h-[92px] md:w-[68px] xl:h-[96px] xl:w-[72px]"
             >
               <img
                 src={
@@ -113,7 +113,7 @@ export function ProductGallery({
       )}
 
       <div
-        className="order-1 relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-3xl border border-[#e2e8f0] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.16)] group cursor-zoom-in md:order-2 lg:min-h-[560px] xl:min-h-[620px]"
+        className="group relative order-1 aspect-[3/4] min-w-0 cursor-zoom-in overflow-hidden rounded-[22px] border border-[#e2e8f0] bg-white shadow-[0_16px_42px_rgba(15,23,42,.11)] sm:rounded-3xl md:order-2"
         onClick={() => onZoom(activeIndex)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -171,14 +171,14 @@ export function ProductGallery({
         </div>
 
         {hasMany && (
-          <div className="absolute bottom-4 left-4 rounded-2xl bg-black/45 px-3 py-2 text-[11px] font-black text-white backdrop-blur-md">
+          <div className="absolute bottom-3 left-3 rounded-xl bg-black/45 px-2.5 py-1.5 text-[10px] font-black text-white backdrop-blur-md sm:bottom-4 sm:left-4 sm:rounded-2xl sm:px-3 sm:py-2 sm:text-[11px]">
             📷 {activeIndex + 1} de {media.length}
           </div>
         )}
 
         <div
           data-product-detail-capture
-          className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2"
+          className="absolute bottom-3 left-1/2 z-30 -translate-x-1/2 sm:bottom-4"
         >
           <ProductCaptureButton product={product} />
         </div>

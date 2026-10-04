@@ -1003,8 +1003,8 @@ const ProductDetailPage =
         }
       />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 mt-4 md:mt-10">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,560px)_minmax(420px,1fr)] xl:grid-cols-[minmax(0,620px)_minmax(460px,1fr)] lg:gap-8 xl:gap-10 items-start">
+      <main className="mx-auto mt-3 w-full max-w-[1440px] px-2.5 sm:px-4 md:mt-5 md:px-5 xl:px-6">
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,540px)_minmax(420px,1fr)] lg:gap-6 xl:grid-cols-[minmax(0,580px)_minmax(460px,1fr)] xl:gap-8">
           <ProductGallery
             product={
               product
@@ -1022,7 +1022,8 @@ const ProductDetailPage =
             }
           />
 
-          <ProductDetailCommercialSection
+          <div className="min-w-0 lg:sticky lg:top-[118px] xl:top-[122px]">
+            <ProductDetailCommercialSection
             product={product}
             available={available}
             viewers={viewers}
@@ -1047,7 +1048,8 @@ const ProductDetailPage =
             onQtyInputKeyDown={handleQtyInputKeyDown}
             onWhatsApp={handleWhatsApp}
             onAddToCart={handleAddToCart}
-          />
+            />
+          </div>
         </div>
 
         <RelatedProducts

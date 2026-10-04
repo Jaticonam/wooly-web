@@ -88,8 +88,8 @@ export function ProductDetailCommercialSection({
   onAddToCart,
 }: ProductDetailCommercialSectionProps) {
   return (
-    <div className="flex flex-col gap-4 md:gap-6 card-shop p-4 md:p-7 bg-white">
-      <div className="mb-2 flex flex-wrap justify-center gap-2 md:justify-start">
+    <div className="flex min-w-0 flex-col gap-3.5 rounded-[22px] border border-slate-200/90 bg-white p-4 shadow-[0_14px_38px_rgba(15,23,42,.07)] sm:rounded-3xl md:gap-4 md:p-5 xl:p-6">
+      <div className="flex flex-wrap justify-center gap-1.5 md:justify-start">
         <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-600">
           Código: {product.id}
         </span>
@@ -100,11 +100,11 @@ export function ProductDetailCommercialSection({
       </div>
 
       <div className="text-center md:text-left">
-        <h2 className="text-2xl md:text-[28px] tracking-tight font-black text-foreground leading-tight mb-3">
+        <h2 className="mb-2 text-[22px] font-black leading-[1.08] tracking-[-0.025em] text-foreground md:text-[26px] xl:text-[28px]">
           {product.title}
         </h2>
 
-        <p className="text-sm md:text-base text-[#64748b] leading-relaxed">
+        <p className="text-[13px] leading-relaxed text-[#64748b] md:text-[14px] xl:text-[15px]">
           {product.description}
         </p>
       </div>

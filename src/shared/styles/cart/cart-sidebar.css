@@ -16,7 +16,7 @@
     );
 
     border-top: 1px solid #e2e8f0;
-    box-shadow: 0 -18px 35px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 -14px 28px rgba(15, 23, 42, 0.055);
   }
 
   /* ===== CART SAVING MESSAGE ===== */
@@ -126,6 +126,11 @@
 
   .cart-checkout-btn:active {
     transform: scale(0.985);
+  }
+
+  .cart-checkout-btn:disabled {
+    cursor: wait;
+    transform: none;
   }
 
   .cart-checkout-btn svg {

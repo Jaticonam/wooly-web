@@ -262,7 +262,7 @@ describe(
             "button",
             {
               name:
-                "Revisé los cambios: enviar por WhatsApp",
+                "Revisé cambios · Continuar por WhatsApp",
             },
           ),
         ).toBeInTheDocument();
@@ -281,6 +281,114 @@ describe(
               onClose,
               onReplaceCart,
             );
+          },
+        );
+      },
+    );
+
+    it(
+      "bloquea el CTA y comunica el estado mientras verifica la caja",
+      async () => {
+        let resolveCheckout:
+          (
+            value:
+              unknown,
+          ) => void =
+            () => undefined;
+
+        checkoutWithProviderMock
+          .mockImplementation(
+            () =>
+              new Promise(
+                (
+                  resolve,
+                ) => {
+                  resolveCheckout =
+                    resolve;
+                },
+              ),
+          );
+
+        render(
+          <CartFooter
+            cart={[
+              createItem(),
+            ]}
+            totalItems={
+              3
+            }
+            totalPrice={
+              27
+            }
+            savings={
+              0
+            }
+            onClearCart={
+              vi.fn()
+            }
+            onReplaceCart={
+              vi.fn()
+            }
+            onClose={
+              vi.fn()
+            }
+          />,
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Enviar pedido por WhatsApp",
+            },
+          ),
+        );
+
+        const action =
+          screen.getByTestId(
+            "cart-checkout-action",
+          );
+
+        expect(
+          action,
+        ).toBeDisabled();
+
+        expect(
+          action,
+        ).toHaveAttribute(
+          "aria-busy",
+          "true",
+        );
+
+        expect(
+          action,
+        ).toHaveTextContent(
+          "Verificando tu caja...",
+        );
+
+        resolveCheckout({
+          status:
+            "opened",
+
+          reconciliation: {
+            ok:
+              true,
+
+            items: [
+              createItem(),
+            ],
+
+            changes:
+              [],
+          },
+        });
+
+        await waitFor(
+          () => {
+            expect(
+              action,
+            ).not.toBeDisabled();
           },
         );
       },
@@ -356,6 +464,16 @@ describe(
         ).toHaveTextContent(
           "Conservamos todos tus productos.",
         );
+
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Reintentar envío por WhatsApp",
+            },
+          ),
+        ).toBeInTheDocument();
 
         expect(
           onReplaceCart,

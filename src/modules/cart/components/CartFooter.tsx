@@ -184,6 +184,17 @@ export function CartFooter({
       0 ||
     isSubmitting;
 
+  const checkoutLabel =
+    isSubmitting
+      ? "Verificando tu caja..."
+      : notice?.tone ===
+          "warning"
+        ? "Revisé cambios · Continuar por WhatsApp"
+        : notice?.tone ===
+            "error"
+          ? "Reintentar envío por WhatsApp"
+          : "Enviar pedido por WhatsApp";
+
   const handleCheckout =
     async () => {
       if (disabled) {
@@ -378,7 +389,7 @@ export function CartFooter({
           role="alert"
           aria-live="assertive"
           className={[
-            "mb-3 rounded-xl border px-3 py-3",
+            "mb-2.5 mt-2 rounded-xl border px-3 py-2.5",
             notice.tone ===
             "warning"
               ? "border-amber-300 bg-amber-50 text-amber-900"
@@ -391,11 +402,11 @@ export function CartFooter({
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
 
             <div>
-              <p className="text-[12px] font-black">
+              <p className="text-[11px] font-black">
                 {notice.title}
               </p>
 
-              <p className="mt-1 text-[11px] font-semibold leading-snug">
+              <p className="mt-1 text-[10px] font-semibold leading-snug">
                 {notice.message}
               </p>
             </div>
@@ -405,7 +416,9 @@ export function CartFooter({
 
       <button
         type="button"
+        data-testid="cart-checkout-action"
         aria-live="polite"
+        aria-busy={isSubmitting}
         onClick={() => {
           void handleCheckout();
         }}
@@ -422,12 +435,7 @@ export function CartFooter({
           <MessageCircle className="h-5 w-5" />
         )}
 
-        {isSubmitting
-          ? "Verificando tu caja..."
-          : notice?.tone ===
-              "warning"
-            ? "Revisé los cambios: enviar por WhatsApp"
-            : "Enviar pedido por WhatsApp"}
+        {checkoutLabel}
       </button>
     </div>
   );

@@ -94,7 +94,7 @@ export function CartVolumePriceSelector({
                 "tier",
                 "tier-button",
                 tier.className,
-                "min-h-[34px] min-w-0 w-full px-1 py-1.5 text-[10px]",
+                "min-h-[36px] min-w-0 w-full px-1 py-1.5 text-[11px] font-black sm:text-[12px]",
                 active
                   ? "tier-active ring-2 ring-[#1d8299]/15"
                   : "",

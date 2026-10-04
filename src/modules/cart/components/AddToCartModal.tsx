@@ -165,7 +165,7 @@ export function AddToCartModal({
 
   return (
     <div className="fixed inset-0 z-[130] flex items-end justify-center bg-black/45 backdrop-blur-[2px] sm:items-center sm:px-4 sm:py-6">
-      <div className="max-h-[92dvh] w-full max-w-[430px] animate-in overflow-y-auto rounded-t-[24px] border border-[#dbe5ee] bg-white p-3.5 pb-[calc(14px+env(safe-area-inset-bottom))] shadow-2xl fade-in slide-in-from-bottom-4 duration-200 sm:max-w-[520px] sm:rounded-2xl sm:p-5 sm:pb-5 sm:zoom-in-95">
+      <div className="max-h-[92dvh] w-full max-w-[430px] animate-in overflow-y-auto rounded-t-[24px] border border-[#dbe5ee] bg-white p-3.5 pb-[calc(14px+env(safe-area-inset-bottom))] shadow-2xl fade-in slide-in-from-bottom-4 duration-200 sm:max-w-[500px] sm:rounded-[22px] sm:p-4 sm:pb-4 sm:zoom-in-95">
         <AddToCartModalHeader
           product={product}
           onClose={onClose}
@@ -204,7 +204,7 @@ export function AddToCartModal({
               onClick={
                 handleConfirm
               }
-              className="mt-3 w-full min-h-[48px] rounded-xl bg-[#1d8299] px-4 py-3 text-[14px] font-black text-white shadow-[0_8px_20px_rgba(29,130,153,.18)] transition-all hover:bg-[#16697a] active:scale-[.98]"
+              className="mt-3 w-full min-h-[48px] rounded-xl bg-[#1d8299] px-4 py-3 text-[14px] font-black text-white shadow-[0_8px_20px_rgba(29,130,153,.16)] transition-all hover:bg-[#16697a] active:scale-[.98]"
             >
               Agregar{" "}
               {selectedQty}{" "}

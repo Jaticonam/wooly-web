@@ -202,7 +202,7 @@ export function CartRow({
           : "",
       ].join(" ")}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <div className="cart-product-img">
           <img
             src={item.img}
@@ -214,11 +214,11 @@ export function CartRow({
         <div className="min-w-0 flex-grow text-left">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h4 className="line-clamp-2 text-[13px] font-black capitalize leading-tight tracking-tight text-[#0f172a]">
+              <h4 className="text-[13px] font-extrabold capitalize leading-tight tracking-tight text-[#0f172a]">
                 {item.title}
               </h4>
 
-              <p className="mt-1 text-[9px] font-black uppercase tracking-[0.06em] text-[#94a3b8]">
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#94a3b8]">
                 {item.id}
               </p>
             </div>
@@ -235,72 +235,74 @@ export function CartRow({
             </button>
           </div>
 
-          <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
-            <div className="min-w-0">
-              <span className="block text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
-                Precio unitario
-              </span>
-
-              <div
-                className={[
-                  "mt-0.5 text-[12px] font-black tracking-tight",
-                  pricePulse
-                    ? "text-[#1d8299]"
-                    : "text-[#64748b]",
-                ].join(" ")}
-              >
-                {quantity}u × S/{" "}
-                {unitPrice.toFixed(2)} c/u
-              </div>
+          <div className="mt-2 flex items-end justify-between gap-3">
+            <div
+              className={[
+                "text-[12px] font-black tracking-tight",
+                pricePulse
+                  ? "text-[#1d8299]"
+                  : "text-[#64748b]",
+              ].join(" ")}
+            >
+              {quantity}u × S/{" "}
+              {unitPrice.toFixed(2)} c/u
             </div>
 
-            <div className="text-right">
-              <span className="block text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
-                Subtotal
+            <div className="flex items-baseline gap-1">
+              <span className="text-[10px] font-black text-[#94a3b8]">
+                S/
               </span>
 
-              <div className="mt-0.5 flex items-baseline justify-end gap-1">
-                <span className="text-[9px] font-black text-[#94a3b8]">
-                  S/
-                </span>
-
-                <span
-                  className={[
-                    "text-[22px] font-black leading-none tracking-[-0.04em] transition-all duration-300",
-                    pricePulse
-                      ? "scale-105 text-[#1d8299]"
-                      : "text-[#0f172a]",
-                  ].join(" ")}
-                >
-                  {subtotal.toFixed(2)}
-                </span>
-              </div>
+              <span
+                className={[
+                  "text-2xl font-black tracking-tighter transition-all duration-300",
+                  pricePulse
+                    ? "scale-105 text-[#1d8299]"
+                    : "text-[#0f172a]",
+                ].join(" ")}
+              >
+                {subtotal.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-        {hasOffer ? (
-          <div
-            data-testid="cart-offer-mode"
-            className="flex flex-1 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-black uppercase tracking-wide text-rose-600"
-          >
-            Precio de oferta
-          </div>
-        ) : (
-          <CartVolumePriceSelector
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2">
+        <div className="min-w-0">
+          <p className="mb-1 text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
+            {hasOffer
+              ? "Condición comercial"
+              : "Escalas de cantidad"}
+          </p>
+
+          {hasOffer ? (
+            <div
+              data-testid="cart-offer-mode"
+              className="flex min-h-[34px] items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-rose-600"
+            >
+              Precio de oferta
+            </div>
+          ) : (
+            <CartVolumePriceSelector
+              item={item}
+              onSetQty={onSetQty}
+            />
+          )}
+        </div>
+
+        <div className="shrink-0">
+          <p className="mb-1 text-center text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
+            Cantidad
+          </p>
+
+          <CartQtyControls
             item={item}
+            qtyPulse={qtyPulse}
+            onChangeQty={onChangeQty}
             onSetQty={onSetQty}
           />
-        )}
-
-        <CartQtyControls
-          item={item}
-          qtyPulse={qtyPulse}
-          onChangeQty={onChangeQty}
-          onSetQty={onSetQty}
-        />
+        </div>
       </div>
 
       <CartNoteTextarea

@@ -3,8 +3,8 @@ import type {
 } from "@/modules/cart/types";
 
 import {
-  getAvailableVolumePrices,
   hasValidOfferPrice,
+  VOLUME_PRICES,
 } from "@/shared/domain/volumePricing/VolumePricing";
 
 interface CartVolumePriceSelectorProps {
@@ -33,8 +33,20 @@ export function CartVolumePriceSelector({
   }
 
   const itemTiers =
-    getAvailableVolumePrices(
-      item,
+    VOLUME_PRICES.filter(
+      (tier) => {
+        const value =
+          item[tier.key];
+
+        return (
+          typeof value ===
+            "number" &&
+          Number.isFinite(
+            value,
+          ) &&
+          value > 0
+        );
+      },
     );
 
   return (
@@ -47,7 +59,7 @@ export function CartVolumePriceSelector({
             1,
           )}, minmax(0, 1fr))`,
       }}
-      aria-label="Escalas de precio"
+      aria-label="Escalas de cantidad"
     >
       {itemTiers.map(
         (
@@ -76,26 +88,19 @@ export function CartVolumePriceSelector({
                   tier.qty,
                 )
               }
+              aria-label={`Seleccionar ${tier.qty} ${tier.qty === 1 ? "unidad" : "unidades"}`}
+              aria-pressed={active}
               className={[
                 "tier",
                 "tier-button",
                 tier.className,
-                "min-h-[42px] min-w-0 w-full px-1 py-1.5",
+                "min-h-[34px] min-w-0 w-full px-1 py-1.5 text-[10px]",
                 active
-                  ? "tier-active scale-[1.02]"
-                  : "hover:scale-[1.02]",
+                  ? "tier-active ring-2 ring-[#1d8299]/15"
+                  : "",
               ].join(" ")}
             >
-              <span className="block text-[10px] font-black leading-none">
-                {tier.label}
-              </span>
-
-              <span className="mt-1 block truncate text-[8px] font-black leading-none opacity-80">
-                S/{" "}
-                {tier.unitPrice.toFixed(
-                  2,
-                )}
-              </span>
+              {tier.label}
             </button>
           );
         },

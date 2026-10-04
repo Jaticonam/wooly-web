@@ -41,7 +41,7 @@ export function CartQtyInput({
         setQtyInput(value);
         onSetQty(item.id, parseInt(value, 10));
       }}
-      className="w-11 bg-transparent text-center text-[14px] font-black tracking-tight text-[#0f172a] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      className="w-12 text-center text-[14px] font-black tracking-tight text-[#0f172a] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       aria-label={`Cantidad de ${item.title}`}
     />
   );

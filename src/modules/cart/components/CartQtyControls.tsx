@@ -16,10 +16,7 @@ export function CartQtyControls({
   onSetQty,
 }: CartQtyControlsProps) {
   return (
-    <div
-      className={`cart-qty-box ${qtyPulse ? "ring-2 ring-[#1d8299]/10" : ""}`}
-      aria-label="Cantidad del producto"
-    >
+    <div className={`cart-qty-box ${qtyPulse ? "ring-2 ring-[#1d8299]/10" : ""}`}>
       <button
         type="button"
         onClick={() => onChangeQty(item.id, -1)}

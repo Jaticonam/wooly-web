@@ -182,16 +182,28 @@ describe(
         ).toBeInTheDocument();
 
         expect(
-          screen.getByText(
-            "S/ 9.00",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 50 unidades",
+            },
           ),
-        ).toBeInTheDocument();
+        ).toHaveTextContent(
+          "50u",
+        );
 
         expect(
-          screen.getByText(
-            "S/ 5.00",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 50 unidades",
+            },
           ),
-        ).toBeInTheDocument();
+        ).not.toHaveTextContent(
+          "S/",
+        );
       },
     );
   },

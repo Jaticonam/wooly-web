@@ -170,7 +170,7 @@ describe(
             "button",
             {
               name:
-                "Agregar 3 unidades a mi caja",
+                "Agregar 3u a mi caja",
             },
           ),
         );
@@ -574,7 +574,7 @@ describe(
             "button",
             {
               name:
-                "Agregar 10 unidades a mi caja",
+                "Agregar 10u a mi caja",
             },
           ),
         );
@@ -654,7 +654,7 @@ describe(
             "button",
             {
               name:
-                "Agregar 1 unidad a mi caja",
+                "Agregar 1u a mi caja",
             },
           ),
         );

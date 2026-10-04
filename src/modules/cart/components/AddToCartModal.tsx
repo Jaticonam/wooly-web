@@ -207,10 +207,7 @@ export function AddToCartModal({
               className="mt-3 w-full min-h-[48px] rounded-xl bg-[#1d8299] px-4 py-3 text-[14px] font-black text-white shadow-[0_8px_20px_rgba(29,130,153,.16)] transition-all hover:bg-[#16697a] active:scale-[.98]"
             >
               Agregar{" "}
-              {selectedQty}{" "}
-              {selectedQty === 1
-                ? "unidad"
-                : "unidades"}{" "}
+              {selectedQty}u{" "}
               a mi caja
             </button>
           </>

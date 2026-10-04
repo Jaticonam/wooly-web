@@ -103,6 +103,70 @@ describe(
   "CartFooter reconciliado",
   () => {
     it(
+      "presenta una jerarquía compacta de productos, unidades y total",
+      () => {
+        const item =
+          createItem();
+
+        render(
+          <CartFooter
+            cart={[
+              item,
+            ]}
+            totalItems={
+              3
+            }
+            totalPrice={
+              27
+            }
+            savings={
+              3
+            }
+            onClearCart={
+              vi.fn()
+            }
+            onReplaceCart={
+              vi.fn()
+            }
+            onClose={
+              vi.fn()
+            }
+          />,
+        );
+
+        expect(
+          screen.getByTestId(
+            "cart-summary-units",
+          ),
+        ).toHaveTextContent(
+          "3 unidades",
+        );
+
+        expect(
+          screen.getByTestId(
+            "cart-summary-units",
+          ),
+        ).toHaveTextContent(
+          "1 producto",
+        );
+
+        expect(
+          screen.getByTestId(
+            "cart-summary-total",
+          ),
+        ).toHaveTextContent(
+          "S/ 27.00",
+        );
+
+        expect(
+          screen.getByText(
+            "Verificaremos precios y disponibilidad antes de abrir WhatsApp.",
+          ),
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
       "avisa el cambio y solicita una segunda confirmación",
       async () => {
         const item =

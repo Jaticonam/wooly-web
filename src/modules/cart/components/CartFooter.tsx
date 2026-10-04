@@ -322,34 +322,54 @@ export function CartFooter({
       )}
 
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-2">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+        <div
+          data-testid="cart-summary-units"
+          className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5"
+        >
           <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-400">
-            Unidades
+            Tu caja
           </span>
 
-          <strong className="mt-0.5 block text-[20px] font-black leading-none text-[#0f172a]">
-            {totalItems}
+          <strong className="mt-0.5 block text-[18px] font-black leading-none text-[#0f172a]">
+            {totalItems}{" "}
+            {totalItems === 1
+              ? "unidad"
+              : "unidades"}
           </strong>
+
+          <span className="mt-1 block text-[9px] font-bold text-slate-400">
+            {cart.length}{" "}
+            {cart.length === 1
+              ? "producto"
+              : "productos"}
+          </span>
         </div>
 
-        <div className="rounded-xl border border-[#b9dde4] bg-[#f1fbfc] px-3 py-2.5 text-right">
+        <div
+          data-testid="cart-summary-total"
+          className="rounded-xl border border-[#b9dde4] bg-[#f1fbfc] px-3 py-2.5 text-right"
+        >
           <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-[#5b8791]">
             Total estimado
           </span>
 
-          <strong className="mt-0.5 block text-[22px] font-black leading-none tracking-[-0.04em] text-[#1d8299]">
+          <strong className="mt-0.5 block text-[23px] font-black leading-none tracking-[-0.04em] text-[#1d8299]">
             S/{" "}
             {totalPrice.toFixed(
               2,
             )}
           </strong>
+
+          <span className="mt-1 block text-[9px] font-bold text-[#5b8791]">
+            Antes de confirmar
+          </span>
         </div>
       </div>
 
       {!disabled &&
       !notice ? (
         <p className="mb-2.5 mt-2 text-center text-[10px] font-semibold leading-snug text-[#64748b]">
-          Revisaremos tu caja antes de abrir WhatsApp para confirmar disponibilidad.
+          Verificaremos precios y disponibilidad antes de abrir WhatsApp.
         </p>
       ) : null}
 
@@ -385,6 +405,7 @@ export function CartFooter({
 
       <button
         type="button"
+        aria-live="polite"
         onClick={() => {
           void handleCheckout();
         }}

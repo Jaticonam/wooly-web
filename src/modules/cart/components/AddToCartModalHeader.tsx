@@ -22,7 +22,7 @@ export function AddToCartModalHeader({
             Agregar a Mi Caja
           </p>
 
-          <h3 className="line-clamp-1 text-[15px] font-black leading-tight text-[#0f172a]">
+          <h3 className="line-clamp-2 text-[15px] font-black leading-tight text-[#0f172a]">
             {product.title}
           </h3>
         </div>

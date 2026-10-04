@@ -164,8 +164,8 @@ export function AddToCartModal({
     onClose;
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-end justify-center bg-black/45 backdrop-blur-[2px] sm:items-center sm:px-4 sm:py-6">
-      <div className="max-h-[92dvh] w-full max-w-[430px] animate-in overflow-y-auto rounded-t-[24px] border border-[#dbe5ee] bg-white p-3.5 pb-[calc(14px+env(safe-area-inset-bottom))] shadow-2xl fade-in slide-in-from-bottom-4 duration-200 sm:max-w-[500px] sm:rounded-[22px] sm:p-4 sm:pb-4 sm:zoom-in-95">
+    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/45 px-2.5 py-3 backdrop-blur-[2px] sm:px-4 sm:py-6">
+      <div className="max-h-[94dvh] w-full max-w-[390px] animate-in overflow-y-auto rounded-[24px] border border-[#dbe5ee] bg-white p-3.5 pb-[calc(14px+env(safe-area-inset-bottom))] shadow-2xl fade-in slide-in-from-bottom-4 duration-200 sm:max-w-[410px] sm:p-4 sm:pb-4 sm:zoom-in-95">
         <AddToCartModalHeader
           product={product}
           onClose={onClose}

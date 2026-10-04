@@ -109,6 +109,15 @@ export function AddToCartModalInfo({
           maximumQty,
     );
 
+  const quickQuantityGridClass =
+    quickQuantities.length <= 1
+      ? "grid-cols-1"
+      : quickQuantities.length === 2
+        ? "grid-cols-2"
+        : quickQuantities.length === 4
+          ? "grid-cols-2"
+          : "grid-cols-3";
+
   return (
     <div className="mt-3">
       <div className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5">
@@ -225,14 +234,7 @@ export function AddToCartModalInfo({
           </div>
 
           <div
-            className="grid gap-1.5 sm:gap-2"
-            style={{
-              gridTemplateColumns:
-                `repeat(${Math.max(
-                  quickQuantities.length,
-                  1,
-                )}, minmax(0, 1fr))`,
-            }}
+            className={`grid ${quickQuantityGridClass} gap-1.5 sm:gap-2`}
           >
             {quickQuantities.map(
               (targetQuantity) => {

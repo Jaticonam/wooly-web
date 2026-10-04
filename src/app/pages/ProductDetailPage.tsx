@@ -1056,6 +1056,9 @@ const ProductDetailPage =
           products={
             related
           }
+          cart={
+            cart
+          }
           onAddToCart={
             handleRelatedAddToCart
           }

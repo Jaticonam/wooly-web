@@ -4,7 +4,11 @@ import type {
   KeyboardEventHandler,
   RefObject,
 } from "react";
-import { Search, X } from "lucide-react";
+import {
+  Keyboard,
+  Search,
+  X,
+} from "lucide-react";
 
 interface SearchBoxProps {
   inputRef: RefObject<HTMLInputElement>;
@@ -46,11 +50,12 @@ export function SearchBox({
 
       {!hasValue && (
         <span
-          className="search-box-shortcut hidden h-7 min-w-7 items-center justify-center rounded-lg px-2 text-[11px] font-black sm:inline-flex"
+          className="search-box-shortcut hidden h-7 min-w-7 items-center justify-center rounded-lg px-2 text-[10px] font-black sm:inline-flex"
           aria-hidden="true"
-          title="Atajo de búsqueda"
+          title="Atajo de búsqueda: /"
         >
-          /
+          <Keyboard />
+          <span>/</span>
         </span>
       )}
 

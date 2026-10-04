@@ -1,4 +1,11 @@
-import { Menu, Package, Sparkles } from "lucide-react";
+import {
+  ClipboardList,
+  Heart,
+  Menu,
+  Package,
+  Sparkles,
+  User,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { HeaderCampaignFilter } from "@/modules/catalog/components/HeaderCampaignFilter";
@@ -36,6 +43,24 @@ interface CatalogTopNavProps {
   searchPlaceholder?: string;
 }
 
+const futureActions = [
+  {
+    id: "favorites",
+    label: "Favoritos",
+    icon: Heart,
+  },
+  {
+    id: "orders",
+    label: "Pedidos",
+    icon: ClipboardList,
+  },
+  {
+    id: "account",
+    label: "Cuenta",
+    icon: User,
+  },
+] as const;
+
 export function CatalogTopNav({
   products,
   searchQuery,
@@ -56,7 +81,7 @@ export function CatalogTopNav({
   onCartClick,
   onExploreClick,
 
-  searchPlaceholder = "Buscar productos...",
+  searchPlaceholder = "Buscar por producto, código o categoría...",
 }: CatalogTopNavProps) {
   const hasCampaignSection = showCampaigns && campaigns.length > 0;
   const cartLabel =
@@ -94,27 +119,52 @@ export function CatalogTopNav({
             />
           </section>
 
-          <button
-            type="button"
-            className="catalogTopNavCart"
-            onClick={onCartClick}
-            aria-label={`Abrir Mi Caja. ${cartLabel}`}
+          <div
+            className="catalogTopNavActions"
+            aria-label="Accesos de cuenta y compra"
           >
-            <span className="catalogTopNavCartIcon" aria-hidden="true">
-              <Package />
-            </span>
+            <div className="catalogTopNavFutureActions">
+              {futureActions.map((action) => {
+                const Icon = action.icon;
 
-            <span className="catalogTopNavCartCopy">
-              <strong>Mi Caja</strong>
-            </span>
+                return (
+                  <button
+                    key={action.id}
+                    type="button"
+                    className="catalogTopNavUtilityAction"
+                    aria-label={`${action.label}. Próximamente`}
+                    title={`${action.label} · Próximamente`}
+                  >
+                    <Icon aria-hidden="true" />
+                    <span>{action.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-            <span
-              className="catalogTopNavCartCount"
-              aria-hidden="true"
+            <button
+              type="button"
+              className="catalogTopNavCart"
+              onClick={onCartClick}
+              aria-label={`Abrir Mi Caja. ${cartLabel}`}
             >
-              {cartCount}
-            </span>
-          </button>
+              <span className="catalogTopNavCartIcon" aria-hidden="true">
+                <Package />
+              </span>
+
+              <span className="catalogTopNavCartCopy">
+                <strong>Mi Caja</strong>
+                <small>{cartCount === 1 ? "1 unidad" : `${cartCount} unidades`}</small>
+              </span>
+
+              <span
+                className="catalogTopNavCartCount"
+                aria-hidden="true"
+              >
+                {cartCount}
+              </span>
+            </button>
+          </div>
         </div>
 
         <div className="catalogTopNavDiscovery">

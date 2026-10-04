@@ -1,40 +1,38 @@
 /* =========================================================
    CATALOG TOP NAV — V2
-   Lote 1: shell principal.
-   Lote 2: navegación estructural + campañas.
-   Lote 2.1: refinamiento de densidad y alineación.
-   Lote 5A: shell móvil premium y compacto.
+   Lote 10A: validación humana — header premium / utility actions.
    ========================================================= */
 
 .catalogTopNav {
   width: 100%;
   border-bottom: 1px solid rgba(226, 232, 240, 0.88);
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
+  background: rgba(255, 255, 255, 0.985);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
   backdrop-filter: blur(18px);
 }
 
 .catalogTopNavInner {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1680px;
   margin: 0 auto;
-  padding: 8px 20px 0;
+  padding: 9px 20px 0;
 }
 
 /* ===== SHELL PRINCIPAL ===== */
 
 .catalogTopNavMain {
   display: grid;
-  grid-template-columns: minmax(112px, 146px) minmax(320px, 1fr) minmax(128px, 150px);
+  grid-template-columns: 150px minmax(320px, 1fr) auto;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   width: 100%;
-  padding-bottom: 8px;
+  padding-bottom: 9px;
 }
 
 .catalogTopNavBrand {
   display: inline-flex;
-  width: fit-content;
+  width: 100%;
+  min-height: 48px;
   align-items: center;
   justify-content: flex-start;
   border-radius: 14px;
@@ -47,7 +45,7 @@
 
 .catalogTopNavBrand img {
   display: block;
-  width: 116px;
+  width: 122px;
   max-width: 100%;
   height: auto;
   transition: transform 0.2s ease;
@@ -61,9 +59,7 @@
 
 .catalogTopNavSearch {
   width: 100%;
-  max-width: 900px;
   min-width: 0;
-  justify-self: center;
 }
 
 .catalogTopNavSearch > .relative {
@@ -71,13 +67,13 @@
 }
 
 .catalogTopNav .search-box-shell {
-  min-height: 46px;
+  min-height: 48px;
   border-radius: 16px;
   border-color: #dbe5ee;
   padding-inline: 15px;
   background: #ffffff;
   box-shadow:
-    0 6px 18px rgba(15, 23, 42, 0.04),
+    0 7px 20px rgba(15, 23, 42, 0.045),
     0 0 0 1px rgba(255, 255, 255, 0.72) inset;
 }
 
@@ -91,37 +87,100 @@
 .catalogTopNav .search-box-input {
   min-width: 0;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 750;
   color: #1e293b;
 }
 
 .catalogTopNav .search-box-shortcut {
+  gap: 5px;
   border: 1px solid rgba(203, 213, 225, 0.82);
   background: #f8fafc;
   color: #64748b;
+}
+
+.catalogTopNav .search-box-shortcut svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ===== ACCIONES ===== */
+
+.catalogTopNavActions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.catalogTopNavFutureActions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.catalogTopNavUtilityAction {
+  min-height: 46px;
+  padding: 6px 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #64748b;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.035);
+  font-size: 10.5px;
+  font-weight: 850;
+  white-space: nowrap;
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.catalogTopNavUtilityAction svg {
+  width: 16px;
+  height: 16px;
+  color: #475569;
+}
+
+.catalogTopNavUtilityAction:hover {
+  transform: translateY(-1px);
+  border-color: rgba(29, 130, 153, 0.22);
+  background: #f8fcfd;
+  color: #1d8299;
+}
+
+.catalogTopNavUtilityAction:hover svg {
+  color: #1d8299;
+}
+
+.catalogTopNavUtilityAction:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(29, 130, 153, 0.09);
 }
 
 /* ===== MI CAJA ===== */
 
 .catalogTopNavCart {
   position: relative;
-  min-height: 46px;
-  width: 100%;
+  min-height: 48px;
+  min-width: 138px;
   padding: 6px 9px;
-
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr) auto;
   align-items: center;
   gap: 7px;
-
-  border: 1px solid rgba(226, 232, 240, 0.92);
+  border: 1px solid rgba(29, 130, 153, 0.16);
   border-radius: 16px;
-
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff, #fbfeff);
   color: #334155;
-
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
-
+  box-shadow:
+    0 7px 18px rgba(15, 23, 42, 0.045),
+    0 0 0 1px rgba(29, 130, 153, 0.02) inset;
   transition:
     transform 0.18s ease,
     border-color 0.18s ease,
@@ -131,9 +190,9 @@
 
 .catalogTopNavCart:hover {
   transform: translateY(-1px);
-  border-color: rgba(29, 130, 153, 0.28);
+  border-color: rgba(29, 130, 153, 0.3);
   color: #1d8299;
-  box-shadow: 0 9px 20px rgba(29, 130, 153, 0.09);
+  box-shadow: 0 10px 24px rgba(29, 130, 153, 0.1);
 }
 
 .catalogTopNavCart:focus-visible {
@@ -161,7 +220,9 @@
 .catalogTopNavCartCopy {
   min-width: 0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   line-height: 1;
 }
 
@@ -169,6 +230,13 @@
   font-size: 11.5px;
   font-weight: 900;
   color: #1e293b;
+  white-space: nowrap;
+}
+
+.catalogTopNavCartCopy small {
+  font-size: 8.5px;
+  font-weight: 750;
+  color: #94a3b8;
   white-space: nowrap;
 }
 
@@ -197,28 +265,25 @@
 .catalogTopNavCategoryBar {
   width: 100%;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: 150px minmax(0, 1fr);
   align-items: stretch;
 }
 
 .catalogTopNavExplore {
-  min-width: 112px;
+  width: 100%;
+  min-width: 0;
   height: 38px;
   padding: 0 15px;
-
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 7px;
-
   border: 0;
   border-right: 1px solid rgba(226, 232, 240, 0.86);
   background: transparent;
   color: #334155;
-
   font-size: 11.5px;
   font-weight: 900;
-
   transition:
     color 0.18s ease,
     background 0.18s ease;
@@ -252,21 +317,23 @@
   width: 100%;
   min-height: 38px;
   padding: 4px 0 5px;
-
   display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-columns: 150px minmax(0, 1fr);
   align-items: center;
-
   border-top: 1px solid rgba(226, 232, 240, 0.58);
-  background: linear-gradient(90deg, rgba(253, 242, 248, 0.42), rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    90deg,
+    rgba(253, 242, 248, 0.42),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 .catalogTopNavCampaignLabel {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 5px;
-
+  padding-left: 15px;
   color: #9d567c;
   font-size: 9px;
   font-weight: 900;
@@ -281,29 +348,64 @@
 
 /* ===== RESPONSIVE ===== */
 
+@media (max-width: 1280px) {
+  .catalogTopNavMain {
+    grid-template-columns: 132px minmax(280px, 1fr) auto;
+    gap: 11px;
+  }
+
+  .catalogTopNavBrand img {
+    width: 108px;
+  }
+
+  .catalogTopNavUtilityAction {
+    width: 40px;
+    padding-inline: 0;
+  }
+
+  .catalogTopNavUtilityAction span {
+    display: none;
+  }
+
+  .catalogTopNavCategoryBar,
+  .catalogTopNavCampaignBar {
+    grid-template-columns: 132px minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 900px) {
   .catalogTopNavInner {
     padding-inline: 12px;
   }
 
   .catalogTopNavMain {
-    grid-template-columns: minmax(98px, 124px) minmax(0, 1fr) minmax(112px, 132px);
-    gap: 9px;
+    grid-template-columns: 104px minmax(0, 1fr) auto;
+    gap: 8px;
   }
 
   .catalogTopNavBrand img {
-    width: 104px;
+    width: 96px;
+  }
+
+  .catalogTopNavFutureActions {
+    display: none;
   }
 
   .catalogTopNavCart {
-    grid-template-columns: 30px minmax(0, 1fr) auto;
-    min-height: 44px;
-    padding-inline: 7px;
+    min-width: 118px;
   }
 
-  .catalogTopNavCartIcon {
-    width: 30px;
-    height: 30px;
+  .catalogTopNavCategoryBar,
+  .catalogTopNavCampaignBar {
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+
+  .catalogTopNavExplore {
+    padding-inline: 11px;
+  }
+
+  .catalogTopNavCampaignLabel {
+    padding-left: 11px;
   }
 }
 
@@ -329,7 +431,6 @@
   .catalogTopNavSearch {
     grid-column: 1 / -1;
     grid-row: 2;
-    max-width: none;
   }
 
   .catalogTopNav .search-box-shell {
@@ -346,9 +447,14 @@
     display: none;
   }
 
+  .catalogTopNavActions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .catalogTopNavCart {
     width: auto;
-    min-width: 76px;
+    min-width: 78px;
     min-height: 36px;
     grid-template-columns: 25px auto;
     gap: 5px;
@@ -379,13 +485,14 @@
   }
 
   .catalogTopNavCategoryBar {
-    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .catalogTopNavExplore {
     min-width: 84px;
     height: 34px;
     padding: 0 10px;
+    justify-content: center;
     gap: 5px;
     font-size: 10px;
   }
@@ -427,16 +534,17 @@
   }
 }
 
-
 @media (prefers-reduced-motion: reduce) {
   .catalogTopNavBrand img,
   .catalogTopNavCart,
-  .catalogTopNavExplore {
+  .catalogTopNavExplore,
+  .catalogTopNavUtilityAction {
     transition-duration: 0.01ms !important;
   }
 
   .catalogTopNavBrand:hover img,
-  .catalogTopNavCart:hover {
+  .catalogTopNavCart:hover,
+  .catalogTopNavUtilityAction:hover {
     transform: none !important;
   }
 }

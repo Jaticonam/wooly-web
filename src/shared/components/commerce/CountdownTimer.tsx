@@ -199,7 +199,7 @@ export function CountdownTimer() {
           </span>
 
           <span className="countdown-timer-context-copy">
-            <small>Próximos despachos</small>
+            <small>Envíos y despachos</small>
             <strong>Lun · Mié · Vie</strong>
           </span>
         </div>
@@ -226,7 +226,7 @@ export function CountdownTimer() {
           />
 
           <span>
-            Confirma antes de las{" "}
+            Confirma tu pedido antes de las{" "}
             <strong>4:00 p.m.</strong>
           </span>
         </div>

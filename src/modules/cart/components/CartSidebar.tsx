@@ -101,7 +101,7 @@ export function CartSidebar({
 
   return (
     <div
-      className="fixed inset-0 z-[1500] flex justify-end bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[1500] flex justify-end bg-black/50 backdrop-blur-sm sm:p-3"
       onClick={
         onClose
       }
@@ -126,32 +126,38 @@ export function CartSidebar({
         <div className="cart-body">
           {cart.length ===
           0 ? (
-            <CartEmpty />
+            <CartEmpty
+              onContinueShopping={
+                onClose
+              }
+            />
           ) : (
-            cart.map(
-              (item) => (
-                <CartRow
-                  key={
-                    item.id
-                  }
-                  item={
-                    item
-                  }
-                  onRemove={
-                    onRemove
-                  }
-                  onChangeQty={
-                    onChangeQty
-                  }
-                  onSetQty={
-                    onSetQty
-                  }
-                  onChangeNote={
-                    onChangeNote
-                  }
-                />
-              ),
-            )
+            <div className="space-y-2.5">
+              {cart.map(
+                (item) => (
+                  <CartRow
+                    key={
+                      item.id
+                    }
+                    item={
+                      item
+                    }
+                    onRemove={
+                      onRemove
+                    }
+                    onChangeQty={
+                      onChangeQty
+                    }
+                    onSetQty={
+                      onSetQty
+                    }
+                    onChangeNote={
+                      onChangeNote
+                    }
+                  />
+                ),
+              )}
+            </div>
           )}
         </div>
 

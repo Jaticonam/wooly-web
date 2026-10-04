@@ -11,28 +11,33 @@ export function CartHeader({
 }: CartHeaderProps) {
   return (
     <div className="cart-header">
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2.5">
         <div className="cart-icon-box">
-          <ShoppingBag className="w-5 h-5" />
+          <ShoppingBag className="h-4 w-4" />
         </div>
 
-        <div>
-          <h2 className="text-lg font-black leading-none text-[#0f172a]">
+        <div className="min-w-0">
+          <h2 className="text-[17px] font-black leading-none tracking-tight text-[#0f172a]">
             Mi Caja
           </h2>
 
-          <span className="mt-1 block text-[10px] font-bold Capitalize tracking-wide text-[#1d8299]">
-            {itemsCount} Unidades Acumuladas
+          <span className="mt-1 block text-[10px] font-black tracking-[0.04em] text-[#1d8299]">
+            {itemsCount}{" "}
+            {itemsCount === 1
+              ? "unidad"
+              : "unidades"}{" "}
+            acumuladas
           </span>
         </div>
       </div>
 
       <button
+        type="button"
         onClick={onClose}
         className="cart-close-btn"
         aria-label="Cerrar carrito"
       >
-        <X className="w-5 h-5" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );

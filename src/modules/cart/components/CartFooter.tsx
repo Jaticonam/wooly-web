@@ -321,43 +321,35 @@ export function CartFooter({
         </div>
       )}
 
-      <div className="mt-0 mb-0 flex items-end justify-between gap-4">
-        <div className="cart-total-box">
-          <span className="mt-2 mb-2 block text-[25px] font-black leading-none text-[#0f172a]">
-            {totalItems}
-          </span>
-
-          <span className="mt-2 mb-2 text-[15px] font-black capitalize tracking-wide text-[#64748b]">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-2">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+          <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-400">
             Unidades
           </span>
+
+          <strong className="mt-0.5 block text-[20px] font-black leading-none text-[#0f172a]">
+            {totalItems}
+          </strong>
         </div>
 
-        <div className="mt-0 mb-0 flex flex-col items-end">
-          <div className="mt-0 mb-0 flex items-baseline gap-1">
-            <span className="text-xs font-black text-[#94a3b8]">
-              S/
-            </span>
-
-            <span className="text-[30px] font-black tracking-[-.05em] text-[#1d8299]">
-              {totalPrice.toFixed(
-                2,
-              )}
-            </span>
-          </div>
-
-          <span className="mt-0 text-[14px] font-black capitalize text-[#64748b]">
-            Total de tu caja
+        <div className="rounded-xl border border-[#b9dde4] bg-[#f1fbfc] px-3 py-2.5 text-right">
+          <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-[#5b8791]">
+            Total estimado
           </span>
+
+          <strong className="mt-0.5 block text-[22px] font-black leading-none tracking-[-0.04em] text-[#1d8299]">
+            S/{" "}
+            {totalPrice.toFixed(
+              2,
+            )}
+          </strong>
         </div>
       </div>
 
       {!disabled &&
       !notice ? (
-        <p className="mb-3 mt-0 text-center text-[11px] font-semibold leading-snug text-[#64748b]">
-          Pedido para confirmar.
-          Coordinamos la
-          disponibilidad por
-          WhatsApp.
+        <p className="mb-2.5 mt-2 text-center text-[10px] font-semibold leading-snug text-[#64748b]">
+          Revisaremos tu caja antes de abrir WhatsApp para confirmar disponibilidad.
         </p>
       ) : null}
 

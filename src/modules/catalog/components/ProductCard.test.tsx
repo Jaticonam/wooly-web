@@ -220,7 +220,7 @@ describe(
       "prioriza explícitamente imágenes del primer viewport",
       () => {
         const {
-          getByAltText,
+          container,
         } = render(
           <MemoryRouter
             future={{
@@ -236,19 +236,20 @@ describe(
           </MemoryRouter>,
         );
 
+        const heroImage =
+          container.querySelector(
+            ".card-product-image > img",
+          );
+
         expect(
-          getByAltText(
-            "Rosa premium",
-          ),
+          heroImage,
         ).toHaveAttribute(
           "loading",
           "eager",
         );
 
         expect(
-          getByAltText(
-            "Rosa premium",
-          ),
+          heroImage,
         ).toHaveAttribute(
           "decoding",
           "async",
@@ -260,7 +261,7 @@ describe(
       "mantiene lazy loading por defecto",
       () => {
         const {
-          getByAltText,
+          container,
         } = render(
           <MemoryRouter
             future={{
@@ -275,10 +276,13 @@ describe(
           </MemoryRouter>,
         );
 
+        const heroImage =
+          container.querySelector(
+            ".card-product-image > img",
+          );
+
         expect(
-          getByAltText(
-            "Rosa premium",
-          ),
+          heroImage,
         ).toHaveAttribute(
           "loading",
           "lazy",

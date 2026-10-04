@@ -162,10 +162,17 @@ describe("ProductGallery capture integration", () => {
     );
 
     expect(
-      screen.getByAltText(
-        "Producto 2",
+      screen.getByRole(
+        "button",
+        {
+          name:
+            "Ver imagen 2 de 2",
+        },
       ),
-    ).toBeInTheDocument();
+    ).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
 
     fireEvent.click(
       hero,

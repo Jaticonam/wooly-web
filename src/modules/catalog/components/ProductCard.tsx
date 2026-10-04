@@ -144,7 +144,6 @@ export function ProductCard({
             isAgotado ? "opacity-90 saturate-[.9]" : "",
           ].join(" ")}
           loading={imagePriority ? "eager" : "lazy"}
-          fetchPriority={imagePriority ? "high" : "auto"}
           decoding="async"
         />
 

@@ -212,16 +212,16 @@ describe(
         );
 
         expect(
-          screen.getByText(
-            "S/9.00",
-          ),
-        ).toBeInTheDocument();
+          tierThree,
+        ).toHaveTextContent(
+          "S/ 9.00",
+        );
 
         expect(
-          screen.getByText(
-            "S/8.00",
-          ),
-        ).toBeInTheDocument();
+          tierTwelve,
+        ).toHaveTextContent(
+          "S/ 8.00",
+        );
 
         fireEvent.click(
           tierTwelve,

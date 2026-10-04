@@ -308,28 +308,52 @@ describe(
           renderModal();
 
         expect(
-          screen.getByText(
-            "3u",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 3 unidades a S/ 9.00 c/u",
+            },
           ),
-        ).toBeInTheDocument();
+        ).toHaveTextContent(
+          "3u",
+        );
 
         expect(
-          screen.getByText(
-            "12u",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 12 unidades a S/ 7.00 c/u",
+            },
           ),
-        ).toBeInTheDocument();
+        ).toHaveTextContent(
+          "12u",
+        );
 
         expect(
-          screen.getByText(
-            "50u",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 50 unidades a S/ 6.00 c/u",
+            },
           ),
-        ).toBeInTheDocument();
+        ).toHaveTextContent(
+          "50u",
+        );
 
         expect(
-          screen.getByText(
-            "100u",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Seleccionar 100 unidades a S/ 5.00 c/u",
+            },
           ),
-        ).toBeInTheDocument();
+        ).toHaveTextContent(
+          "100u",
+        );
 
         const unitShortcut =
           screen.getByRole(

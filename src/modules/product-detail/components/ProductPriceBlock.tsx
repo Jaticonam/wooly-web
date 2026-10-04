@@ -36,7 +36,7 @@ export function ProductPriceBlock({
           </span>
 
           <span className="rounded-full border border-fuchsia-200 bg-gradient-to-r from-fuchsia-50 via-purple-50 to-violet-50 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.06em] text-purple-700 shadow-[0_2px_10px_rgba(147,51,234,.12)]">
-            ⚡ Ahorras
+            ⚡ AHORRAS
           </span>
         </div>
       )}

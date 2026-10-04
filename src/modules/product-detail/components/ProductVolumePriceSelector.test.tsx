@@ -114,6 +114,22 @@ describe(
         );
 
         expect(
+          screen.getByTestId(
+            "product-detail-quick-quantity-50",
+          ),
+        ).toHaveTextContent(
+          "50u",
+        );
+
+        expect(
+          screen.getByTestId(
+            "product-detail-quick-quantity-100",
+          ),
+        ).toHaveTextContent(
+          "100u",
+        );
+
+        expect(
           screen.queryByText(
             "S/9.00",
           ),

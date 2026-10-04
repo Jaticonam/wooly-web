@@ -62,6 +62,20 @@ describe(
         );
 
         expect(
+          screen.getByText(
+            "Total · 5u",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByTestId(
+            "product-detail-savings",
+          ),
+        ).toHaveTextContent(
+          "Ahorro total: S/ 5.00",
+        );
+
+        expect(
           screen.queryByText(
             "⚡ AHORRAS",
           ),

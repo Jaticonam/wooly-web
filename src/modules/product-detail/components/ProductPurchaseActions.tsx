@@ -1,10 +1,11 @@
-import { PlusCircle } from "lucide-react";
+import { MessageCircle, PlusCircle } from "lucide-react";
 
 interface ProductPurchaseActionsProps {
   showWhatsAppButton: boolean;
   isPreventa: boolean;
   available: boolean;
   isQtyInputValid: boolean;
+  effectiveQty: number;
   total: number;
   onWhatsApp: () => void;
   onAddToCart: () => void;
@@ -15,6 +16,7 @@ export function ProductPurchaseActions({
   isPreventa,
   available,
   isQtyInputValid,
+  effectiveQty,
   total,
   onWhatsApp,
   onAddToCart,
@@ -22,10 +24,11 @@ export function ProductPurchaseActions({
   if (showWhatsAppButton) {
     return (
       <button
+        type="button"
         onClick={onWhatsApp}
-        className="btn-shop-whatsapp w-full py-4 text-base font-black flex items-center justify-center gap-3"
+        className="btn-shop-whatsapp flex min-h-[50px] w-full items-center justify-center gap-2.5 py-3.5 text-[14px] font-black"
       >
-        <PlusCircle className="w-5 h-5" />
+        <MessageCircle className="h-5 w-5" />
         {isPreventa ? "Consultar por WhatsApp" : "Pedir reposición"}
       </button>
     );
@@ -35,17 +38,22 @@ export function ProductPurchaseActions({
 
   return (
     <button
+      type="button"
       onClick={onAddToCart}
       disabled={!isQtyInputValid}
-      className={`w-full py-4 rounded-2xl font-black text-base shadow-xl transition-all flex items-center justify-center gap-3 ${
+      className={[
+        "flex min-h-[50px] w-full items-center justify-center gap-2.5 rounded-2xl px-4 py-3.5 text-[14px] font-black shadow-lg transition-all active:scale-[.98]",
         isQtyInputValid
-          ? "bg-[#1d8299] text-white hover:bg-[#16677a] hover:scale-[1.02] active:scale-[0.98]"
-          : "bg-muted text-muted-foreground cursor-not-allowed shadow-none"
-      }`}
+          ? "bg-[#1d8299] text-white hover:bg-[#16677a] hover:shadow-xl"
+          : "cursor-not-allowed bg-muted text-muted-foreground shadow-none",
+      ].join(" ")}
     >
-      <PlusCircle className="w-5 h-5" />
+      <PlusCircle className="h-5 w-5" />
+
       {isQtyInputValid
-        ? `Agregar a caja — S/ ${total.toFixed(2)}`
+        ? `Agregar ${effectiveQty} ${effectiveQty === 1 ? "unidad" : "unidades"} · S/ ${total.toFixed(
+            2,
+          )}`
         : "Ingresa una cantidad"}
     </button>
   );

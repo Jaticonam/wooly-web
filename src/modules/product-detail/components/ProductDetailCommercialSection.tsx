@@ -124,6 +124,26 @@ export function ProductDetailCommercialSection({
         />
       )}
 
+      {canSelectQuantity && (
+        <ProductQuantitySelector
+          value={qtyInput}
+          onDecrease={() => onSelectQty(effectiveQty - 1)}
+          onIncrease={() => onSelectQty(effectiveQty + 1)}
+          onChange={onQtyInputChange}
+          onBlur={onQtyInputBlur}
+          onKeyDown={onQtyInputKeyDown}
+        />
+      )}
+
+      {canShowVolumePricing && (
+        <ProductVolumePriceProgress
+          product={product}
+          effectiveQty={effectiveQty}
+          nextVolumePrice={nextVolumePrice}
+          onSelectQty={onSelectQty}
+        />
+      )}
+
       {canShowPricing && (
         <ProductPriceBlock
           unitPrice={unitPrice}
@@ -139,30 +159,12 @@ export function ProductDetailCommercialSection({
         />
       )}
 
-      {canShowVolumePricing && (
-        <ProductVolumePriceProgress
-          product={product}
-          effectiveQty={effectiveQty}
-          nextVolumePrice={nextVolumePrice}
-        />
-      )}
-
-      {canSelectQuantity && (
-        <ProductQuantitySelector
-          value={qtyInput}
-          onDecrease={() => onSelectQty(effectiveQty - 1)}
-          onIncrease={() => onSelectQty(effectiveQty + 1)}
-          onChange={onQtyInputChange}
-          onBlur={onQtyInputBlur}
-          onKeyDown={onQtyInputKeyDown}
-        />
-      )}
-
       <ProductPurchaseActions
         showWhatsAppButton={showWhatsAppButton}
         isPreventa={isPreventa}
         available={available}
         isQtyInputValid={isQtyInputValid}
+        effectiveQty={available ? effectiveQty : 1}
         total={total}
         onWhatsApp={onWhatsApp}
         onAddToCart={onAddToCart}

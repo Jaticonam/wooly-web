@@ -4,7 +4,9 @@ import type {
 
 import {
   getAvailableVolumePrices,
+  getVolumeUnitPrice,
 } from "@/shared/domain/volumePricing/VolumePricing";
+
 import type {
   NextVolumePrice,
 } from "@/shared/domain/volumePricing/VolumePricing";
@@ -13,116 +15,18 @@ interface ProductVolumePriceProgressProps {
   product: Product;
   effectiveQty: number;
   nextVolumePrice: NextVolumePrice | null;
+  onSelectQty: (quantity: number) => void;
 }
 
 export function ProductVolumePriceProgress({
   product,
   effectiveQty,
   nextVolumePrice,
+  onSelectQty,
 }: ProductVolumePriceProgressProps) {
   const volumePrices =
     getAvailableVolumePrices(
       product,
-    );
-
-  const bestTarget =
-    volumePrices.at(-1)?.qty ??
-    1;
-
-  const availableQuantities =
-    volumePrices.map(
-      (volumePrice) =>
-        volumePrice.qty,
-    );
-
-  const currentVolumePriceIndex =
-    availableQuantities.reduce(
-      (
-        activeIndex,
-        volumePriceQty,
-        index,
-      ) =>
-        effectiveQty >=
-        volumePriceQty
-          ? index
-          : activeIndex,
-      0,
-    );
-
-  const nextVolumePriceIndex =
-    availableQuantities.findIndex(
-      (volumePriceQty) =>
-        effectiveQty <
-        volumePriceQty,
-    );
-
-  const nextIndex =
-    nextVolumePriceIndex === -1
-      ? availableQuantities.length -
-        1
-      : nextVolumePriceIndex;
-
-  const previousQty =
-    availableQuantities[
-      currentVolumePriceIndex
-    ] ?? 1;
-
-  const nextQty =
-    availableQuantities[
-      nextIndex
-    ] ?? previousQty;
-
-  const segmentBase =
-    availableQuantities.length > 1
-      ? 100 /
-        (
-          availableQuantities.length -
-          1
-        )
-      : 100;
-
-  const segmentProgress =
-    nextQty > previousQty
-      ? (
-          (
-            effectiveQty -
-            previousQty
-          ) /
-          (
-            nextQty -
-            previousQty
-          )
-        ) * segmentBase
-      : 0;
-
-  const rawProgress =
-    Math.min(
-      currentVolumePriceIndex *
-        segmentBase +
-        segmentProgress,
-      100,
-    );
-
-  const progress =
-    effectiveQty > 0
-      ? Math.max(
-          rawProgress,
-          10,
-        )
-      : 0;
-
-  const unlocked =
-    effectiveQty >= bestTarget;
-
-  const targetQty =
-    nextVolumePrice?.qty ??
-    bestTarget;
-
-  const missingQty =
-    Math.max(
-      targetQty -
-        effectiveQty,
-      0,
     );
 
   if (
@@ -131,64 +35,92 @@ export function ProductVolumePriceProgress({
     return null;
   }
 
-  return (
-    <div className="mt-1">
-      <div className="mb-2 flex justify-end text-[12px] font-black">
-        <span
-          className={
-            unlocked
-              ? "text-emerald-600"
-              : "text-orange-500"
-          }
-        >
-          {effectiveQty}/
-          {bestTarget}
+  if (
+    !nextVolumePrice
+  ) {
+    return (
+      <div
+        data-testid="product-detail-best-price"
+        className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-center"
+      >
+        <span className="text-[11px] font-black text-emerald-700">
+          ✓ Mejor precio disponible activado
         </span>
       </div>
+    );
+  }
 
-      <div className="h-4 overflow-hidden rounded-full bg-slate-200 shadow-inner">
-        <div
-          className={[
-            "h-full rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(34,197,94,.25)]",
-            unlocked
-              ? "bg-gradient-to-r from-emerald-500 to-green-600"
-              : "bg-gradient-to-r from-orange-500 via-amber-400 to-emerald-500",
-          ].join(" ")}
-          style={{
-            width:
-              `${progress}%`,
-          }}
-        />
-      </div>
+  const missingQty =
+    Math.max(
+      nextVolumePrice.qty -
+        effectiveQty,
+      0,
+    );
 
-      <p className="mt-2 text-center text-[14px] font-bold leading-snug text-slate-600">
-        {unlocked ? (
-          <>
-            🎉 Mejor precio
-            desbloqueado
-          </>
-        ) : nextVolumePrice ? (
-          <>
-            🚀 Agrega{" "}
-            <span className="text-[#1d8299]">
-              {missingQty}
-            </span>{" "}
-            más y baja a{" "}
-            <span className="text-[#1d8299]">
-              S/
-              {nextVolumePrice
-                .unitPrice
-                .toFixed(2)}
-            </span>{" "}
+  const currentUnitPrice =
+    getVolumeUnitPrice(
+      product,
+      effectiveQty,
+    );
+
+  const savingsPerUnit =
+    Math.max(
+      0,
+      currentUnitPrice -
+        nextVolumePrice.unitPrice,
+    );
+
+  return (
+    <button
+      type="button"
+      data-testid="product-detail-next-tier"
+      onClick={() =>
+        onSelectQty(
+          nextVolumePrice.qty,
+        )
+      }
+      aria-label={`Completar escala de ${nextVolumePrice.qty} unidades`}
+      className="flex w-full items-center justify-between gap-3 rounded-xl border border-[#b9dde4] bg-[#f1fbfc] px-3 py-2.5 text-left transition hover:border-[#1d8299]/45 hover:bg-[#eaf8fa] active:scale-[.99]"
+    >
+      <span className="min-w-0">
+        <span className="block text-[9px] font-black uppercase tracking-[0.07em] text-[#1d8299]">
+          Siguiente escala
+        </span>
+
+        <span className="mt-0.5 block text-[11px] font-bold leading-snug text-slate-700">
+          Te faltan{" "}
+          <strong>
+            {missingQty}
+          </strong>{" "}
+          {missingQty === 1
+            ? "unidad"
+            : "unidades"}{" "}
+          para{" "}
+          <strong>
+            {nextVolumePrice.qty}u
+          </strong>
+        </span>
+      </span>
+
+      <span className="shrink-0 text-right">
+        <strong className="block text-[12px] font-black text-[#16697a]">
+          S/{" "}
+          {nextVolumePrice.unitPrice.toFixed(
+            2,
+          )}{" "}
+          c/u
+        </strong>
+
+        {savingsPerUnit > 0 ? (
+          <span className="mt-0.5 block text-[9px] font-black text-emerald-600">
+            Ahorra S/{" "}
+            {savingsPerUnit.toFixed(
+              2,
+            )}{" "}
             c/u
-          </>
-        ) : (
-          <>
-            ✅ Ya tienes el mejor
-            precio disponible
-          </>
-        )}
-      </p>
-    </div>
+          </span>
+        ) : null}
+      </span>
+    </button>
   );
 }

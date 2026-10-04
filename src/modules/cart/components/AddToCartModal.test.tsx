@@ -412,6 +412,80 @@ describe(
     );
 
     it(
+      "muestra la siguiente escala y permite completarla desde el incentivo",
+      () => {
+        renderModal();
+
+        const nextTier =
+          screen.getByTestId(
+            "next-volume-tier",
+          );
+
+        expect(
+          nextTier,
+        ).toHaveTextContent(
+          "Te faltan 2 unidades para 3u",
+        );
+
+        expect(
+          nextTier,
+        ).toHaveTextContent(
+          "S/ 9.00 c/u",
+        );
+
+        expect(
+          nextTier,
+        ).toHaveTextContent(
+          "Ahorra S/ 1.00 c/u",
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Completar escala de 3 unidades",
+            },
+          ),
+        );
+
+        expect(
+          screen.getByTestId(
+            "quick-add-quantity",
+          ),
+        ).toHaveTextContent(
+          "3",
+        );
+
+        expect(
+          screen.getByTestId(
+            "next-volume-tier",
+          ),
+        ).toHaveTextContent(
+          "Te faltan 9 unidades para 12u",
+        );
+      },
+    );
+
+    it(
+      "no muestra incentivo de siguiente escala cuando hay una oferta activa",
+      () => {
+        renderModal({
+          product:
+            createProduct({
+              price_offer: 8,
+            }),
+        });
+
+        expect(
+          screen.queryByTestId(
+            "next-volume-tier",
+          ),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
       "usa las escalas como cantidad total objetivo cuando el producto ya está en Mi Caja",
       () => {
         const {

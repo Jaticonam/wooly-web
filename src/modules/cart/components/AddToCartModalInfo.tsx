@@ -9,6 +9,7 @@ import type {
 
 import {
   getAvailableVolumePrices,
+  getNextVolumePrice,
   getVolumeUnitPrice,
   hasValidOfferPrice,
 } from "@/shared/domain/volumePricing/VolumePricing";
@@ -60,6 +61,27 @@ export function AddToCartModalInfo({
   const accumulatedTotal =
     projectedQty *
     unitPrice;
+
+  const nextVolumePrice =
+    getNextVolumePrice(
+      product,
+      projectedQty,
+    );
+
+  const unitsToNextTier =
+    nextVolumePrice
+      ? nextVolumePrice.qty -
+        projectedQty
+      : 0;
+
+  const savingsPerUnit =
+    nextVolumePrice
+      ? Math.max(
+          0,
+          unitPrice -
+            nextVolumePrice.unitPrice,
+        )
+      : 0;
 
   const volumePrices =
     hasOffer
@@ -180,6 +202,60 @@ export function AddToCartModalInfo({
             <Plus className="h-4 w-4" />
           </button>
         </div>
+
+        {nextVolumePrice ? (
+          <button
+            type="button"
+            data-testid="next-volume-tier"
+            onClick={() =>
+              onSelectTargetQuantity(
+                nextVolumePrice.qty,
+              )
+            }
+            aria-label={`Completar escala de ${nextVolumePrice.qty} unidades`}
+            className="mt-2.5 flex w-full items-center justify-between gap-3 rounded-xl border border-[#b9dde4] bg-[#f1fbfc] px-3 py-2.5 text-left transition hover:border-[#1d8299]/45 hover:bg-[#eaf8fa] active:scale-[.99]"
+          >
+            <span className="min-w-0">
+              <span className="block text-[9px] font-black uppercase tracking-[0.07em] text-[#1d8299]">
+                Siguiente escala
+              </span>
+
+              <span className="mt-0.5 block text-[11px] font-bold leading-snug text-slate-700">
+                Te faltan{" "}
+                <strong>
+                  {unitsToNextTier}
+                </strong>{" "}
+                {unitsToNextTier === 1
+                  ? "unidad"
+                  : "unidades"}{" "}
+                para{" "}
+                <strong>
+                  {nextVolumePrice.qty}u
+                </strong>
+              </span>
+            </span>
+
+            <span className="shrink-0 text-right">
+              <strong className="block text-[12px] font-black text-[#16697a]">
+                S/{" "}
+                {nextVolumePrice.unitPrice.toFixed(
+                  2,
+                )}{" "}
+                c/u
+              </strong>
+
+              {savingsPerUnit > 0 ? (
+                <span className="mt-0.5 block text-[9px] font-black text-emerald-600">
+                  Ahorra S/{" "}
+                  {savingsPerUnit.toFixed(
+                    2,
+                  )}{" "}
+                  c/u
+                </span>
+              ) : null}
+            </span>
+          </button>
+        ) : null}
 
         <div className="mt-2.5">
           <p className="mb-1.5 text-center text-[9px] font-black uppercase tracking-[0.07em] text-slate-400">

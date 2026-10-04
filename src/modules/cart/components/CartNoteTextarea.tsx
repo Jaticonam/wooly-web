@@ -21,13 +21,13 @@ export function CartNoteTextarea({
   }, [item.note]);
 
   return (
-    <div className="mt-1">
+    <div className="mt-0.5">
       <textarea
         ref={ref}
         rows={1}
         value={item.note || ""}
         onChange={(event) => onChangeNote(item.id, event.target.value)}
-        placeholder="Detalla tu pedido. Ej.: 2 rojos, 4 azules, con moño, etc."
+        placeholder="Detalle opcional: colores, modelos, presentación, etc."
         className="cart-note"
       />
     </div>

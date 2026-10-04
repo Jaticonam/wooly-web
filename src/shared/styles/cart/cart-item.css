@@ -44,24 +44,27 @@
 .cart-qty-box{
     display:flex;
     align-items:center;
-    min-width:108px;
-    border-radius:1rem;
-    padding:.10rem;
+    justify-content:center;
+    min-width:104px;
+    border-radius:.85rem;
+    padding:.14rem;
     background:#f8fafc;
     border:1px solid #dbe5ee;
     box-shadow:inset 0 0 0 1px rgba(226,232,240,.5);
   }
   
   .cart-qty-btn {
-    width: 1.60rem;
-    height: 1.60rem;
-    border-radius: 0.75rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 0.65rem;
     background: #ffffff;
     color: #1d8299;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
   }
 
   .cart-qty-btn:hover {
@@ -72,13 +75,19 @@
     transform: scale(0.9);
   }
 
+  .cart-qty-btn:disabled {
+    cursor: not-allowed;
+    opacity: .35;
+    transform: none;
+  }
+
   .cart-note {
     width: 100%;
     resize: none;
     overflow: hidden;
-    border-radius: 1rem;
-    padding: 0.75rem 1rem;
-    font-size: 12px;
+    border-radius: 0.85rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 11px;
     outline: none;
     border: 1px solid #dbe5ee;
     background: #f8fafc;

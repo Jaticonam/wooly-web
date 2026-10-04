@@ -202,7 +202,7 @@ export function CartRow({
           : "",
       ].join(" ")}
     >
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <div className="cart-product-img">
           <img
             src={item.img}
@@ -214,11 +214,11 @@ export function CartRow({
         <div className="min-w-0 flex-grow text-left">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h4 className="text-[13px] font-extrabold capitalize leading-tight tracking-tight text-[#0f172a]">
+              <h4 className="line-clamp-2 text-[13px] font-black capitalize leading-tight tracking-tight text-[#0f172a]">
                 {item.title}
               </h4>
 
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#94a3b8]">
+              <p className="mt-1 text-[9px] font-black uppercase tracking-[0.06em] text-[#94a3b8]">
                 {item.id}
               </p>
             </div>
@@ -235,40 +235,52 @@ export function CartRow({
             </button>
           </div>
 
-          <div className="mt-2 flex items-end justify-between gap-3">
-            <div
-              className={[
-                "text-[12px] font-black tracking-tight",
-                pricePulse
-                  ? "text-[#1d8299]"
-                  : "text-[#64748b]",
-              ].join(" ")}
-            >
-              {quantity}u × S/{" "}
-              {unitPrice.toFixed(2)} c/u
-            </div>
-
-            <div className="flex items-baseline gap-1">
-              <span className="text-[10px] font-black text-[#94a3b8]">
-                S/
+          <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
+            <div className="min-w-0">
+              <span className="block text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
+                Precio unitario
               </span>
 
-              <span
+              <div
                 className={[
-                  "text-2xl font-black tracking-tighter transition-all duration-300",
+                  "mt-0.5 text-[12px] font-black tracking-tight",
                   pricePulse
-                    ? "scale-105 text-[#1d8299]"
-                    : "text-[#0f172a]",
+                    ? "text-[#1d8299]"
+                    : "text-[#64748b]",
                 ].join(" ")}
               >
-                {subtotal.toFixed(2)}
+                {quantity}u × S/{" "}
+                {unitPrice.toFixed(2)} c/u
+              </div>
+            </div>
+
+            <div className="text-right">
+              <span className="block text-[8px] font-black uppercase tracking-[0.08em] text-slate-400">
+                Subtotal
               </span>
+
+              <div className="mt-0.5 flex items-baseline justify-end gap-1">
+                <span className="text-[9px] font-black text-[#94a3b8]">
+                  S/
+                </span>
+
+                <span
+                  className={[
+                    "text-[22px] font-black leading-none tracking-[-0.04em] transition-all duration-300",
+                    pricePulse
+                      ? "scale-105 text-[#1d8299]"
+                      : "text-[#0f172a]",
+                  ].join(" ")}
+                >
+                  {subtotal.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
         {hasOffer ? (
           <div
             data-testid="cart-offer-mode"

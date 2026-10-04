@@ -168,6 +168,30 @@ describe(
             "12u",
           ),
         ).toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            "50u",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            "100u",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            "S/ 9.00",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            "S/ 5.00",
+          ),
+        ).toBeInTheDocument();
       },
     );
   },

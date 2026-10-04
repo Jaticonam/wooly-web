@@ -3,8 +3,8 @@ import type {
 } from "@/modules/cart/types";
 
 import {
+  getAvailableVolumePrices,
   hasValidOfferPrice,
-  VOLUME_PRICES,
 } from "@/shared/domain/volumePricing/VolumePricing";
 
 interface CartVolumePriceSelectorProps {
@@ -33,33 +33,21 @@ export function CartVolumePriceSelector({
   }
 
   const itemTiers =
-    VOLUME_PRICES.filter(
-      (tier) => {
-        const value =
-          item[tier.key];
-
-        return (
-          typeof value ===
-            "number" &&
-          Number.isFinite(
-            value,
-          ) &&
-          value > 0
-        );
-      },
+    getAvailableVolumePrices(
+      item,
     );
-
-  const gridCols =
-    itemTiers.length <= 1
-      ? "grid-cols-1"
-      : itemTiers.length ===
-          2
-        ? "grid-cols-2"
-        : "grid-cols-3";
 
   return (
     <div
-      className={`grid ${gridCols} flex-1 gap-1`}
+      className="grid min-w-0 flex-1 gap-1"
+      style={{
+        gridTemplateColumns:
+          `repeat(${Math.max(
+            itemTiers.length,
+            1,
+          )}, minmax(0, 1fr))`,
+      }}
+      aria-label="Escalas de precio"
     >
       {itemTiers.map(
         (
@@ -92,13 +80,22 @@ export function CartVolumePriceSelector({
                 "tier",
                 "tier-button",
                 tier.className,
-                "w-full py-1.5",
+                "min-h-[42px] min-w-0 w-full px-1 py-1.5",
                 active
                   ? "tier-active scale-[1.02]"
                   : "hover:scale-[1.02]",
               ].join(" ")}
             >
-              {tier.label}
+              <span className="block text-[10px] font-black leading-none">
+                {tier.label}
+              </span>
+
+              <span className="mt-1 block truncate text-[8px] font-black leading-none opacity-80">
+                S/{" "}
+                {tier.unitPrice.toFixed(
+                  2,
+                )}
+              </span>
             </button>
           );
         },

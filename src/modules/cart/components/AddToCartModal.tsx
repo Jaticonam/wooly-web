@@ -153,8 +153,8 @@ export function AddToCartModal({
     onClose;
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/45 px-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-[390px] animate-in rounded-2xl border border-[#dbe5ee] bg-white p-4 shadow-2xl fade-in zoom-in-95 duration-200 md:max-w-[520px] md:p-6">
+    <div className="fixed inset-0 z-[130] flex items-end justify-center bg-black/45 backdrop-blur-[2px] sm:items-center sm:px-4 sm:py-6">
+      <div className="max-h-[92dvh] w-full max-w-[430px] animate-in overflow-y-auto rounded-t-[24px] border border-[#dbe5ee] bg-white p-3.5 pb-[calc(14px+env(safe-area-inset-bottom))] shadow-2xl fade-in slide-in-from-bottom-4 duration-200 sm:max-w-[520px] sm:rounded-2xl sm:p-5 sm:pb-5 sm:zoom-in-95">
         <AddToCartModalHeader
           product={product}
           onClose={onClose}
@@ -193,7 +193,7 @@ export function AddToCartModal({
               onClick={
                 handleConfirm
               }
-              className="mt-4 w-full rounded-xl bg-[#1d8299] px-4 py-3.5 text-[14px] font-extrabold text-white transition-all hover:bg-[#16697a] active:scale-[.98]"
+              className="mt-3 w-full min-h-[48px] rounded-xl bg-[#1d8299] px-4 py-3 text-[14px] font-black text-white shadow-[0_8px_20px_rgba(29,130,153,.18)] transition-all hover:bg-[#16697a] active:scale-[.98]"
             >
               Agregar{" "}
               {selectedQty}{" "}
@@ -204,12 +204,12 @@ export function AddToCartModal({
             </button>
           </>
         ) : (
-          <div className="mt-4">
+          <div className="mt-3">
             <div
               role="status"
-              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-5 text-center"
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-center"
             >
-              <CheckCircle2 className="mx-auto h-9 w-9 text-emerald-600" />
+              <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-600" />
 
               <p className="mt-2 text-[15px] font-black text-emerald-700">
                 Producto agregado
@@ -240,7 +240,7 @@ export function AddToCartModal({
               </p>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={

@@ -229,7 +229,7 @@ describe(
 
         expect(
           screen.getByText(
-            /La oferta aplica a cualquier cantidad hasta agotar stock\./,
+            /Oferta válida para cualquier cantidad hasta agotar stock\./,
           ),
         ).toBeInTheDocument();
 
@@ -407,6 +407,92 @@ describe(
           container,
         ).toHaveTextContent(
           /PU\s*=\s*S\/\s*9\.00/,
+        );
+      },
+    );
+
+    it(
+      "usa las escalas como cantidad total objetivo cuando el producto ya está en Mi Caja",
+      () => {
+        const {
+          props,
+          container,
+        } =
+          renderModal({
+            currentQty: 2,
+          });
+
+        const reachedTier =
+          screen.getByTestId(
+            "quick-quantity-1",
+          );
+
+        expect(
+          reachedTier,
+        ).toBeDisabled();
+
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Llegar a 3 unidades agregando 1 a S/ 9.00 c/u",
+            },
+          ),
+        ).toBeInTheDocument();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Llegar a 12 unidades agregando 10 a S/ 7.00 c/u",
+            },
+          ),
+        );
+
+        expect(
+          screen.getByTestId(
+            "quick-add-quantity",
+          ),
+        ).toHaveTextContent(
+          "10",
+        );
+
+        expect(
+          container,
+        ).toHaveTextContent(
+          /PU\s*=\s*S\/\s*7\.00/,
+        );
+
+        expect(
+          container,
+        ).toHaveTextContent(
+          /Total acumulado\s*=\s*S\/\s*84\.00/,
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Agregar 10 unidades a mi caja",
+            },
+          ),
+        );
+
+        expect(
+          props.onConfirmQuantity,
+        ).toHaveBeenCalledWith(
+          10,
+        );
+
+        expect(
+          screen.getByRole(
+            "status",
+          ),
+        ).toHaveTextContent(
+          "Ahora tienes 12 unidades",
         );
       },
     );

@@ -122,17 +122,28 @@ export function AddToCartModal({
       );
     };
 
-  const handleSelectQuantity =
+  const handleSelectTargetQuantity =
     (
-      quantity:
+      targetQuantity:
         number,
     ) => {
+      const quantityToAdd =
+        targetQuantity -
+        currentQty;
+
+      if (
+        quantityToAdd <=
+        0
+      ) {
+        return;
+      }
+
       setSelectedQty(
         Math.min(
           QUICK_ADD_MAX,
           Math.max(
             QUICK_ADD_MIN,
-            quantity,
+            quantityToAdd,
           ),
         ),
       );
@@ -183,8 +194,8 @@ export function AddToCartModal({
               onIncrease={
                 handleIncrease
               }
-              onSelectQuantity={
-                handleSelectQuantity
+              onSelectTargetQuantity={
+                handleSelectTargetQuantity
               }
             />
 

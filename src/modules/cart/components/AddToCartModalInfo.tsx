@@ -21,7 +21,7 @@ interface Props {
   maximumQty: number;
   onDecrease: () => void;
   onIncrease: () => void;
-  onSelectQuantity: (quantity: number) => void;
+  onSelectTargetQuantity: (quantity: number) => void;
 }
 
 const OFFER_QUICK_QUANTITIES = [
@@ -40,7 +40,7 @@ export function AddToCartModalInfo({
   maximumQty,
   onDecrease,
   onIncrease,
-  onSelectQuantity,
+  onSelectTargetQuantity,
 }: Props) {
   const hasOffer =
     hasValidOfferPrice(
@@ -134,7 +134,7 @@ export function AddToCartModalInfo({
             {currentQty === 1
               ? "unidad"
               : "unidades"}{" "}
-            en tu caja.
+            en tu caja. Las escalas indican la cantidad total objetivo.
           </p>
         ) : null}
 
@@ -183,9 +183,11 @@ export function AddToCartModalInfo({
 
         <div className="mt-2.5">
           <p className="mb-1.5 text-center text-[9px] font-black uppercase tracking-[0.07em] text-slate-400">
-            {hasOffer
-              ? "Cantidades rápidas"
-              : "Escalas disponibles"}
+            {currentQty > 0
+              ? "Llevar mi caja a"
+              : hasOffer
+                ? "Cantidades rápidas"
+                : "Escalas disponibles"}
           </p>
 
           <div
@@ -199,68 +201,79 @@ export function AddToCartModalInfo({
             }}
           >
           {quickQuantities.map(
-            (quantity) => {
-              const shortcutProjectedQty =
-                currentQty +
-                quantity;
+            (targetQuantity) => {
+              const quantityToAdd =
+                targetQuantity -
+                currentQty;
+
+              const reached =
+                quantityToAdd <=
+                0;
 
               const shortcutUnitPrice =
                 getVolumeUnitPrice(
                   product,
-                  shortcutProjectedQty,
+                  targetQuantity,
                 );
 
               const shortcutTier =
                 hasOffer
                   ? null
-                  : [
-                      ...volumePrices,
-                    ]
-                      .reverse()
-                      .find(
-                        (tier) =>
-                          shortcutProjectedQty >=
-                          tier.qty,
-                      ) ??
-                    volumePrices[0] ??
+                  : volumePrices.find(
+                      (tier) =>
+                        tier.qty ===
+                        targetQuantity,
+                    ) ??
                     null;
 
               const active =
-                selectedQty ===
-                quantity;
+                !reached &&
+                projectedQty ===
+                  targetQuantity;
 
               const quantityLabel =
-                quantity === 1
+                targetQuantity === 1
                   ? "1 unidad"
-                  : `${quantity} unidades`;
+                  : `${targetQuantity} unidades`;
 
               const accessibleLabel =
-                hasOffer
-                  ? `Seleccionar ${quantityLabel}`
-                  : `Seleccionar ${quantityLabel} a S/ ${shortcutUnitPrice.toFixed(
-                      2,
-                    )} c/u`;
+                reached
+                  ? `${quantityLabel} ya alcanzadas en Mi Caja`
+                  : currentQty > 0
+                    ? hasOffer
+                      ? `Llegar a ${quantityLabel} agregando ${quantityToAdd}`
+                      : `Llegar a ${quantityLabel} agregando ${quantityToAdd} a S/ ${shortcutUnitPrice.toFixed(
+                          2,
+                        )} c/u`
+                    : hasOffer
+                      ? `Seleccionar ${quantityLabel}`
+                      : `Seleccionar ${quantityLabel} a S/ ${shortcutUnitPrice.toFixed(
+                          2,
+                        )} c/u`;
 
               return (
                 <button
                   key={
-                    quantity
+                    targetQuantity
                   }
                   type="button"
-                  data-testid={`quick-quantity-${quantity}`}
+                  data-testid={`quick-quantity-${targetQuantity}`}
                   aria-label={
                     accessibleLabel
                   }
                   aria-pressed={
                     active
                   }
+                  disabled={
+                    reached
+                  }
                   onClick={() =>
-                    onSelectQuantity(
-                      quantity,
+                    onSelectTargetQuantity(
+                      targetQuantity,
                     )
                   }
                   className={[
-                    "min-h-[48px] min-w-0 rounded-xl px-1.5 py-1.5 text-center transition active:scale-[.98] sm:px-2",
+                    "min-h-[48px] min-w-0 rounded-xl px-1.5 py-1.5 text-center transition active:scale-[.98] disabled:cursor-default disabled:opacity-45 sm:px-2",
                     hasOffer
                       ? active
                         ? "border border-[#1d8299] bg-[#e6f6f8] text-[#16697a] shadow-sm"
@@ -281,10 +294,14 @@ export function AddToCartModalInfo({
                   )}
                 >
                   <span className="block text-[12px] font-black sm:text-[13px]">
-                    {quantity}u
+                    {targetQuantity}u
                   </span>
 
-                  {!hasOffer ? (
+                  {reached ? (
+                    <span className="mt-0.5 block text-[8px] font-extrabold uppercase text-slate-400 sm:text-[9px]">
+                      Alcanzado
+                    </span>
+                  ) : !hasOffer ? (
                     <span className="mt-0.5 block truncate text-[9px] font-extrabold sm:text-[10px]">
                       S/{" "}
                       {shortcutUnitPrice.toFixed(

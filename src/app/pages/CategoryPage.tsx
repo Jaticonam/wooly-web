@@ -85,6 +85,19 @@ import {
 } from "@/modules/catalog/components/CatalogResultsToolbar";
 
 import {
+  CatalogExploreCenter,
+} from "@/modules/catalog/components/CatalogExploreCenter";
+
+import {
+  useCatalogCampaignRegistry,
+} from "@/modules/catalog/context/CatalogCampaignRegistryContext";
+
+import {
+  buildCategoryCatalogRoute,
+  buildCategoryCampaignRoute,
+} from "@/modules/category/utils/CategoryCatalogNavigation";
+
+import {
   sortCatalogProducts,
   type CatalogSortMode,
 } from "@/modules/catalog/domain/CatalogResultsSort";
@@ -125,9 +138,20 @@ const CategoryPage =
   } =
     useCategoryProducts();
 
+  const {
+    activeCampaigns,
+  } =
+    useCatalogCampaignRegistry();
+
   const [
     cartOpen,
     setCartOpen,
+  ] =
+    useState(false);
+
+  const [
+    exploreOpen,
+    setExploreOpen,
   ] =
     useState(false);
 
@@ -204,11 +228,64 @@ const CategoryPage =
               true,
           },
         );
+
+        return;
+      }
+
+      const knownCategory =
+        CATEGORY_CONFIG.some(
+          (category) =>
+            category.id ===
+            activeCategory,
+        );
+
+      if (
+        !knownCategory
+      ) {
+        navigate(
+          "/catalogo",
+          {
+            replace:
+              true,
+          },
+        );
       }
     },
     [
+      activeCategory,
       categoryId,
       navigate,
+    ],
+  );
+
+  useEffect(
+    () => {
+      const campaignId =
+        searchParams.get(
+          "cpg",
+        );
+
+      if (
+        !campaignId
+      ) {
+        return;
+      }
+
+      navigate(
+        buildCategoryCampaignRoute(
+          activeCategory,
+          campaignId,
+        ),
+        {
+          replace:
+            true,
+        },
+      );
+    },
+    [
+      activeCategory,
+      navigate,
+      searchParams,
     ],
   );
 
@@ -300,6 +377,46 @@ const CategoryPage =
       ],
     );
 
+  const campaignCounts =
+    useMemo(
+      () =>
+        categoryProducts.reduce<
+          Record<
+            string,
+            number
+          >
+        >(
+          (
+            counts,
+            product,
+          ) => {
+            product.campaigns
+              ?.forEach(
+                (
+                  campaignId,
+                ) => {
+                  counts[
+                    campaignId
+                  ] =
+                    (
+                      counts[
+                        campaignId
+                      ] ||
+                      0
+                    ) +
+                    1;
+                },
+              );
+
+            return counts;
+          },
+          {},
+        ),
+      [
+        categoryProducts,
+      ],
+    );
+
   const hasSearch =
     categorySearch
       .trim()
@@ -317,21 +434,59 @@ const CategoryPage =
         id:
           string,
       ) => {
-        if (
-          id ===
-          "todas"
-        ) {
-          navigate(
-            "/catalogo",
-          );
+        setExploreOpen(
+          false,
+        );
 
+        navigate(
+          buildCategoryCatalogRoute(
+            id,
+          ),
+        );
+      },
+      [
+        navigate,
+      ],
+    );
+
+  const handleCampaignSelect =
+    useCallback(
+      (
+        campaignId:
+          string,
+      ) => {
+        setExploreOpen(
+          false,
+        );
+
+        if (
+          !campaignId
+        ) {
           return;
         }
 
         navigate(
-          `/catalogo/categoria.html?cat=${encodeURIComponent(
-            id,
-          )}`,
+          buildCategoryCampaignRoute(
+            activeCategory,
+            campaignId,
+          ),
+        );
+      },
+      [
+        activeCategory,
+        navigate,
+      ],
+    );
+
+  const handleResetCatalog =
+    useCallback(
+      () => {
+        setExploreOpen(
+          false,
+        );
+
+        navigate(
+          "/catalogo",
         );
       },
       [
@@ -421,17 +576,19 @@ const CategoryPage =
             handleCategorySelect
           }
           campaigns={
-            []
+            activeCampaigns
           }
           activeCampaign=""
-          campaignCounts={{
-          }}
-          showCampaigns={
-            false
+          campaignCounts={
+            campaignCounts
           }
-          onCampaignSelect={() => {
-            return;
-          }}
+          showCampaigns={
+            activeCampaigns.length >
+            0
+          }
+          onCampaignSelect={
+            handleCampaignSelect
+          }
           cartCount={
             totalItems
           }
@@ -441,8 +598,8 @@ const CategoryPage =
             )
           }
           onExploreClick={() =>
-            navigate(
-              "/catalogo",
+            setExploreOpen(
+              true,
             )
           }
           searchPlaceholder={`¿Qué buscas en ${title.toLowerCase()}?`}
@@ -470,11 +627,10 @@ const CategoryPage =
               onSortChange={
                 setSortMode
               }
-              onOpenFilters={() => {
-                return;
-              }}
-              showFilter={
-                false
+              onOpenFilters={() =>
+                setExploreOpen(
+                  true,
+                )
               }
             />
 
@@ -521,6 +677,57 @@ const CategoryPage =
           </div>
         )}
       </main>
+
+      <CatalogExploreCenter
+        open={
+          exploreOpen
+        }
+        activeCampaign=""
+        activeCategory={
+          activeCategory
+        }
+        activeCategoryName={
+          title
+        }
+        campaignCounts={
+          campaignCounts
+        }
+        categoryCounts={
+          categoryCounts
+        }
+        categories={
+          CATEGORY_CONFIG
+        }
+        campaigns={
+          activeCampaigns
+        }
+        cartCount={
+          totalItems
+        }
+        onClose={() =>
+          setExploreOpen(
+            false,
+          )
+        }
+        onResetCatalog={
+          handleResetCatalog
+        }
+        onCampaignSelect={
+          handleCampaignSelect
+        }
+        onCategorySelect={
+          handleCategorySelect
+        }
+        onOpenCart={() => {
+          setExploreOpen(
+            false,
+          );
+
+          setCartOpen(
+            true,
+          );
+        }}
+      />
 
       <FloatingButtons
         cartCount={

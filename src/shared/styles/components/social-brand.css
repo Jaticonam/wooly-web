@@ -99,3 +99,27 @@
     transform: none;
   }
 }
+
+
+.social-brand-button.social-brand-button--compact {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+}
+
+.social-brand-button.social-brand-button--compact .social-brand-button-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.social-brand-button.social-brand-button--compact[data-social-brand="facebook"] .social-brand-button-icon,
+.social-brand-button.social-brand-button--compact[data-social-brand="whatsapp"] .social-brand-button-icon,
+.social-brand-button.social-brand-button--compact[data-social-brand="pinterest"] .social-brand-button-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.social-brand-button.social-brand-button--compact[data-social-brand="x"] .social-brand-button-icon {
+  width: 15px;
+  height: 15px;
+}

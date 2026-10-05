@@ -12,6 +12,14 @@ import {
   SocialBrandButton,
 } from "@/shared/components/social";
 
+export type ProductShareChannel =
+  | "facebook"
+  | "email"
+  | "whatsapp"
+  | "x"
+  | "copy"
+  | "pinterest";
+
 interface ProductShareActionsProps {
   title: string;
   description?: string;
@@ -19,8 +27,23 @@ interface ProductShareActionsProps {
   imageUrl?: string | null;
   imageSource?: string;
   pinterestEnabled?: boolean;
-  variant?: "inline" | "header";
+  variant?:
+    | "inline"
+    | "header"
+    | "headerCompact";
+  channels?: readonly ProductShareChannel[];
+  showLabel?: boolean;
 }
+
+const DEFAULT_CHANNELS:
+  readonly ProductShareChannel[] = [
+    "facebook",
+    "email",
+    "whatsapp",
+    "x",
+    "copy",
+    "pinterest",
+  ];
 
 function absoluteAssetUrl(
   assetUrl: string,
@@ -87,6 +110,8 @@ export function ProductShareActions({
   imageSource = "none",
   pinterestEnabled = false,
   variant = "inline",
+  channels = DEFAULT_CHANNELS,
+  showLabel = true,
 }: ProductShareActionsProps) {
   const [
     copied,
@@ -175,12 +200,43 @@ export function ProductShareActions({
       }
     };
 
-  const neutralActionClass =
-    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,.06)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 active:scale-[.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200/70";
-
   const isHeader =
     variant ===
-    "header";
+      "header" ||
+    variant ===
+      "headerCompact";
+
+  const isCompact =
+    variant ===
+    "headerCompact";
+
+  const hasChannel =
+    (
+      channel:
+        ProductShareChannel,
+    ) =>
+      channels.includes(
+        channel,
+      );
+
+  const brandClassName =
+    isCompact
+      ? "social-brand-button--compact"
+      : isHeader
+        ? "!h-9 !w-9"
+        : "";
+
+  const neutralActionClass =
+    [
+      "flex shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,.06)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 active:scale-[.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200/70",
+      isCompact
+        ? "h-8 w-8"
+        : isHeader
+          ? "h-9 w-9"
+          : "h-10 w-10",
+    ].join(
+      " ",
+    );
 
   return (
     <section
@@ -192,7 +248,7 @@ export function ProductShareActions({
       aria-label="Compartir producto"
       className={
         isHeader
-          ? "flex min-w-0 items-center gap-1.5 overflow-x-auto py-0.5 md:overflow-visible"
+          ? "flex min-w-0 items-center gap-1.5"
           : "flex flex-wrap items-center justify-center gap-2.5 border-y border-slate-100 py-3 md:justify-start"
       }
       data-share-image-source={
@@ -203,133 +259,165 @@ export function ProductShareActions({
         undefined
       }
     >
-      <span
-        className={
-          isHeader
-            ? "mr-0.5 shrink-0 text-[10px] font-extrabold text-slate-500"
-            : "mr-1 text-[11px] font-extrabold text-slate-700"
-        }
-      >
-        Compartir
-      </span>
+      {showLabel && (
+        <span
+          className={
+            isHeader
+              ? "mr-0.5 shrink-0 text-[10px] font-extrabold text-slate-500"
+              : "mr-1 text-[11px] font-extrabold text-slate-700"
+          }
+        >
+          Compartir
+        </span>
+      )}
 
-      <SocialBrandButton
-        brand="facebook"
-        href={
-          facebookUrl
-        }
-        target="_blank"
-        rel="noreferrer"
-        label="Compartir en Facebook"
-        title="Facebook"
-        className={
-          isHeader
-            ? "!h-9 !w-9"
-            : ""
-        }
-      />
+      {hasChannel(
+        "facebook",
+      ) && (
+        <SocialBrandButton
+          brand="facebook"
+          href={
+            facebookUrl
+          }
+          target="_blank"
+          rel="noreferrer"
+          label="Compartir en Facebook"
+          title="Facebook"
+          className={
+            brandClassName
+          }
+        />
+      )}
 
-      <a
-        href={
-          emailUrl
-        }
-        className={
-          isHeader
-            ? `${neutralActionClass} !h-9 !w-9`
-            : neutralActionClass
-        }
-        aria-label="Compartir por correo"
-        title="Correo"
-      >
-        <Mail className="h-[19px] w-[19px]" />
-      </a>
+      {hasChannel(
+        "email",
+      ) && (
+        <a
+          href={
+            emailUrl
+          }
+          className={
+            neutralActionClass
+          }
+          aria-label="Compartir por correo"
+          title="Correo"
+        >
+          <Mail
+            className={
+              isCompact
+                ? "h-4 w-4"
+                : "h-[19px] w-[19px]"
+            }
+          />
+        </a>
+      )}
 
-      <SocialBrandButton
-        brand="whatsapp"
-        href={
-          whatsappUrl
-        }
-        target="_blank"
-        rel="noreferrer"
-        label="Compartir por WhatsApp"
-        title="WhatsApp"
-        className={
-          isHeader
-            ? "!h-9 !w-9"
-            : ""
-        }
-      />
+      {hasChannel(
+        "whatsapp",
+      ) && (
+        <SocialBrandButton
+          brand="whatsapp"
+          href={
+            whatsappUrl
+          }
+          target="_blank"
+          rel="noreferrer"
+          label="Compartir por WhatsApp"
+          title="WhatsApp"
+          className={
+            brandClassName
+          }
+        />
+      )}
 
-      <SocialBrandButton
-        brand="x"
-        href={
-          xUrl
-        }
-        target="_blank"
-        rel="noreferrer"
-        label="Compartir en X"
-        title="X"
-        className={
-          isHeader
-            ? "!h-9 !w-9"
-            : ""
-        }
-      />
+      {hasChannel(
+        "x",
+      ) && (
+        <SocialBrandButton
+          brand="x"
+          href={
+            xUrl
+          }
+          target="_blank"
+          rel="noreferrer"
+          label="Compartir en X"
+          title="X"
+          className={
+            brandClassName
+          }
+        />
+      )}
 
-      <button
-        type="button"
-        onClick={
-          handleCopy
-        }
-        className={
-          isHeader
-            ? `${neutralActionClass} !h-9 !w-9`
-            : neutralActionClass
-        }
-        aria-label={
-          copied
-            ? "Enlace copiado"
-            : "Copiar enlace"
-        }
-        title={
-          copied
-            ? "Copiado"
-            : "Copiar enlace"
-        }
-      >
-        {copied ? (
-          <Check className="h-[19px] w-[19px] text-emerald-600" />
-        ) : (
-          <Copy className="h-[19px] w-[19px]" />
-        )}
-      </button>
+      {hasChannel(
+        "copy",
+      ) && (
+        <button
+          type="button"
+          onClick={
+            handleCopy
+          }
+          className={
+            neutralActionClass
+          }
+          aria-label={
+            copied
+              ? "Enlace copiado"
+              : "Copiar enlace"
+          }
+          title={
+            copied
+              ? "Copiado"
+              : "Copiar enlace"
+          }
+        >
+          {copied ? (
+            <Check
+              className={
+                isCompact
+                  ? "h-4 w-4 text-emerald-600"
+                  : "h-[19px] w-[19px] text-emerald-600"
+              }
+            />
+          ) : (
+            <Copy
+              className={
+                isCompact
+                  ? "h-4 w-4"
+                  : "h-[19px] w-[19px]"
+              }
+            />
+          )}
+        </button>
+      )}
 
-      <SocialBrandButton
-        brand="pinterest"
-        href={
-          pinterestUrl
-        }
-        target="_blank"
-        rel="noreferrer"
-        disabled={
-          !pinterestUrl
-        }
-        label={
-          pinterestUrl
-            ? "Compartir en Pinterest"
-            : "Pinterest próximamente"
-        }
-        title={
-          pinterestUrl
-            ? "Pinterest"
-            : "Pinterest · Próximamente"
-        }
-        className={
-          isHeader
-            ? "!h-9 !w-9"
-            : ""
-        }
-      />
+      {hasChannel(
+        "pinterest",
+      ) && (
+        <SocialBrandButton
+          brand="pinterest"
+          href={
+            pinterestUrl
+          }
+          target="_blank"
+          rel="noreferrer"
+          disabled={
+            !pinterestUrl
+          }
+          label={
+            pinterestUrl
+              ? "Compartir en Pinterest"
+              : "Pinterest próximamente"
+          }
+          title={
+            pinterestUrl
+              ? "Pinterest"
+              : "Pinterest · Próximamente"
+          }
+          className={
+            brandClassName
+          }
+        />
+      )}
     </section>
   );
 }

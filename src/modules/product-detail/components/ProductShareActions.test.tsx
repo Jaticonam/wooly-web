@@ -123,6 +123,62 @@ describe(
     );
 
     it(
+      "permite limitar canales para una cabecera movil compacta",
+      () => {
+        render(
+          <ProductShareActions
+            title="Ramo premium"
+            url="https://wooly.example/producto"
+            variant="headerCompact"
+            showLabel={false}
+            channels={[
+              "facebook",
+              "whatsapp",
+            ]}
+          />,
+        );
+
+        expect(
+          screen.getByRole(
+            "link",
+            {
+              name:
+                "Compartir en Facebook",
+            },
+          ),
+        ).toHaveClass(
+          "social-brand-button--compact",
+        );
+
+        expect(
+          screen.getByRole(
+            "link",
+            {
+              name:
+                "Compartir por WhatsApp",
+            },
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.queryByRole(
+            "link",
+            {
+              name:
+                "Compartir por correo",
+            },
+          ),
+        ).not.toBeInTheDocument();
+
+        expect(
+          screen.queryByText(
+            "Compartir",
+          ),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
       "activa Pinterest sin cambiar la UI cuando existe imagen comercial",
       () => {
         render(

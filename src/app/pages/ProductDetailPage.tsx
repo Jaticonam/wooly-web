@@ -658,7 +658,7 @@ const ProductDetailPage =
             );
         }
         catch (
-          error: unknown,
+          error: unknown
         ) {
           if (
             error instanceof DOMException &&

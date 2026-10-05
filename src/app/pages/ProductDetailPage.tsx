@@ -1121,6 +1121,9 @@ const ProductDetailPage =
           cart={
             cart
           }
+          currentProductId={
+            product.id
+          }
           onAddToCart={
             handleRelatedAddToCart
           }

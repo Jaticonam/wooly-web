@@ -629,19 +629,55 @@ const ProductDetailPage =
 
   const handleShare =
     useCallback(
-      () => {
-        document
-          .getElementById(
-            "product-share-actions",
-          )
-          ?.scrollIntoView({
-            behavior:
-              "smooth",
-            block:
-              "center",
-          });
+      async () => {
+        if (
+          !product
+        ) {
+          return;
+        }
+
+        try {
+          if (
+            navigator.share
+          ) {
+            await navigator.share({
+              title:
+                product.title,
+              text:
+                product.description,
+              url:
+                productPublicUrl,
+            });
+
+            return;
+          }
+
+          await navigator.clipboard
+            ?.writeText(
+              productPublicUrl,
+            );
+        }
+        catch (
+          error: unknown,
+        ) {
+          if (
+            error instanceof DOMException &&
+            error.name ===
+              "AbortError"
+          ) {
+            return;
+          }
+
+          console.warn(
+            "No se pudo abrir el selector de compartir",
+            error,
+          );
+        }
       },
-      [],
+      [
+        product,
+        productPublicUrl,
+      ],
     );
 
   const updateQty =
@@ -1017,6 +1053,15 @@ const ProductDetailPage =
         onShare={
           handleShare
         }
+        shareUrl={
+          productPublicUrl
+        }
+        shareImageUrl={
+          productShareImage.url
+        }
+        shareImageSource={
+          productShareImage.source
+        }
       />
 
       <main className="mx-auto mt-3 w-full max-w-[1440px] px-2.5 sm:px-4 md:mt-5 md:px-5 xl:px-6">
@@ -1059,9 +1104,6 @@ const ProductDetailPage =
             showWhatsAppButton={showWhatsAppButton}
             isPreventa={isPreventa}
             isAgotado={isAgotado}
-            shareUrl={productPublicUrl}
-            shareImageUrl={productShareImage.url}
-            shareImageSource={productShareImage.source}
             onSelectQty={updateQty}
             onQtyInputChange={handleQtyInputChange}
             onQtyInputBlur={handleQtyInputBlur}

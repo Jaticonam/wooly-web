@@ -91,6 +91,38 @@ describe(
     );
 
     it(
+      "admite una variante compacta reutilizable para cabeceras",
+      () => {
+        render(
+          <ProductShareActions
+            title="Ramo premium"
+            url="https://wooly.example/producto"
+            variant="header"
+          />,
+        );
+
+        expect(
+          screen.getByText(
+            "Compartir",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByRole(
+            "link",
+            {
+              name:
+                "Compartir en Facebook",
+            },
+          ),
+        ).toHaveClass(
+          "!h-9",
+          "!w-9",
+        );
+      },
+    );
+
+    it(
       "activa Pinterest sin cambiar la UI cuando existe imagen comercial",
       () => {
         render(

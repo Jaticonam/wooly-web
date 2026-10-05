@@ -19,6 +19,7 @@ interface ProductShareActionsProps {
   imageUrl?: string | null;
   imageSource?: string;
   pinterestEnabled?: boolean;
+  variant?: "inline" | "header";
 }
 
 function absoluteAssetUrl(
@@ -85,6 +86,7 @@ export function ProductShareActions({
   imageUrl = null,
   imageSource = "none",
   pinterestEnabled = false,
+  variant = "inline",
 }: ProductShareActionsProps) {
   const [
     copied,
@@ -176,11 +178,23 @@ export function ProductShareActions({
   const neutralActionClass =
     "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,.06)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 active:scale-[.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200/70";
 
+  const isHeader =
+    variant ===
+    "header";
+
   return (
     <section
-      id="product-share-actions"
+      id={
+        isHeader
+          ? undefined
+          : "product-share-actions"
+      }
       aria-label="Compartir producto"
-      className="flex flex-wrap items-center justify-center gap-2.5 border-y border-slate-100 py-3 md:justify-start"
+      className={
+        isHeader
+          ? "flex min-w-0 items-center gap-1.5 overflow-x-auto py-0.5 md:overflow-visible"
+          : "flex flex-wrap items-center justify-center gap-2.5 border-y border-slate-100 py-3 md:justify-start"
+      }
       data-share-image-source={
         imageSource
       }
@@ -189,8 +203,14 @@ export function ProductShareActions({
         undefined
       }
     >
-      <span className="mr-1 text-[11px] font-extrabold text-slate-700">
-        Compartir en
+      <span
+        className={
+          isHeader
+            ? "mr-0.5 shrink-0 text-[10px] font-extrabold text-slate-500"
+            : "mr-1 text-[11px] font-extrabold text-slate-700"
+        }
+      >
+        Compartir
       </span>
 
       <SocialBrandButton
@@ -202,6 +222,11 @@ export function ProductShareActions({
         rel="noreferrer"
         label="Compartir en Facebook"
         title="Facebook"
+        className={
+          isHeader
+            ? "!h-9 !w-9"
+            : ""
+        }
       />
 
       <a
@@ -209,7 +234,9 @@ export function ProductShareActions({
           emailUrl
         }
         className={
-          neutralActionClass
+          isHeader
+            ? `${neutralActionClass} !h-9 !w-9`
+            : neutralActionClass
         }
         aria-label="Compartir por correo"
         title="Correo"
@@ -226,6 +253,11 @@ export function ProductShareActions({
         rel="noreferrer"
         label="Compartir por WhatsApp"
         title="WhatsApp"
+        className={
+          isHeader
+            ? "!h-9 !w-9"
+            : ""
+        }
       />
 
       <SocialBrandButton
@@ -237,6 +269,11 @@ export function ProductShareActions({
         rel="noreferrer"
         label="Compartir en X"
         title="X"
+        className={
+          isHeader
+            ? "!h-9 !w-9"
+            : ""
+        }
       />
 
       <button
@@ -245,7 +282,9 @@ export function ProductShareActions({
           handleCopy
         }
         className={
-          neutralActionClass
+          isHeader
+            ? `${neutralActionClass} !h-9 !w-9`
+            : neutralActionClass
         }
         aria-label={
           copied
@@ -284,6 +323,11 @@ export function ProductShareActions({
           pinterestUrl
             ? "Pinterest"
             : "Pinterest · Próximamente"
+        }
+        className={
+          isHeader
+            ? "!h-9 !w-9"
+            : ""
         }
       />
     </section>

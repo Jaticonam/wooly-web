@@ -17,6 +17,10 @@ import {
 } from "vitest";
 
 import {
+  MemoryRouter,
+} from "react-router-dom";
+
+import {
   useCatalogCampaigns,
 } from "@/modules/catalog/hooks/useCatalogCampaigns";
 
@@ -187,6 +191,18 @@ const setReadyHooks = () => {
   );
 };
 
+const renderPage =
+  () =>
+    render(
+      <MemoryRouter
+        initialEntries={[
+          "/admin/catalogos",
+        ]}
+      >
+        <SalesCatalogToolsPage />
+      </MemoryRouter>,
+    );
+
 describe("SalesCatalogToolsPage Admin 1.0", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -194,9 +210,7 @@ describe("SalesCatalogToolsPage Admin 1.0", () => {
   });
 
   it("deja CatalogCompositionPanel como workspace principal", () => {
-    render(
-      <SalesCatalogToolsPage />,
-    );
+    renderPage();
 
     expect(
       screen.getByTestId(
@@ -248,9 +262,7 @@ describe("SalesCatalogToolsPage Admin 1.0", () => {
   });
 
   it("abre Google Sheets desde el coordinador de composición", () => {
-    render(
-      <SalesCatalogToolsPage />,
-    );
+    renderPage();
 
     expect(
       screen.queryByRole(
@@ -316,9 +328,7 @@ describe("SalesCatalogToolsPage Admin 1.0", () => {
       } as ReturnType<typeof useCatalogCampaigns>,
     );
 
-    render(
-      <SalesCatalogToolsPage />,
-    );
+    renderPage();
 
     expect(
       screen.getByText(

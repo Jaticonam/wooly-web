@@ -350,12 +350,24 @@ export function resolveCatalogComposition({
       ) => {
         if (
           sourceOperator ===
-            "union" &&
-          (
-            hasCategorySources ||
-            hasCampaignSources
-          )
+            "union"
         ) {
+          /*
+           * Wooly Admin V2 interpreta categorías y campañas
+           * como fuentes explícitamente acumuladas.
+           *
+           * Union sin ninguna fuente automática no significa
+           * "todo el catálogo": significa base vacía.
+           *
+           * Los productos explícitos todavía pueden entrar
+           * posteriormente mediante includedProductIds.
+           */
+          if (
+            !hasCategorySources &&
+            !hasCampaignSources
+          ) {
+            return;
+          }
           const matchesCategory =
             hasCategorySources &&
             productMatchesCategories(

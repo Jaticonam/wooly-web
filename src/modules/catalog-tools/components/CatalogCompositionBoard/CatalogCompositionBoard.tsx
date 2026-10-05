@@ -133,7 +133,7 @@ export default function CatalogCompositionBoard({
           </strong>
 
           <span>
-            Define el alcance comercial para comenzar.
+            Agrega categorías, campañas o productos para comenzar.
           </span>
         </div>
       ) : (

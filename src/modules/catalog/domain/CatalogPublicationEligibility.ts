@@ -20,6 +20,7 @@ export type CatalogPublicationEligibilityReason =
   | "UNSUPPORTED_ATTRIBUTE_FILTERS"
   | "BLOCKED_INCLUDED_PRODUCTS"
   | "MISSING_INCLUDED_PRODUCTS"
+  | "UNION_SOURCE_COMBINATION"
   | "UNRESOLVED_COMPOSITION";
 
 export interface CatalogV1PublicationParams {
@@ -207,6 +208,11 @@ export function resolveCatalogPublicationEligibility({
         .campaignIds,
     );
 
+  const sourceOperator =
+    composition.filters
+      .sourceOperator ??
+    "intersection";
+
   const automaticIds =
     new Set(
       resolution
@@ -256,6 +262,36 @@ export function resolveCatalogPublicationEligibility({
   const reasons:
     CatalogPublicationEligibilityReason[] =
       [];
+
+  /*
+   * El enlace PDF V1/V2 actual representa:
+   *
+   * categorías: OR
+   * campañas:   OR
+   * entre dimensiones: AND
+   *
+   * Una composición Admin V2 con:
+   *
+   * categorías UNION campañas
+   *
+   * no puede degradarse a esa URL porque seleccionaría
+   * una población diferente.
+   *
+   * Hasta que exista Public ID/CORE para esa composición,
+   * se bloquea de manera explícita y segura.
+   */
+  if (
+    sourceOperator ===
+      "union" &&
+    categoryIds.length >
+      0 &&
+    campaignIds.length >
+      0
+  ) {
+    reasons.push(
+      "UNION_SOURCE_COMBINATION",
+    );
+  }
 
   if (
     composition.mode ===

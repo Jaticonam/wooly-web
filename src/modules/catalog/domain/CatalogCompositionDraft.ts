@@ -100,6 +100,11 @@ export function cloneCatalogComposition(
       composition.mode,
 
     filters: {
+      sourceOperator:
+        composition.filters
+          .sourceOperator ??
+        "intersection",
+
       categoryIds: [
         ...composition
           .filters

@@ -12,20 +12,17 @@ import {
   Tag,
 } from "lucide-react";
 
-import {
-  createEmptyCatalogComposition,
-  type CatalogComposition,
+import type {
+  CatalogComposition,
 } from "@/modules/catalog/domain/CatalogComposition";
-import {
-  createManualCatalogComposition,
-} from "@/modules/catalog-tools/domain/CatalogWorkspaceHandoff";
 
 import {
-  applyCatalogWorkspaceScope,
-  CATALOG_WORKSPACE_SCOPE_OPTIONS,
-  resolveCatalogWorkspaceScope,
-  type CatalogWorkspaceScope,
-} from "@/modules/catalog-tools/domain/CatalogWorkspaceScope";
+  createCatalogContentSourcesComposition,
+  mergeCatalogContentProductIds,
+  setCatalogContentCampaignIds,
+  setCatalogContentCategoryIds,
+  usesCatalogContentSources,
+} from "@/modules/catalog-tools/domain/CatalogContentSources";
 
 import {
   resolveCatalogComposition,
@@ -46,7 +43,6 @@ import type {
 
 import CatalogHybridAdjuster, { type CatalogHybridAction } from "@/modules/catalog-tools/components/CatalogHybridAdjuster/CatalogHybridAdjuster";
 
-import CatalogManualSelector from "@/modules/catalog-tools/components/CatalogManualSelector/CatalogManualSelector";
 
 import CatalogCompositionPreview from "@/modules/catalog-tools/components/CatalogCompositionPreview/CatalogCompositionPreview";
 
@@ -57,7 +53,7 @@ import {
 
 import CatalogDraftManager from "@/modules/catalog-tools/components/CatalogDraftManager/CatalogDraftManager";
 import CatalogPublishCheckout from "@/modules/catalog-tools/components/CatalogPublishCheckout/CatalogPublishCheckout";
-import CatalogCompositionModePicker from "@/modules/catalog-tools/components/CatalogCompositionModePicker/CatalogCompositionModePicker";
+
 import CatalogCompositionBoard from "@/modules/catalog-tools/components/CatalogCompositionBoard/CatalogCompositionBoard";
 
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
@@ -132,39 +128,21 @@ products,
       createDefaultCatalogPublicationIdentity(),
   );
 
-const [
+  const [
+    isProductAdjusterOpen,
+    setIsProductAdjusterOpen,
+  ] = useState(
+    false,
+  );
+
+  const [
     composition,
     setComposition,
   ] = useState<CatalogComposition>(
     () =>
-      initialProductIds.length > 0
-        ? createManualCatalogComposition(
-            initialProductIds,
-          )
-        : createEmptyCatalogComposition(
-            "automatic",
-          ),
-  );
-
-  const [
-    workspaceScope,
-    setWorkspaceScope,
-  ] = useState<CatalogWorkspaceScope>(
-    () =>
-      initialProductIds.length > 0
-        ? "custom"
-        : "all",
-  );
-
-  const [
-    customProductIds,
-    setCustomProductIds,
-  ] = useState<
-    readonly string[]
-  >(
-    () => [
-      ...initialProductIds,
-    ],
+      createCatalogContentSourcesComposition(
+        initialProductIds,
+      ),
   );
   const activeCampaigns =
     useMemo(
@@ -193,21 +171,13 @@ const [
       () =>
         SELECTABLE_CATEGORIES.map(
           (category) => {
-            const optionComposition:
-              CatalogComposition = {
-                ...composition,
+            const optionComposition =
+              createCatalogContentSourcesComposition();
 
-                mode:
-                  "automatic",
-
-                filters: {
-                  ...composition.filters,
-
-                  categoryIds: [
-                    category.id,
-                  ],
-                },
-              };
+            optionComposition.filters
+              .categoryIds = [
+                category.id,
+              ];
 
             const optionResolution =
               resolveCatalogComposition({
@@ -236,31 +206,21 @@ const [
         ),
       [
         products,
-        composition,
       ],
     );
-
   const campaignOptions =
     useMemo(
       () =>
         activeCampaigns
           .map(
             (campaign) => {
-              const optionComposition:
-                CatalogComposition = {
-                  ...composition,
+              const optionComposition =
+                createCatalogContentSourcesComposition();
 
-                  mode:
-                    "automatic",
-
-                  filters: {
-                    ...composition.filters,
-
-                    campaignIds: [
-                      campaign.id,
-                    ],
-                  },
-                };
+              optionComposition.filters
+                .campaignIds = [
+                  campaign.id,
+                ];
 
               const optionResolution =
                 resolveCatalogComposition({
@@ -289,15 +249,14 @@ const [
           )
           .filter(
             (campaign) =>
-              campaign.count > 0,
+              campaign.count >
+              0,
           ),
       [
         products,
-        composition,
         activeCampaigns,
       ],
     );
-
   const categoryById =
     useMemo(
       () =>
@@ -348,117 +307,51 @@ const [
           campaignId,
       );
 
-  const selectedScopeOption =
-    CATALOG_WORKSPACE_SCOPE_OPTIONS.find(
-      (scope) =>
-        scope.id ===
-        workspaceScope,
-    ) ??
-    CATALOG_WORKSPACE_SCOPE_OPTIONS[0];
-
-  const isScopeConfigured =
-    workspaceScope === "all"
-      ? true
-      : workspaceScope === "category"
-        ? composition.filters.categoryIds.length > 0
-        : workspaceScope === "campaign"
-          ? composition.filters.campaignIds.length > 0
-          : composition.overrides.includedProductIds.length > 0;
+  const isContentSourcesModel =
+    usesCatalogContentSources(
+      composition,
+    );
 
   const workspaceProducts =
-    isScopeConfigured
-      ? resolution.products
-      : [];
+    resolution.products;
 
-  const scopeMetricLabel =
-    workspaceScope === "category"
-      ? "Categorías"
-      : workspaceScope === "campaign"
-        ? "Campañas"
-        : workspaceScope === "custom"
-          ? "Seleccionados"
-          : "Cobertura";
-
-  const scopeMetricValue =
-    workspaceScope === "category"
-      ? composition.filters.categoryIds.length
-      : workspaceScope === "campaign"
-        ? composition.filters.campaignIds.length
-        : workspaceScope === "custom"
-          ? composition.overrides.includedProductIds.length
-          : "Completa";
-
+  const compositionLabel =
+    isContentSourcesModel
+      ? "Fuentes acumulativas"
+      : "Selección histórica";
   const categorySummary =
     selectedCategoryLabels.length > 0
       ? selectedCategoryLabels.join(
           ", ",
         )
-      : "Todas las categorías";
+      : isContentSourcesModel
+        ? "Sin categorías añadidas"
+        : "Todas las categorías";
 
   const campaignSummary =
     selectedCampaignLabels.length > 0
       ? selectedCampaignLabels.join(
           ", ",
         )
-      : "Sin campaña específica";
+      : isContentSourcesModel
+        ? "Sin campañas añadidas"
+        : "Sin campaña específica";
 
-  const changeScope =
-    (
-      scope:
-        CatalogWorkspaceScope,
-    ) => {
-      const preservedCustomIds =
-        workspaceScope === "custom"
-          ? [
-              ...composition
-                .overrides
-                .includedProductIds,
-            ]
-          : [
-              ...customProductIds,
-            ];
-
-      if (
-        workspaceScope ===
-        "custom"
-      ) {
-        setCustomProductIds(
-          preservedCustomIds,
-        );
-      }
-
-      setWorkspaceScope(
-        scope,
-      );
-
-      setComposition(
-        (current) =>
-          applyCatalogWorkspaceScope(
-            current,
-            scope,
-            preservedCustomIds,
-          ),
-      );
-    };
   const toggleCategory =
     (
       categoryId: string,
     ) => {
       setComposition(
-        (current) => ({
-          ...current,
+        (current) =>
+          setCatalogContentCategoryIds(
+            current,
 
-          filters: {
-            ...current.filters,
-
-            categoryIds:
-              toggleValue(
-                current.filters
-                  .categoryIds,
-                categoryId,
-              ),
-          },
-        }),
+            toggleValue(
+              current.filters
+                .categoryIds,
+              categoryId,
+            ),
+          ),
       );
     };
 
@@ -467,23 +360,33 @@ const [
       campaignId: string,
     ) => {
       setComposition(
-        (current) => ({
-          ...current,
+        (current) =>
+          setCatalogContentCampaignIds(
+            current,
 
-          filters: {
-            ...current.filters,
-
-            campaignIds:
-              toggleValue(
-                current.filters
-                  .campaignIds,
-                campaignId,
-              ),
-          },
-        }),
+            toggleValue(
+              current.filters
+                .campaignIds,
+              campaignId,
+            ),
+          ),
       );
     };
 
+  const openProductAdjuster =
+    () => {
+      setComposition(
+        (current) =>
+          mergeCatalogContentProductIds(
+            current,
+            [],
+          ),
+      );
+
+      setIsProductAdjusterOpen(
+        true,
+      );
+    };
   const applyHybridProductAction =
     (
       productId: string,
@@ -574,67 +477,14 @@ const [
         },
       );
     };
-  const toggleManualProduct =
-    (
-      productId: string,
-    ) => {
-      setComposition(
-        (current) => {
-          const isIncluded =
-            current.overrides
-              .includedProductIds
-              .includes(
-                productId,
-              );
-
-          return {
-            ...current,
-
-            overrides: {
-              ...current.overrides,
-
-              includedProductIds:
-                isIncluded
-                  ? current.overrides
-                      .includedProductIds
-                      .filter(
-                        (currentId) =>
-                          currentId !==
-                          productId,
-                      )
-                  : [
-                      ...current.overrides
-                        .includedProductIds,
-                      productId,
-                    ],
-
-              excludedProductIds:
-                current.overrides
-                  .excludedProductIds
-                  .filter(
-                    (currentId) =>
-                      currentId !==
-                      productId,
-                  ),
-            },
-          };
-        },
-      );
-    };
   const resetComposition =
     () => {
       setComposition(
-        createEmptyCatalogComposition(
-          "automatic",
-        ),
+        createCatalogContentSourcesComposition(),
       );
 
-      setWorkspaceScope(
-        "all",
-      );
-
-      setCustomProductIds(
-        [],
+      setIsProductAdjusterOpen(
+        false,
       );
 
       setPublicationIdentity(
@@ -660,7 +510,7 @@ const [
           </h1>
 
           <p>
-            Define el alcance, organiza la composición y prepara una salida comercial desde un único workspace.
+            Combina categorías, campañas y productos. Cada fuente se acumula en una sola composición comercial.
           </p>
         </div>
 
@@ -752,33 +602,43 @@ const [
 
         <article>
           <span>
-            Alcance
+            Categorías
           </span>
 
           <strong>
-            {selectedScopeOption.label}
+            {
+              composition.filters
+                .categoryIds
+                .length
+            }
           </strong>
         </article>
 
         <article>
           <span>
-            {scopeMetricLabel}
+            Campañas
           </span>
 
           <strong>
-            {scopeMetricValue}
+            {
+              composition.filters
+                .campaignIds
+                .length
+            }
           </strong>
         </article>
 
         <article>
           <span>
-            Productos base
+            Productos
           </span>
 
           <strong>
-            {isReady
-              ? products.length
-              : "—"}
+            {
+              composition.overrides
+                .includedProductIds
+                .length
+            }
           </strong>
         </article>
       </section>
@@ -806,23 +666,12 @@ const [
             setPublicationIdentity
           }
           onLoadComposition={(nextComposition) => {
-            const nextScope =
-              resolveCatalogWorkspaceScope(
-                nextComposition,
-              );
-
             setComposition(
               nextComposition,
             );
 
-            setWorkspaceScope(
-              nextScope,
-            );
-
-            setCustomProductIds(
-              nextComposition
-                .overrides
-                .includedProductIds,
+            setIsProductAdjusterOpen(
+              false,
             );
 
             setIsDraftManagerOpen(
@@ -831,17 +680,11 @@ const [
           }}
           onNewComposition={() => {
             setComposition(
-              createEmptyCatalogComposition(
-                "automatic",
-              ),
+              createCatalogContentSourcesComposition(),
             );
 
-            setWorkspaceScope(
-              "all",
-            );
-
-            setCustomProductIds(
-              [],
+            setIsProductAdjusterOpen(
+              false,
             );
 
             setIsDraftManagerOpen(
@@ -898,7 +741,7 @@ const [
             publicationIdentity
           }
           modeLabel={
-            selectedScopeOption.label
+            compositionLabel
           }
           categorySummary={
             categorySummary
@@ -919,74 +762,129 @@ const [
 
               <div>
                 <strong>
-                  Define el alcance
+                  Define el contenido
                 </strong>
 
                 <small>
-                  Elige cómo construir la composición.
+                  Combina categorías, campañas y productos.
                 </small>
               </div>
             </div>
 
-            <CatalogCompositionModePicker
-              value={
-                workspaceScope
-              }
-              onChange={
-                changeScope
-              }
-            />
-
-            {workspaceScope === "all" ? (
+            {!isContentSourcesModel ? (
               <div className="catalog-workspace__scopeHint">
                 <strong>
-                  Todo el catálogo publicable
+                  Selección histórica
                 </strong>
 
                 <span>
-                  Incluye automáticamente todos los productos disponibles para publicación.
+                  Este borrador conserva su lógica anterior. Al modificar una fuente pasará al modelo acumulativo V2.
                 </span>
               </div>
             ) : null}
 
-            {workspaceScope === "category" ? (
-              <div className="catalog-workspace__scopeFilters">
-                <details open>
-                  <summary>
-                    <Tag
-                      size={14}
-                      strokeWidth={1.9}
-                      aria-hidden="true"
-                    />
+            <div className="catalog-workspace__scopeFilters">
+              <details open>
+                <summary>
+                  <Tag
+                    size={14}
+                    strokeWidth={1.9}
+                    aria-hidden="true"
+                  />
 
-                    <span>
-                      Categorías
-                    </span>
+                  <span>
+                    Categorías
+                  </span>
 
-                    <small>
-                      {composition.filters.categoryIds.length > 0
-                        ? `${composition.filters.categoryIds.length} seleccionada${composition.filters.categoryIds.length === 1 ? "" : "s"}`
-                        : "Selecciona"}
-                    </small>
-                  </summary>
+                  <small>
+                    {composition.filters.categoryIds.length > 0
+                      ? `${composition.filters.categoryIds.length} añadida${composition.filters.categoryIds.length === 1 ? "" : "s"}`
+                      : "Sin añadir"}
+                  </small>
+                </summary>
 
-                  <div className="catalog-workspace__scopePopover">
-                    {categoryOptions.map(
-                      (category) => {
+                <div className="catalog-workspace__scopePopover">
+                  {categoryOptions.map(
+                    (category) => {
+                      const isActive =
+                        composition.filters.categoryIds.includes(
+                          category.id,
+                        );
+
+                      return (
+                        <button
+                          type="button"
+                          key={
+                            category.id
+                          }
+                          disabled={
+                            !isReady ||
+                            category.count === 0
+                          }
+                          className={
+                            isActive
+                              ? "is-active"
+                              : ""
+                          }
+                          aria-pressed={
+                            isActive
+                          }
+                          onClick={() =>
+                            toggleCategory(
+                              category.id,
+                            )
+                          }
+                        >
+                          <span>
+                            {category.label}
+                          </span>
+
+                          <small>
+                            {category.count}
+                          </small>
+                        </button>
+                      );
+                    },
+                  )}
+                </div>
+              </details>
+
+              <details open>
+                <summary>
+                  <Megaphone
+                    size={14}
+                    strokeWidth={1.9}
+                    aria-hidden="true"
+                  />
+
+                  <span>
+                    Campañas
+                  </span>
+
+                  <small>
+                    {composition.filters.campaignIds.length > 0
+                      ? `${composition.filters.campaignIds.length} añadida${composition.filters.campaignIds.length === 1 ? "" : "s"}`
+                      : "Sin añadir"}
+                  </small>
+                </summary>
+
+                <div className="catalog-workspace__scopePopover">
+                  {campaignOptions.length > 0 ? (
+                    campaignOptions.map(
+                      (campaign) => {
                         const isActive =
-                          composition.filters.categoryIds.includes(
-                            category.id,
+                          composition.filters.campaignIds.includes(
+                            campaign.id,
                           );
 
                         return (
                           <button
                             type="button"
                             key={
-                              category.id
+                              campaign.id
                             }
                             disabled={
-                              !isReady ||
-                              category.count === 0
+                              !isReady
                             }
                             className={
                               isActive
@@ -997,129 +895,86 @@ const [
                               isActive
                             }
                             onClick={() =>
-                              toggleCategory(
-                                category.id,
+                              toggleCampaign(
+                                campaign.id,
                               )
                             }
                           >
                             <span>
-                              {category.label}
+                              {campaign.label}
                             </span>
 
                             <small>
-                              {category.count}
+                              {campaign.count}
                             </small>
                           </button>
                         );
                       },
-                    )}
-                  </div>
-                </details>
-              </div>
-            ) : null}
-
-            {workspaceScope === "campaign" ? (
-              <div className="catalog-workspace__scopeFilters">
-                <details open>
-                  <summary>
-                    <Megaphone
-                      size={14}
-                      strokeWidth={1.9}
-                      aria-hidden="true"
-                    />
-
-                    <span>
-                      Campañas
+                    )
+                  ) : (
+                    <span className="catalog-workspace__emptyFilter">
+                      No hay campañas activas.
                     </span>
+                  )}
+                </div>
+              </details>
 
-                    <small>
-                      {composition.filters.campaignIds.length > 0
-                        ? `${composition.filters.campaignIds.length} seleccionada${composition.filters.campaignIds.length === 1 ? "" : "s"}`
-                        : "Selecciona"}
-                    </small>
-                  </summary>
-
-                  <div className="catalog-workspace__scopePopover">
-                    {campaignOptions.length > 0 ? (
-                      campaignOptions.map(
-                        (campaign) => {
-                          const isActive =
-                            composition.filters.campaignIds.includes(
-                              campaign.id,
-                            );
-
-                          return (
-                            <button
-                              type="button"
-                              key={
-                                campaign.id
-                              }
-                              disabled={
-                                !isReady
-                              }
-                              className={
-                                isActive
-                                  ? "is-active"
-                                  : ""
-                              }
-                              aria-pressed={
-                                isActive
-                              }
-                              onClick={() =>
-                                toggleCampaign(
-                                  campaign.id,
-                                )
-                              }
-                            >
-                              <span>
-                                {campaign.label}
-                              </span>
-
-                              <small>
-                                {campaign.count}
-                              </small>
-                            </button>
-                          );
-                        },
-                      )
-                    ) : (
-                      <span className="catalog-workspace__emptyFilter">
-                        No hay campañas activas.
-                      </span>
-                    )}
-                  </div>
-                </details>
-              </div>
-            ) : null}
-
-            {workspaceScope === "custom" ? (
-              <div className="catalog-workspace__customScope">
-                <div>
-                  <strong>
-                    Selección específica
-                  </strong>
+              <details open>
+                <summary>
+                  <Plus
+                    size={14}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
 
                   <span>
-                    {composition.overrides.includedProductIds.length === 1
-                      ? "1 producto seleccionado"
-                      : `${composition.overrides.includedProductIds.length} productos seleccionados`}
+                    Productos
                   </span>
-                </div>
 
-                {onBackToProducts ? (
-                  <button
-                    type="button"
-                    onClick={
-                      onBackToProducts
-                    }
-                  >
-                    Product Explorer
-                  </button>
-                ) : null}
-              </div>
-            ) : null}
-          </section>
-          <section className="catalog-workspace__settings">
+                  <small>
+                    {composition.overrides.includedProductIds.length === 1
+                      ? "1 agregado"
+                      : `${composition.overrides.includedProductIds.length} agregados`}
+                  </small>
+                </summary>
+
+                <div className="catalog-workspace__scopePopover">
+                  <div className="catalog-workspace__customScope">
+                    <div>
+                      <strong>
+                        Productos específicos
+                      </strong>
+
+                      <span>
+                        Añade productos individuales sin borrar categorías ni campañas.
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={
+                        openProductAdjuster
+                      }
+                    >
+                      Gestionar productos
+                    </button>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div className="catalog-workspace__scopeHint">
+              <strong>
+                {isReady
+                  ? `${workspaceProducts.length} productos incluidos`
+                  : "Calculando composición"}
+              </strong>
+
+              <span>
+                Resultado acumulado de categorías + campañas + productos, sin duplicados.
+              </span>
+            </div>
+          </section>          <section className="catalog-workspace__settings">
             <div className="catalog-workspace__sectionHeading">
               <span>
                 03
@@ -1165,7 +1020,7 @@ const [
               </span>
 
               <small>
-                {selectedScopeOption.label}
+                {compositionLabel}
               </small>
             </div>
           </section>
@@ -1191,61 +1046,58 @@ const [
         />
       </div>
 
-      {composition.mode === "hybrid" ? (
-        <details className="catalog-workspace__adjustments">
-          <summary>
-            Ajustar productos personalizados
-          </summary>
+      <details
+        id="catalog-product-adjustments"
+        className="catalog-workspace__adjustments"
+        open={
+          isProductAdjusterOpen
+        }
+        onToggle={(event) => {
+          const nextOpen =
+            event.currentTarget.open;
 
-          <div>
-            <CatalogHybridAdjuster
-              products={
-                products
-              }
-              automaticProductIds={
-                resolution.automaticProductIds
-              }
-              includedProductIds={
-                composition.overrides.includedProductIds
-              }
-              excludedProductIds={
-                composition.overrides.excludedProductIds
-              }
-              isReady={
-                isReady
-              }
-              onProductAction={
-                applyHybridProductAction
-              }
-            />
-          </div>
-        </details>
-      ) : null}
+          setIsProductAdjusterOpen(
+            nextOpen,
+          );
 
-      {composition.mode === "manual" ? (
-        <details className="catalog-workspace__adjustments">
-          <summary>
-            Editar selección personalizada
-          </summary>
+          if (nextOpen) {
+            setComposition(
+              (current) =>
+                mergeCatalogContentProductIds(
+                  current,
+                  [],
+                ),
+            );
+          }
+        }}
+      >
+        <summary>
+          Productos · agregar, retirar o excluir
+        </summary>
 
-          <div>
-            <CatalogManualSelector
-              products={
-                products
-              }
-              includedProductIds={
-                composition.overrides.includedProductIds
-              }
-              isReady={
-                isReady
-              }
-              onToggleProduct={
-                toggleManualProduct
-              }
-            />
-          </div>
-        </details>
-      ) : null}
+        <div>
+          <CatalogHybridAdjuster
+            products={
+              products
+            }
+            automaticProductIds={
+              resolution.automaticProductIds
+            }
+            includedProductIds={
+              composition.overrides.includedProductIds
+            }
+            excludedProductIds={
+              composition.overrides.excludedProductIds
+            }
+            isReady={
+              isReady
+            }
+            onProductAction={
+              applyHybridProductAction
+            }
+          />
+        </div>
+      </details>
     </section>
   );
 }

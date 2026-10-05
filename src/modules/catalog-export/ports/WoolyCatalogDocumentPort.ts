@@ -50,6 +50,12 @@ export const createWoolyCatalogCompositionId = (
 ) => {
   const fingerprint = JSON.stringify({
     mode: composition.mode,
+
+    sourceOperator:
+      composition.filters
+        .sourceOperator ??
+      "intersection",
+
     categoryIds: sorted(composition.filters.categoryIds),
     campaignIds: sorted(composition.filters.campaignIds),
     includedProductIds: sorted(composition.overrides.includedProductIds),

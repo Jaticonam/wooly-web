@@ -279,6 +279,9 @@ describe(
               "premium",
             ],
 
+            sourceOperator:
+              "intersection",
+
             attributes: {
               colors: [
                 "rojo",

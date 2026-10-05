@@ -28,15 +28,25 @@ describe(
           />,
         );
 
-        expect(
+        const facebook =
           screen.getByRole(
             "link",
             {
               name:
                 "Compartir en Facebook",
             },
-          ),
+          );
+
+        expect(
+          facebook,
         ).toBeInTheDocument();
+
+        expect(
+          facebook,
+        ).toHaveAttribute(
+          "data-social-brand",
+          "facebook",
+        );
 
         expect(
           screen.getByRole(
@@ -58,15 +68,25 @@ describe(
           ),
         ).toBeInTheDocument();
 
-        expect(
+        const pinterest =
           screen.getByRole(
             "button",
             {
               name:
                 "Pinterest próximamente",
             },
-          ),
+          );
+
+        expect(
+          pinterest,
         ).toBeDisabled();
+
+        expect(
+          pinterest,
+        ).toHaveAttribute(
+          "data-social-brand",
+          "pinterest",
+        );
       },
     );
 

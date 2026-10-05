@@ -1,0 +1,101 @@
+.social-brand-button {
+  --social-brand: #334155;
+  --social-soft: #f8fafc;
+
+  position: relative;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--social-brand) 24%, #e2e8f0);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--social-brand);
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.76) inset;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.social-brand-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--social-brand);
+  background: var(--social-brand);
+  color: #fff;
+  box-shadow:
+    0 7px 16px color-mix(in srgb, var(--social-brand) 22%, transparent),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+.social-brand-button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.social-brand-button:focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--social-brand) 14%, transparent),
+    0 3px 8px rgba(15, 23, 42, 0.08);
+}
+
+.social-brand-button:disabled {
+  cursor: default;
+  border-style: dashed;
+  background: var(--social-soft);
+  color: var(--social-brand);
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.social-brand-button-icon {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
+.social-brand-button[data-social-brand="facebook"] .social-brand-button-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.social-brand-button[data-social-brand="whatsapp"] .social-brand-button-icon,
+.social-brand-button[data-social-brand="pinterest"] .social-brand-button-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.social-brand-button[data-social-brand="x"] .social-brand-button-icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 640px) {
+  .social-brand-button {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .social-brand-button-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-brand-button {
+    transition-duration: 0.01ms !important;
+  }
+
+  .social-brand-button:hover:not(:disabled),
+  .social-brand-button:active:not(:disabled) {
+    transform: none;
+  }
+}

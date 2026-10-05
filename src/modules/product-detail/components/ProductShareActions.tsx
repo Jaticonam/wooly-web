@@ -9,11 +9,8 @@ import {
 } from "react";
 
 import {
-  FacebookIcon,
-  PinterestIcon,
-  WhatsAppIcon,
-  XIcon,
-} from "@/shared/components/ui/SocialIcons";
+  SocialBrandButton,
+} from "@/shared/components/social";
 
 interface ProductShareActionsProps {
   title: string;
@@ -176,14 +173,14 @@ export function ProductShareActions({
       }
     };
 
-  const iconLinkClass =
-    "flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:border-[#1d8299]/35 hover:text-[#1d8299] active:scale-[.96]";
+  const neutralActionClass =
+    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,.06)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 active:scale-[.96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200/70";
 
   return (
     <section
       id="product-share-actions"
       aria-label="Compartir producto"
-      className="flex flex-wrap items-center justify-center gap-2 border-y border-slate-100 py-2.5 md:justify-start"
+      className="flex flex-wrap items-center justify-center gap-2.5 border-y border-slate-100 py-3 md:justify-start"
       data-share-image-source={
         imageSource
       }
@@ -192,66 +189,64 @@ export function ProductShareActions({
         undefined
       }
     >
-      <span className="mr-0.5 text-[11px] font-bold text-slate-600">
+      <span className="mr-1 text-[11px] font-extrabold text-slate-700">
         Compartir en
       </span>
 
-      <a
+      <SocialBrandButton
+        brand="facebook"
         href={
           facebookUrl
         }
         target="_blank"
         rel="noreferrer"
-        className={iconLinkClass}
-        aria-label="Compartir en Facebook"
+        label="Compartir en Facebook"
         title="Facebook"
-      >
-        <FacebookIcon className="h-[18px] w-[18px]" />
-      </a>
+      />
 
       <a
         href={
           emailUrl
         }
-        className={iconLinkClass}
+        className={
+          neutralActionClass
+        }
         aria-label="Compartir por correo"
         title="Correo"
       >
-        <Mail className="h-[18px] w-[18px]" />
+        <Mail className="h-[19px] w-[19px]" />
       </a>
 
-      <a
+      <SocialBrandButton
+        brand="whatsapp"
         href={
           whatsappUrl
         }
         target="_blank"
         rel="noreferrer"
-        className={iconLinkClass}
-        aria-label="Compartir por WhatsApp"
+        label="Compartir por WhatsApp"
         title="WhatsApp"
-      >
-        <WhatsAppIcon className="h-5 w-5" />
-      </a>
+      />
 
-      <a
+      <SocialBrandButton
+        brand="x"
         href={
           xUrl
         }
         target="_blank"
         rel="noreferrer"
-        className={iconLinkClass}
-        aria-label="Compartir en X"
+        label="Compartir en X"
         title="X"
-      >
-        <XIcon className="h-4 w-4" />
-      </a>
+      />
 
       <button
         type="button"
         onClick={
           handleCopy
         }
-        className={iconLinkClass}
+        className={
+          neutralActionClass
+        }
         aria-label={
           copied
             ? "Enlace copiado"
@@ -264,36 +259,33 @@ export function ProductShareActions({
         }
       >
         {copied ? (
-          <Check className="h-[18px] w-[18px] text-emerald-600" />
+          <Check className="h-[19px] w-[19px] text-emerald-600" />
         ) : (
-          <Copy className="h-[18px] w-[18px]" />
+          <Copy className="h-[19px] w-[19px]" />
         )}
       </button>
 
-      {pinterestUrl ? (
-        <a
-          href={
-            pinterestUrl
-          }
-          target="_blank"
-          rel="noreferrer"
-          className={`${iconLinkClass} text-[#bd081c]`}
-          aria-label="Compartir en Pinterest"
-          title="Pinterest"
-        >
-          <PinterestIcon className="h-[19px] w-[19px]" />
-        </a>
-      ) : (
-        <button
-          type="button"
-          disabled
-          className={`${iconLinkClass} cursor-default text-[#bd081c] opacity-45`}
-          aria-label="Pinterest próximamente"
-          title="Pinterest · Próximamente"
-        >
-          <PinterestIcon className="h-[19px] w-[19px]" />
-        </button>
-      )}
+      <SocialBrandButton
+        brand="pinterest"
+        href={
+          pinterestUrl
+        }
+        target="_blank"
+        rel="noreferrer"
+        disabled={
+          !pinterestUrl
+        }
+        label={
+          pinterestUrl
+            ? "Compartir en Pinterest"
+            : "Pinterest próximamente"
+        }
+        title={
+          pinterestUrl
+            ? "Pinterest"
+            : "Pinterest · Próximamente"
+        }
+      />
     </section>
   );
 }

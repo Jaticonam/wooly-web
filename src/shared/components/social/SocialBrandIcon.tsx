@@ -1,0 +1,203 @@
+import type {
+  SVGProps,
+} from "react";
+
+export type SocialBrand =
+  | "facebook"
+  | "instagram"
+  | "whatsapp"
+  | "pinterest"
+  | "x"
+  | "youtube"
+  | "tiktok"
+  | "google";
+
+export interface SocialBrandMeta {
+  label: string;
+  color: string;
+  softColor: string;
+}
+
+export const SOCIAL_BRAND_META:
+  Record<
+    SocialBrand,
+    SocialBrandMeta
+  > = {
+    facebook: {
+      label:
+        "Facebook",
+      color:
+        "#1877F2",
+      softColor:
+        "#EEF5FF",
+    },
+    instagram: {
+      label:
+        "Instagram",
+      color:
+        "#E4405F",
+      softColor:
+        "#FFF1F5",
+    },
+    whatsapp: {
+      label:
+        "WhatsApp",
+      color:
+        "#25D366",
+      softColor:
+        "#ECFDF3",
+    },
+    pinterest: {
+      label:
+        "Pinterest",
+      color:
+        "#E60023",
+      softColor:
+        "#FFF1F2",
+    },
+    x: {
+      label:
+        "X",
+      color:
+        "#111111",
+      softColor:
+        "#F4F4F5",
+    },
+    youtube: {
+      label:
+        "YouTube",
+      color:
+        "#FF0000",
+      softColor:
+        "#FFF1F2",
+    },
+    tiktok: {
+      label:
+        "TikTok",
+      color:
+        "#111111",
+      softColor:
+        "#F4F4F5",
+    },
+    google: {
+      label:
+        "Google",
+      color:
+        "#4285F4",
+      softColor:
+        "#EFF6FF",
+    },
+  };
+
+interface SocialBrandIconProps
+  extends SVGProps<
+    SVGSVGElement
+  > {
+  brand:
+    SocialBrand;
+}
+
+export function SocialBrandIcon({
+  brand,
+  ...props
+}: SocialBrandIconProps) {
+  switch (
+    brand
+  ) {
+    case "facebook":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M13.6 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.3-1.5 1.6-1.5h1.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.3 1.5-4.3 4.4v2H7.2V14h2.9v8h3.5Z" />
+        </svg>
+      );
+
+    case "instagram":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M7.7 2h8.6A5.7 5.7 0 0 1 22 7.7v8.6a5.7 5.7 0 0 1-5.7 5.7H7.7A5.7 5.7 0 0 1 2 16.3V7.7A5.7 5.7 0 0 1 7.7 2Zm-.2 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9ZM17 5.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" />
+        </svg>
+      );
+
+    case "whatsapp":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M12.04 2a9.84 9.84 0 0 0-8.45 14.88L2 22l5.28-1.55A9.93 9.93 0 1 0 12.04 2Zm0 17.98a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.13.92.94-3.05-.2-.31a8.1 8.1 0 1 1 6.82 3.75Zm4.44-6.07c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.43-.59 1.63-1.15.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z" />
+        </svg>
+      );
+
+    case "pinterest":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M12 2a10 10 0 0 0-3.65 19.3c-.09-1.58-.02-3.47.39-5.21l1.29-5.46s-.32-.65-.32-1.61c0-1.51.88-2.64 1.97-2.64.93 0 1.38.7 1.38 1.53 0 .93-.59 2.32-.9 3.61-.26 1.08.54 1.96 1.6 1.96 1.92 0 3.4-2.03 3.4-4.96 0-2.59-1.86-4.4-4.52-4.4-3.08 0-4.89 2.31-4.89 4.7 0 .93.36 1.93.8 2.47.09.1.1.19.07.3l-.3 1.23c-.05.2-.16.24-.37.15-1.39-.65-2.26-2.68-2.26-4.31 0-3.51 2.55-6.73 7.35-6.73 3.86 0 6.86 2.75 6.86 6.42 0 3.83-2.42 6.92-5.77 6.92-1.13 0-2.19-.59-2.55-1.28l-.69 2.64c-.25.97-.93 2.18-1.39 2.92.84.26 1.73.4 2.65.4A10 10 0 0 0 12 2Z" />
+        </svg>
+      );
+
+    case "x":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M18.24 2.25h3.31l-7.23 8.26 8.51 11.24h-6.66l-5.22-6.82-5.96 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64Z" />
+        </svg>
+      );
+
+    case "youtube":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.5 3.57 12 3.57 12 3.57s-7.5 0-9.38.5A3.01 3.01 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3.01 3.01 0 0 0 2.12 2.13c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.01 3.01 0 0 0 2.12-2.13A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.84 12 9.6 15.6Z" />
+        </svg>
+      );
+
+    case "tiktok":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M16.6 2c.18 1.54 1.05 2.94 2.36 3.77A6.9 6.9 0 0 0 22 6.86v3.07a9.9 9.9 0 0 1-5.31-1.58v7.05A6.6 6.6 0 1 1 11 8.86v3.11a3.55 3.55 0 1 0 2.61 3.43V2h2.99Z" />
+        </svg>
+      );
+
+    case "google":
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          {...props}
+        >
+          <path d="M21.6 12.23c0-.79-.07-1.55-.2-2.27H12v4.3h5.37a4.59 4.59 0 0 1-1.99 3.01v2.79h3.22c1.88-1.73 3-4.29 3-7.83ZM12 22c2.7 0 4.96-.9 6.61-2.43l-3.22-2.79c-.9.6-2.04.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.06v2.88A10 10 0 0 0 12 22ZM6.39 13.61A6.02 6.02 0 0 1 6.07 12c0-.56.1-1.1.32-1.61V7.51H3.06A10 10 0 0 0 2 12c0 1.61.38 3.14 1.06 4.49l3.33-2.88ZM12 6.26c1.47 0 2.79.51 3.83 1.5l2.87-2.87C16.96 3.27 14.7 2 12 2A10 10 0 0 0 3.06 7.51l3.33 2.88C7.18 8.02 9.39 6.26 12 6.26Z" />
+        </svg>
+      );
+  }
+}

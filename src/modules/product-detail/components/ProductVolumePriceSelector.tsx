@@ -168,7 +168,7 @@ export function ProductVolumePriceSelector({
                 <span className="block text-[12px] font-black leading-none tracking-[-0.01em] sm:text-[13px]">
                   {tier.qty}u
                 </span>
-
+                {" "}
                 <span className="block whitespace-nowrap text-[9px] font-extrabold leading-none sm:text-[10px]">
                   S/{" "}
                   {tier.unitPrice.toFixed(

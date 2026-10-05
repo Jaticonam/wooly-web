@@ -1,12 +1,30 @@
-import type { Product } from "@/shared/types/product";
-import type { CartItem } from "@/modules/cart/types";
-import { ProductCard } from "@/modules/catalog/components/ProductCard";
+import type {
+  Product,
+} from "@/shared/types/product";
+
+import type {
+  CartItem,
+} from "@/modules/cart/types";
+
+import {
+  ProductCard,
+} from "@/modules/catalog/components/ProductCard";
 
 interface CategoryGridProps {
-  products: Product[];
-  cart: CartItem[];
-  onAddToCart: (product: Product) => void;
-  onImageClick: (product: Product) => void;
+  products:
+    Product[];
+  cart:
+    CartItem[];
+  onAddToCart:
+    (
+      product:
+        Product,
+    ) => void;
+  onImageClick:
+    (
+      product:
+        Product,
+    ) => void;
 }
 
 export function CategoryGrid({
@@ -16,16 +34,37 @@ export function CategoryGrid({
   onImageClick,
 }: CategoryGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-[3px] md:grid-cols-3 md:gap-2 xl:grid-cols-5 xl:gap-2">
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          cart={cart}
-          onAddToCart={onAddToCart}
-          onImageClick={onImageClick}
-        />
-      ))}
+    <div
+      data-category-grid
+      className="grid min-w-0 grid-cols-2 gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7"
+    >
+      {products.map(
+        (
+          product,
+        ) => (
+          <div
+            key={
+              product.id
+            }
+            className="min-w-0"
+          >
+            <ProductCard
+              product={
+                product
+              }
+              cart={
+                cart
+              }
+              onAddToCart={
+                onAddToCart
+              }
+              onImageClick={
+                onImageClick
+              }
+            />
+          </div>
+        ),
+      )}
     </div>
   );
 }

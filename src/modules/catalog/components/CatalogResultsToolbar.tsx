@@ -11,6 +11,7 @@ interface CatalogResultsToolbarProps {
   sortMode: CatalogSortMode;
   onSortChange: (mode: CatalogSortMode) => void;
   onOpenFilters: () => void;
+  showFilter?: boolean;
 }
 
 export function CatalogResultsToolbar({
@@ -20,6 +21,7 @@ export function CatalogResultsToolbar({
   sortMode,
   onSortChange,
   onOpenFilters,
+  showFilter = true,
 }: CatalogResultsToolbarProps) {
   return (
     <section
@@ -39,21 +41,23 @@ export function CatalogResultsToolbar({
       </div>
 
       <div className="catalogResultsToolbarActions">
-        <button
-          type="button"
-          className="catalogResultsFilterButton"
-          onClick={onOpenFilters}
-          aria-label="Abrir filtros del catálogo"
-        >
-          <SlidersHorizontal aria-hidden="true" />
-          <span>Filtros</span>
+        {showFilter && (
+          <button
+            type="button"
+            className="catalogResultsFilterButton"
+            onClick={onOpenFilters}
+            aria-label="Abrir filtros del catálogo"
+          >
+            <SlidersHorizontal aria-hidden="true" />
+            <span>Filtros</span>
 
-          {filterCount > 0 && (
-            <strong aria-label={`${filterCount} filtros activos`}>
-              {filterCount}
-            </strong>
-          )}
-        </button>
+            {filterCount > 0 && (
+              <strong aria-label={`${filterCount} filtros activos`}>
+                {filterCount}
+              </strong>
+            )}
+          </button>
+        )}
 
         <label className="catalogResultsSort">
           <span className="sr-only">Ordenar productos</span>

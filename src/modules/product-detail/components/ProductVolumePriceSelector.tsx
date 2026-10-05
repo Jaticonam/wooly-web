@@ -100,6 +100,17 @@ export function ProductVolumePriceSelector({
       product,
     );
 
+  const tierGridClass =
+    availableTiers.length <= 1
+      ? "grid-cols-1"
+      : availableTiers.length === 2
+        ? "grid-cols-2"
+        : availableTiers.length === 3
+          ? "grid-cols-3"
+          : availableTiers.length === 4
+            ? "grid-cols-2 sm:grid-cols-4"
+            : "grid-cols-3 sm:grid-cols-5";
+
   return (
     <div>
       <p className="mb-1.5 text-[9px] font-black uppercase tracking-[0.08em] text-slate-400 md:text-left">
@@ -107,14 +118,7 @@ export function ProductVolumePriceSelector({
       </p>
 
       <div
-        className="grid gap-1.5 sm:gap-2"
-        style={{
-          gridTemplateColumns:
-            `repeat(${Math.max(
-              availableTiers.length,
-              1,
-            )}, minmax(0, 1fr))`,
-        }}
+        className={`grid ${tierGridClass} gap-1.5 sm:gap-2`}
       >
         {availableTiers.map(
           (
@@ -155,20 +159,24 @@ export function ProductVolumePriceSelector({
                   "tier",
                   "tier-button",
                   tier.className,
-                  "min-h-[50px] min-w-0 px-1.5 py-2 sm:px-2",
+                  "!flex min-h-[54px] min-w-0 !flex-col !items-center !justify-center !gap-0.5 px-1.5 py-2 text-center sm:min-h-[56px] sm:px-2",
                   active
                     ? "tier-active ring-2 ring-[#1d8299]/20"
                     : "",
                 ].join(" ")}
               >
-                <span className="block text-[11px] font-black tracking-wide sm:text-[12px]">
-                  {tier.label}
+                <span className="block text-[12px] font-black leading-none tracking-[-0.01em] sm:text-[13px]">
+                  {tier.qty}u
                 </span>
 
-                <span className="mt-0.5 block truncate text-[9px] font-black sm:text-[10px]">
-                  S/ {tier.unitPrice.toFixed(
+                <span className="block whitespace-nowrap text-[9px] font-extrabold leading-none sm:text-[10px]">
+                  S/{" "}
+                  {tier.unitPrice.toFixed(
                     2,
-                  )}
+                  )}{" "}
+                  <span className="font-bold opacity-75">
+                    c/u
+                  </span>
                 </span>
               </button>
             );

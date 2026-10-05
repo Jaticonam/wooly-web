@@ -214,13 +214,13 @@ describe(
         expect(
           tierThree,
         ).toHaveTextContent(
-          "S/ 9.00",
+          "3u S/ 9.00 c/u",
         );
 
         expect(
           tierTwelve,
         ).toHaveTextContent(
-          "S/ 8.00",
+          "12u S/ 8.00 c/u",
         );
 
         fireEvent.click(

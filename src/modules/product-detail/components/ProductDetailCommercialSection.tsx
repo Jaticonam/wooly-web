@@ -33,6 +33,9 @@ import {
 import {
   ProductVolumePriceSelector,
 } from "./ProductVolumePriceSelector";
+import {
+  ProductShareActions,
+} from "./ProductShareActions";
 
 interface ProductDetailCommercialSectionProps {
   product: Product;
@@ -54,6 +57,9 @@ interface ProductDetailCommercialSectionProps {
   showWhatsAppButton: boolean;
   isPreventa: boolean;
   isAgotado: boolean;
+  shareUrl: string;
+  shareImageUrl?: string | null;
+  shareImageSource?: string;
   onSelectQty: (quantity: number) => void;
   onQtyInputChange: (value: string) => void;
   onQtyInputBlur: () => void;
@@ -82,6 +88,9 @@ export function ProductDetailCommercialSection({
   showWhatsAppButton,
   isPreventa,
   isAgotado,
+  shareUrl,
+  shareImageUrl,
+  shareImageSource,
   onSelectQty,
   onQtyInputChange,
   onQtyInputBlur,
@@ -141,6 +150,15 @@ export function ProductDetailCommercialSection({
           {product.description}
         </p>
       </div>
+
+      <ProductShareActions
+        title={product.title}
+        description={product.description}
+        url={shareUrl}
+        imageUrl={shareImageUrl}
+        imageSource={shareImageSource}
+        pinterestEnabled={false}
+      />
 
       <ProductStockInfo
         product={product}

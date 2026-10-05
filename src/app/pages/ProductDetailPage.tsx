@@ -85,10 +85,6 @@ import {
 } from "@/modules/product-detail/components/ProductDetailHeader";
 
 import {
-  ProductShareSheet,
-} from "@/modules/product-detail/components/ProductShareSheet";
-
-import {
   resolveProductShareImage,
 } from "@/modules/product-detail/utils/ProductShareAsset";
 
@@ -184,12 +180,6 @@ const ProductDetailPage =
   const [
     addModalOpen,
     setAddModalOpen,
-  ] =
-    useState(false);
-
-  const [
-    shareOpen,
-    setShareOpen,
   ] =
     useState(false);
 
@@ -640,19 +630,18 @@ const ProductDetailPage =
   const handleShare =
     useCallback(
       () => {
-        if (
-          !product
-        ) {
-          return;
-        }
-
-        setShareOpen(
-          true,
-        );
+        document
+          .getElementById(
+            "product-share-actions",
+          )
+          ?.scrollIntoView({
+            behavior:
+              "smooth",
+            block:
+              "center",
+          });
       },
-      [
-        product,
-      ],
+      [],
     );
 
   const updateQty =
@@ -1070,6 +1059,9 @@ const ProductDetailPage =
             showWhatsAppButton={showWhatsAppButton}
             isPreventa={isPreventa}
             isAgotado={isAgotado}
+            shareUrl={productPublicUrl}
+            shareImageUrl={productShareImage.url}
+            shareImageSource={productShareImage.source}
             onSelectQty={updateQty}
             onQtyInputChange={handleQtyInputChange}
             onQtyInputBlur={handleQtyInputBlur}
@@ -1102,35 +1094,6 @@ const ProductDetailPage =
           }}
         />
       </main>
-
-      <ProductShareSheet
-        open={
-          shareOpen
-        }
-        title={
-          product.title
-        }
-        description={
-          product.description
-        }
-        url={
-          productPublicUrl
-        }
-        imageUrl={
-          productShareImage.url
-        }
-        imageSource={
-          productShareImage.source
-        }
-        pinterestEnabled={
-          false
-        }
-        onClose={() =>
-          setShareOpen(
-            false,
-          )
-        }
-      />
 
       <FloatingButtons
         cartCount={

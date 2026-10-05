@@ -111,8 +111,16 @@ export function ProductGallery({
     onZoom(activeIndex);
   };
 
+  const galleryLayoutClass =
+    hasMany
+      ? "relative flex min-w-0 flex-col gap-2.5 md:grid md:grid-cols-[78px_minmax(0,1fr)] md:gap-3 xl:grid-cols-[82px_minmax(0,1fr)] xl:gap-4"
+      : "relative flex min-w-0 flex-col gap-2.5";
+
   return (
-    <div className="relative flex min-w-0 flex-col gap-2.5 md:grid md:grid-cols-[78px_minmax(0,1fr)] md:gap-3 xl:grid-cols-[82px_minmax(0,1fr)] xl:gap-4">
+    <div
+      className={galleryLayoutClass}
+      data-product-gallery-count={media.length}
+    >
       {hasMany && (
         <div className="order-2 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [scrollbar-width:none] md:order-1 md:max-h-[620px] md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0">
           {visibleMedia.map((item, index) => {

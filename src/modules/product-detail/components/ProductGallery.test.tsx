@@ -4,6 +4,7 @@ import {
   screen,
 } from "@testing-library/react";
 import {
+  beforeEach,
   describe,
   expect,
   it,
@@ -13,10 +14,9 @@ import {
 import type { Product } from "@/shared/types/product";
 import { ProductGallery } from "./ProductGallery";
 
-vi.mock(
-  "@/shared/lib/productMedia",
+const mediaState = vi.hoisted(
   () => ({
-    getProductMedia: () => [
+    items: [
       {
         id: "media-1",
         src: "https://example.com/1.jpg",
@@ -30,6 +30,14 @@ vi.mock(
         alt: "Producto 2",
       },
     ],
+  }),
+);
+
+vi.mock(
+  "@/shared/lib/productMedia",
+  () => ({
+    getProductMedia: () =>
+      mediaState.items,
   }),
 );
 
@@ -67,6 +75,57 @@ const product = {
 } as Product;
 
 describe("ProductGallery capture integration", () => {
+  beforeEach(() => {
+    mediaState.items = [
+      {
+        id: "media-1",
+        src: "https://example.com/1.jpg",
+        thumb: "https://example.com/1.jpg",
+        alt: "Producto 1",
+      },
+      {
+        id: "media-2",
+        src: "https://example.com/2.jpg",
+        thumb: "https://example.com/2.jpg",
+        alt: "Producto 2",
+      },
+    ];
+  });
+
+  it("usa todo el ancho del hero cuando existe una sola imagen", () => {
+    mediaState.items = [
+      {
+        id: "media-1",
+        src: "https://example.com/1.jpg",
+        thumb: "https://example.com/1.jpg",
+        alt: "Producto 1",
+      },
+    ];
+
+    const { container } = render(
+      <ProductGallery
+        product={product}
+        available
+        onZoom={vi.fn()}
+      />,
+    );
+
+    const gallery =
+      container.querySelector(
+        "[data-product-gallery-count='1']",
+      );
+
+    expect(
+      gallery,
+    ).toBeInTheDocument();
+
+    expect(
+      gallery,
+    ).not.toHaveClass(
+      "md:grid",
+    );
+  });
+
   it("muestra Capturar centrado al pie del hero", () => {
     const { container } = render(
       <ProductGallery

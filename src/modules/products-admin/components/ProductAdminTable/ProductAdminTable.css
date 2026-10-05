@@ -1,0 +1,274 @@
+.product-admin-table {
+  width: 100%;
+  overflow: auto;
+
+  border: 1px solid var(--wooly-admin-border);
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(28, 42, 63, 0.035);
+}
+
+.product-admin-table table {
+  width: 100%;
+  min-width: 1050px;
+
+  border-collapse: collapse;
+
+  color: var(--wooly-admin-ink);
+}
+
+.product-admin-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  height: 44px;
+  padding: 0 13px;
+
+  border-bottom: 1px solid #e7eaee;
+
+  background: #fffaf7;
+
+  color: #344057;
+
+  font-size: 10px;
+  font-weight: 850;
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.product-admin-table td {
+  padding: 9px 13px;
+
+  border-bottom: 1px solid #edf0f3;
+
+  background: #ffffff;
+
+  font-size: 10px;
+
+  vertical-align: middle;
+
+  transition:
+    background 120ms ease;
+}
+
+.product-admin-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.product-admin-table tbody tr:hover td {
+  background: #fbfcfd;
+}
+
+.product-admin-table tbody tr.is-selected td {
+  background:
+    var(--wooly-admin-primary-faint, #f3fbfc);
+}
+
+.product-admin-table tbody tr.is-selected td:first-child {
+  box-shadow:
+    inset 3px 0 0
+    var(--wooly-admin-primary, #087f9c);
+}
+
+.product-admin-table.is-compact th {
+  height: 38px;
+}
+
+.product-admin-table.is-compact td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.product-admin-table__selectionColumn {
+  width: 42px;
+  text-align: center !important;
+}
+
+.product-admin-table__actionColumn {
+  width: 62px;
+  text-align: center !important;
+}
+
+.product-admin-table code {
+  color: #33405a;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.product-admin-table__title {
+  display: block;
+
+  max-width: 310px;
+
+  overflow: hidden;
+
+  color: #17213a;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-admin-table__image {
+  display: grid;
+
+  width: 34px;
+  height: 34px;
+
+  overflow: hidden;
+
+  place-items: center;
+
+  border-radius: 7px;
+
+  background: #f1f5f9;
+
+  color: #9aa5b5;
+}
+
+.product-admin-table.is-compact .product-admin-table__image {
+  width: 28px;
+  height: 28px;
+}
+
+.product-admin-table__image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+.product-admin-table__status,
+.product-admin-table__stock {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 22px;
+  padding: 0 7px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.product-admin-table__status {
+  background: #e9f8ef;
+  color: #20724f;
+}
+
+.product-admin-table__stock.is-available {
+  background: #e9f8ef;
+  color: #20724f;
+}
+
+.product-admin-table__stock.is-low {
+  background: #fff5d9;
+  color: #8b6817;
+}
+
+.product-admin-table__stock.is-out,
+.product-admin-table__stock.is-untracked {
+  background: #f1f3f5;
+  color: #687386;
+}
+
+.product-admin-table__stock.is-preorder {
+  background: #e8f4fb;
+  color: #1a6683;
+}
+
+.product-admin-table__stock.is-inconsistent {
+  background: #ffebe8;
+  color: #99483f;
+}
+
+.product-admin-table__price {
+  color: #17213a;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.product-admin-table__category {
+  color: #647086;
+  text-transform: capitalize;
+}
+
+.product-admin-table__priority {
+  color: #40506a;
+  font-weight: 750;
+}
+
+.product-admin-table__selection,
+.product-admin-table__detail {
+  display: inline-grid;
+  place-items: center;
+
+  padding: 0;
+
+  background: #ffffff;
+
+  cursor: pointer;
+}
+
+.product-admin-table__selection {
+  width: 23px;
+  height: 23px;
+
+  border: 1px solid #d4dbe3;
+  border-radius: 6px;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.product-admin-table__selection[aria-pressed="true"] {
+  border-color:
+    var(--wooly-admin-primary, #087f9c);
+
+  background:
+    var(--wooly-admin-primary, #087f9c);
+}
+
+.product-admin-table__detail {
+  width: 29px;
+  height: 29px;
+
+  border: 1px solid rgba(8, 127, 156, 0.12);
+  border-radius: 8px;
+
+  background:
+    var(--wooly-admin-primary-faint, #f3fbfc);
+
+  color:
+    var(--wooly-admin-primary-strong, #07667d);
+
+  font-size: 11px;
+}
+
+.product-admin-table__detail:hover {
+  border-color: rgba(8, 127, 156, 0.38);
+}
+
+/* LOTE 1B.3B - LUCIDE */
+.product-admin-table__selection svg,
+.product-admin-table__detail svg,
+.product-admin-table__image svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.product-admin-table__selection[aria-pressed="true"] {
+  color: #ffffff;
+}

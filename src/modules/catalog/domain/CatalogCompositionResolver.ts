@@ -199,7 +199,15 @@ const getUnsupportedAttributeFilters = (
  *   OR
  *
  * entre dimensiones:
- *   AND
+ *
+ *   intersection:
+ *     categorías AND campañas
+ *
+ *   union:
+ *     categorías OR campañas
+ *
+ * `intersection` es la semántica histórica.
+ * `union` es la semántica de fuentes de Wooly Admin V2.
  *
  * overrides:
  *   (AUTOMÁTICOS - EXCLUIDOS) ∪ INCLUIDOS
@@ -229,6 +237,17 @@ export function resolveCatalogComposition({
         composition.filters.campaignIds,
       ),
     );
+
+  const sourceOperator =
+    composition.filters
+      .sourceOperator ??
+    "intersection";
+
+  const hasCategorySources =
+    categoryIds.size > 0;
+
+  const hasCampaignSources =
+    campaignIds.size > 0;
 
   const includedIds =
     new Set(
@@ -330,21 +349,51 @@ export function resolveCatalogComposition({
         productId,
       ) => {
         if (
-          !productMatchesCategories(
-            product,
-            categoryIds,
+          sourceOperator ===
+            "union" &&
+          (
+            hasCategorySources ||
+            hasCampaignSources
           )
         ) {
-          return;
-        }
+          const matchesCategory =
+            hasCategorySources &&
+            productMatchesCategories(
+              product,
+              categoryIds,
+            );
 
-        if (
-          !productMatchesCampaigns(
-            product,
-            campaignIds,
-          )
-        ) {
-          return;
+          const matchesCampaign =
+            hasCampaignSources &&
+            productMatchesCampaigns(
+              product,
+              campaignIds,
+            );
+
+          if (
+            !matchesCategory &&
+            !matchesCampaign
+          ) {
+            return;
+          }
+        } else {
+          if (
+            !productMatchesCategories(
+              product,
+              categoryIds,
+            )
+          ) {
+            return;
+          }
+
+          if (
+            !productMatchesCampaigns(
+              product,
+              campaignIds,
+            )
+          ) {
+            return;
+          }
         }
 
         automaticIds.add(

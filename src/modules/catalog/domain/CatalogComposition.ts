@@ -3,6 +3,10 @@ export type CatalogCompositionMode =
   | "hybrid"
   | "manual";
 
+export type CatalogCompositionSourceOperator =
+  | "intersection"
+  | "union";
+
 export interface CatalogCompositionAttributeFilters {
   /**
    * Reservado para una fase posterior.
@@ -22,6 +26,20 @@ export interface CatalogCompositionAttributeFilters {
 }
 
 export interface CatalogCompositionFilters {
+  /**
+   * Semántica entre categorías y campañas.
+   *
+   * `intersection` conserva el comportamiento histórico:
+   * categoría AND campaña.
+   *
+   * `union` representa Wooly Admin V2:
+   * categorías ∪ campañas.
+   *
+   * Los borradores antiguos sin este campo se interpretan
+   * como `intersection`.
+   */
+  sourceOperator?: CatalogCompositionSourceOperator;
+
   /**
    * OR dentro de la dimensión.
    *
@@ -196,6 +214,19 @@ export function sanitizeCatalogComposition(
       value.filters.campaignIds,
     );
 
+  const sourceOperator:
+    CatalogCompositionSourceOperator |
+    null =
+      value.filters.sourceOperator ===
+        undefined
+        ? "intersection"
+        : value.filters.sourceOperator ===
+              "intersection" ||
+            value.filters.sourceOperator ===
+              "union"
+          ? value.filters.sourceOperator
+          : null;
+
   const includedProductIds =
     sanitizeStringArray(
       value.overrides
@@ -212,6 +243,8 @@ export function sanitizeCatalogComposition(
     categoryIds ===
       null ||
     campaignIds ===
+      null ||
+    sourceOperator ===
       null ||
     includedProductIds ===
       null ||
@@ -276,6 +309,7 @@ export function sanitizeCatalogComposition(
     filters: {
       categoryIds,
       campaignIds,
+      sourceOperator,
 
       attributes: {
         colors,
@@ -298,6 +332,8 @@ export const createEmptyCatalogComposition = (
   filters: {
     categoryIds: [],
     campaignIds: [],
+    sourceOperator:
+      "intersection",
     attributes: {
       colors: [],
       tags: [],

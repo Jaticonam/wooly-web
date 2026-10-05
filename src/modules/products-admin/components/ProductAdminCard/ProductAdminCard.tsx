@@ -1,4 +1,8 @@
 import {
+  Check,
+  ImageOff,
+} from "lucide-react";
+import {
   useEffect,
   useState,
 } from "react";
@@ -17,33 +21,69 @@ interface ProductAdminCardProps {
   product: Product;
   campaignsById: ReadonlyMap<string, Campaign>;
   onSelect: () => void;
+  isSelected?: boolean;
+  onToggleSelection?: (() => void) | undefined;
 }
 
 export default function ProductAdminCard({
   product,
   campaignsById,
   onSelect,
+  isSelected = false,
+  onToggleSelection,
 }: ProductAdminCardProps) {
   const [hasImageError, setHasImageError] = useState(false);
   const presentation = resolveProductAdminPresentation(product);
+
   const campaigns = (product.campaigns ?? [])
     .map((campaignId) => campaignsById.get(campaignId))
     .filter((campaign): campaign is Campaign => Boolean(campaign));
+
   const visibleCampaigns = campaigns.slice(0, 2);
-  const hiddenCampaignCount = campaigns.length - visibleCampaigns.length;
+  const hiddenCampaignCount =
+    campaigns.length - visibleCampaigns.length;
 
   useEffect(() => {
     setHasImageError(false);
   }, [product.img]);
 
   return (
-    <article className="product-admin-card">
+    <article
+      className={
+        isSelected
+          ? "product-admin-card is-selected"
+          : "product-admin-card"
+      }
+    >
       <button
         className="product-admin-card__open"
         type="button"
         aria-label={`Ver detalle de ${product.title}`}
         onClick={onSelect}
       />
+
+      {onToggleSelection ? (
+        <button
+          className="product-admin-card__selection"
+          type="button"
+          aria-pressed={isSelected}
+          aria-label={
+            isSelected
+              ? `Quitar ${product.title} de la selección`
+              : `Seleccionar ${product.title}`
+          }
+          onClick={onToggleSelection}
+        >
+          {isSelected ? (
+            <Check
+              size={15}
+              strokeWidth={2.4}
+              aria-hidden="true"
+            />
+          ) : null}
+        </button>
+      ) : null}
+
       <div className="product-admin-card__media">
         {product.img && !hasImageError ? (
           <img
@@ -58,22 +98,38 @@ export default function ProductAdminCard({
             role="img"
             aria-label={`Imagen no disponible para ${product.title}`}
           >
-            <span aria-hidden="true">▧</span>
+            <ImageOff
+              size={21}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
             <strong>Sin imagen</strong>
           </div>
         )}
       </div>
 
       <div className="product-admin-card__content">
-        <span className="product-admin-card__category">{product.category}</span>
+        <span className="product-admin-card__category">
+          {product.category}
+        </span>
+
         <h2>{product.title}</h2>
 
         <div className="product-admin-card__pricing">
-          <strong>{presentation.unitPriceLabel}</strong>
-          <small>{presentation.volumePriceLabel}</small>
+          <strong>
+            {presentation.unitPriceLabel}
+          </strong>
+
+          <small>
+            {presentation.volumePriceLabel}
+          </small>
         </div>
 
-        <span className={`product-admin-card__stock is-${presentation.stockTone}`}>
+        <span
+          className={
+            `product-admin-card__stock is-${presentation.stockTone}`
+          }
+        >
           {presentation.stockLabel}
         </span>
 
@@ -83,10 +139,15 @@ export default function ProductAdminCard({
           {visibleCampaigns.length > 0 ? (
             <div className="product-admin-card__campaigns">
               {visibleCampaigns.map((campaign) => (
-                <span key={campaign.id}>{campaign.name}</span>
+                <span key={campaign.id}>
+                  {campaign.name}
+                </span>
               ))}
+
               {hiddenCampaignCount > 0 ? (
-                <span>+{hiddenCampaignCount}</span>
+                <span>
+                  +{hiddenCampaignCount}
+                </span>
               ) : null}
             </div>
           ) : null}

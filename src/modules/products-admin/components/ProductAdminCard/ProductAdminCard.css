@@ -1,27 +1,49 @@
 .product-admin-card {
   position: relative;
   overflow: hidden;
+
   border: 1px solid var(--w-border, #e2e8f0);
   border-radius: 16px;
+
   background: #ffffff;
-  box-shadow: 0 5px 16px rgba(15, 23, 42, 0.045);
-  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.045);
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
 }
 
 .product-admin-card__open {
   position: absolute;
   z-index: 2;
   inset: 0;
+
   border: 0;
   border-radius: inherit;
+
   background: transparent;
   cursor: pointer;
 }
 
 .product-admin-card:hover {
-  border-color: var(--w-primary, #2494aa);
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.1);
+  border-color:
+    rgba(8, 127, 156, 0.42);
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.09);
+
   transform: translateY(-1px);
+}
+
+.product-admin-card.is-selected {
+  border-color: var(--wooly-admin-primary, #087f9c);
+
+  box-shadow:
+    0 0 0 2px rgba(8, 127, 156, 0.12),
+    0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
 .product-admin-card__open:focus-visible {
@@ -29,11 +51,68 @@
   outline-offset: -3px;
 }
 
+.product-admin-card__selection {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 15px rgba(15, 23, 42, 0.10);
+
+  backdrop-filter: blur(10px);
+
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.product-admin-card__selection:hover {
+  border-color:
+    rgba(8, 127, 156, 0.60);
+
+  transform: scale(1.04);
+}
+
+.product-admin-card__selection[aria-pressed="true"] {
+  border-color: var(--wooly-admin-primary, #087f9c);
+  background: var(--wooly-admin-primary, #087f9c);
+}
+
+.product-admin-card__selection:focus-visible {
+  outline: 3px solid rgba(8, 127, 156, 0.22);
+  outline-offset: 2px;
+}
+
 .product-admin-card__media {
   display: grid;
   overflow: hidden;
+
   aspect-ratio: 4 / 3;
+
   place-items: center;
+
   background: #f1f5f9;
 }
 
@@ -47,6 +126,7 @@
   display: grid;
   place-items: center;
   gap: 7px;
+
   color: #94a3b8;
 }
 
@@ -61,11 +141,13 @@
 .product-admin-card__content {
   display: grid;
   gap: 8px;
+
   padding: 12px;
 }
 
 .product-admin-card__category {
-  color: #64748b;
+  color: var(--wooly-admin-primary-strong, #07667d);
+
   font-size: 0.72rem;
   font-weight: 850;
   text-transform: capitalize;
@@ -74,7 +156,9 @@
 .product-admin-card h2 {
   min-height: 2.65em;
   margin: 0;
+
   color: #0f172a;
+
   font-size: 0.88rem;
   font-weight: 900;
   line-height: 1.32;
@@ -87,21 +171,27 @@
 
 .product-admin-card__pricing strong {
   color: #0f172a;
+
   font-size: 1.2rem;
   font-weight: 950;
 }
 
 .product-admin-card__pricing small {
   margin-top: 3px;
+
   color: #64748b;
+
   font-size: 0.72rem;
   font-weight: 750;
 }
 
 .product-admin-card__stock {
   width: fit-content;
-  border-radius: 999px;
+
   padding: 5px 8px;
+
+  border-radius: 999px;
+
   font-size: 0.72rem;
   font-weight: 850;
 }
@@ -135,12 +225,15 @@
 .product-admin-card__meta {
   display: grid;
   gap: 7px;
-  border-top: 1px solid #eef2f7;
+
   padding-top: 8px;
+
+  border-top: 1px solid #eef2f7;
 }
 
 .product-admin-card__meta code {
   color: #475569;
+
   font-family: inherit;
   font-size: 0.72rem;
   font-weight: 900;
@@ -155,13 +248,29 @@
 
 .product-admin-card__campaigns span {
   overflow: hidden;
+
   max-width: 120px;
-  border-radius: 999px;
+
   padding: 4px 7px;
-  background: var(--w-primary-soft, #e8f6f9);
-  color: var(--w-primary-dark, #156f84);
+
+  border-radius: 999px;
+
+  background:
+    var(--wooly-admin-primary-soft, #e8f6f9);
+
+  color:
+    var(--wooly-admin-primary-strong, #156f84);
+
   font-size: 0.7rem;
   font-weight: 800;
+
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* LOTE 1B.3B - LUCIDE */
+.product-admin-card__selection svg,
+.product-admin-card__imageFallback svg {
+  display: block;
+  flex: 0 0 auto;
 }

@@ -3,6 +3,7 @@ import {
   render,
   screen,
 } from "@testing-library/react";
+
 import {
   describe,
   expect,
@@ -12,19 +13,84 @@ import {
 
 import CatalogCompositionModePicker from "./CatalogCompositionModePicker";
 
-describe("CatalogCompositionModePicker", () => {
-  it("explica los tres modos y comunica la selección", () => {
-    const onChange = vi.fn();
-    render(<CatalogCompositionModePicker value="automatic" onChange={onChange} />);
+describe(
+  "CatalogCompositionModePicker",
+  () => {
+    it(
+      "presenta los cuatro alcances comerciales",
+      () => {
+        const onChange =
+          vi.fn();
 
-    expect(screen.getByRole("button", { name: /Por alcance/ }))
-      .toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: /Personalizado/ }))
-      .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Desde cero/ }))
-      .toBeInTheDocument();
+        render(
+          <CatalogCompositionModePicker
+            value="all"
+            onChange={onChange}
+          />,
+        );
 
-    fireEvent.click(screen.getByRole("button", { name: /Desde cero/ }));
-    expect(onChange).toHaveBeenCalledWith("manual");
-  });
-});
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Todos/,
+            },
+          ),
+        ).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Categoría/,
+            },
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Campaña/,
+            },
+          ),
+        ).toBeInTheDocument();
+
+        const customButton =
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Personalizado/,
+            },
+          );
+
+        expect(
+          customButton,
+        ).toBeInTheDocument();
+
+        fireEvent.click(
+          customButton,
+        );
+
+        expect(
+          onChange,
+        ).toHaveBeenCalledTimes(
+          1,
+        );
+
+        expect(
+          onChange,
+        ).toHaveBeenCalledWith(
+          "custom",
+        );
+      },
+    );
+  },
+);

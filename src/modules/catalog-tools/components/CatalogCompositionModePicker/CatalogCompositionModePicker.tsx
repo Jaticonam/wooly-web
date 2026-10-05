@@ -1,51 +1,107 @@
 import type {
-  CatalogCompositionMode,
-} from "@/modules/catalog/domain/CatalogComposition";
+  LucideIcon,
+} from "lucide-react";
+
 import {
-  CATALOG_COMPOSITION_MODE_OPTIONS,
-} from "@/modules/catalog-tools/domain/CatalogCompositionModeOptions";
+  Boxes,
+  Megaphone,
+  MousePointer2,
+  Tag,
+} from "lucide-react";
+
+import {
+  CATALOG_WORKSPACE_SCOPE_OPTIONS,
+  type CatalogWorkspaceScope,
+} from "@/modules/catalog-tools/domain/CatalogWorkspaceScope";
 
 import "./CatalogCompositionModePicker.css";
 
 interface CatalogCompositionModePickerProps {
-  value: CatalogCompositionMode;
-  onChange: (mode: CatalogCompositionMode) => void;
+  value:
+    CatalogWorkspaceScope;
+
+  onChange: (
+    scope:
+      CatalogWorkspaceScope,
+  ) => void;
 }
+
+const SCOPE_ICON:
+  Record<
+    CatalogWorkspaceScope,
+    LucideIcon
+  > = {
+    all:
+      Boxes,
+
+    category:
+      Tag,
+
+    campaign:
+      Megaphone,
+
+    custom:
+      MousePointer2,
+  };
 
 export default function CatalogCompositionModePicker({
   value,
   onChange,
 }: CatalogCompositionModePickerProps) {
   return (
-    <section className="catalog-mode-picker" aria-labelledby="catalog-mode-picker-title">
-      <header>
-        <div>
-          <span>Tipo de catálogo</span>
-          <h2 id="catalog-mode-picker-title">¿Cómo quieres seleccionar los productos?</h2>
-        </div>
-        <small>El modo puede cambiarse sin perder el borrador actual.</small>
-      </header>
+    <div
+      className="catalog-mode-picker"
+      role="group"
+      aria-label="Alcance comercial"
+    >
+      {CATALOG_WORKSPACE_SCOPE_OPTIONS.map(
+        (scope) => {
+          const Icon =
+            SCOPE_ICON[
+              scope.id
+            ];
 
-      <div className="catalog-mode-picker__options" role="group" aria-label="Tipo de composición">
-        {CATALOG_COMPOSITION_MODE_OPTIONS.map((mode) => (
-          <button
-            type="button"
-            key={mode.id}
-            className={value === mode.id ? "is-active" : ""}
-            aria-pressed={value === mode.id}
-            onClick={() => onChange(mode.id)}
-          >
-            <span aria-hidden="true">
-              {mode.id === "automatic" ? "▦" : mode.id === "hybrid" ? "◩" : "✓"}
-            </span>
-            <div>
-              <strong>{mode.label}</strong>
-              <small>{mode.description}</small>
-              <p>{mode.helper}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-    </section>
+          return (
+            <button
+              type="button"
+              key={
+                scope.id
+              }
+              className={
+                value ===
+                scope.id
+                  ? "is-active"
+                  : ""
+              }
+              aria-pressed={
+                value ===
+                scope.id
+              }
+              onClick={() =>
+                onChange(
+                  scope.id,
+                )
+              }
+            >
+              <Icon
+                size={15}
+                strokeWidth={1.9}
+                aria-hidden="true"
+              />
+
+              <span>
+                <strong>
+                  {scope.label}
+                </strong>
+
+                <small>
+                  {scope.description}
+                </small>
+              </span>
+            </button>
+          );
+        },
+      )}
+    </div>
   );
 }

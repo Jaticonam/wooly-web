@@ -9,6 +9,10 @@ import {
 } from "@testing-library/react";
 
 import {
+  MemoryRouter,
+} from "react-router-dom";
+
+import {
   describe,
   expect,
   it,
@@ -90,7 +94,11 @@ describe("ProductsAdminPage", () => {
       isLoading: false,
     } as ReturnType<typeof useCatalogCampaigns>);
 
-    render(<ProductsAdminPage />);
+    render(
+      <MemoryRouter>
+        <ProductsAdminPage />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByTestId("admin-shell"))
       .toHaveAttribute("data-title", "Productos");
@@ -111,13 +119,14 @@ describe("ProductsAdminPage", () => {
       .toHaveTextContent("1 resultado");
     expect(screen.getByLabelText("Resumen de resultados"))
       .toHaveTextContent("1 vendible");
-    expect(screen.queryByText("Preparar catálogo"))
-      .not.toBeInTheDocument();
+    expect(screen.getByRole("button", {
+      name: /Preparar catálogo/,
+    })).toBeDisabled();
     expect(screen.queryByText("Publicar"))
       .not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", {
-      name: "Google Sheets",
+      name: "Actualizar datos",
     }));
 
     expect(screen.getByRole("dialog", {

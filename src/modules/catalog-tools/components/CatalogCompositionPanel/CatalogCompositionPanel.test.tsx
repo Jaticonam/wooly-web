@@ -2,6 +2,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from "@testing-library/react";
 
 import {
@@ -35,6 +36,9 @@ const product: Product = {
   stock: 20,
   img: "/producto.jpg",
   status: "publicado",
+  campaigns: [
+    "campana-prueba",
+  ],
 };
 
 const campaign: Campaign = {
@@ -50,114 +54,334 @@ const campaign: Campaign = {
   computedStatus: "activa",
 };
 
-describe("CatalogCompositionPanel flow", () => {
-  it("separa el explorador del workspace y permite regresar", () => {
-    render(
-      <CatalogCompositionPanel
-        products={[product]}
-        campaigns={[campaign]}
-        isReady
-      />,
+describe(
+  "CatalogCompositionPanel workspace",
+  () => {
+    it(
+      "inicia con alcance Todos y composición continua",
+      () => {
+        render(
+          <CatalogCompositionPanel
+            products={[product]}
+            campaigns={[campaign]}
+            isReady
+          />,
+        );
+
+        const scopePicker =
+          screen.getByRole(
+            "group",
+            {
+              name:
+                "Alcance comercial",
+            },
+          );
+
+        expect(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Todos/,
+            },
+          ),
+        ).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+
+        const compositionBoard =
+          screen.getByLabelText(
+            "Composición del catálogo",
+          );
+
+        expect(
+          within(
+            compositionBoard,
+          ).getByText(
+            "Ramo premium",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.queryByRole(
+            "button",
+            {
+              name:
+                /Revisar catálogo/,
+            },
+          ),
+        ).not.toBeInTheDocument();
+      },
     );
 
-    expect(
-      screen.getByRole("heading", {
-        name: "Selecciona los productos",
-      }),
-    ).toBeInTheDocument();
+    it(
+      "muestra controles contextuales para Categoría y Campaña",
+      () => {
+        render(
+          <CatalogCompositionPanel
+            products={[product]}
+            campaigns={[campaign]}
+            isReady
+          />,
+        );
 
-    expect(
-      screen.queryByRole("heading", {
-        name: "Revisa tu catálogo",
-      }),
-    ).not.toBeInTheDocument();
+        const scopePicker =
+          screen.getByRole(
+            "group",
+            {
+              name:
+                "Alcance comercial",
+            },
+          );
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Revisar catálogo →",
-      }),
+        fireEvent.click(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Categoría/,
+            },
+          ),
+        );
+
+        expect(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Categoría/,
+            },
+          ),
+        ).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+
+        expect(
+          screen.getByText(
+            "Flores",
+          ),
+        ).toBeInTheDocument();
+
+        fireEvent.click(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Campaña/,
+            },
+          ),
+        );
+
+        expect(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Campaña/,
+            },
+          ),
+        ).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+
+        expect(
+          screen.getByText(
+            "Campaña prueba",
+          ),
+        ).toBeInTheDocument();
+      },
     );
 
-    expect(
-      screen.getByRole("heading", {
-        name: "Revisa tu catálogo",
-      }),
-    ).toBeInTheDocument();
+    it(
+      "interpreta handoff como Personalizado y conserva la selección al cambiar de alcance",
+      () => {
+        render(
+          <CatalogCompositionPanel
+            initialProductIds={[
+              product.id,
+            ]}
+            products={[product]}
+            campaigns={[campaign]}
+            isReady
+          />,
+        );
 
-    expect(
-      screen.getByLabelText(
-        "Resumen del catálogo en tiempo real",
-      ),
-    ).toBeInTheDocument();
+        const scopePicker =
+          screen.getByRole(
+            "group",
+            {
+              name:
+                "Alcance comercial",
+            },
+          );
 
-    expect(
-      screen.queryByRole("heading", {
-        name: "Selecciona los productos",
-      }),
-    ).not.toBeInTheDocument();
+        const customButton =
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Personalizado/,
+            },
+          );
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "← Volver a seleccionar",
-      }),
+        expect(
+          customButton,
+        ).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+
+        expect(
+          screen.getByText(
+            "1 producto seleccionado",
+          ),
+        ).toBeInTheDocument();
+
+        fireEvent.click(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Todos/,
+            },
+          ),
+        );
+
+        fireEvent.click(
+          customButton,
+        );
+
+        expect(
+          screen.getByText(
+            "1 producto seleccionado",
+          ),
+        ).toBeInTheDocument();
+      },
     );
 
-    expect(
-      screen.getByRole("heading", {
-        name: "Selecciona los productos",
-      }),
-    ).toBeInTheDocument();
-  });
+    it(
+      "no muestra productos hasta configurar Categoría",
+      () => {
+        render(
+          <CatalogCompositionPanel
+            products={[product]}
+            campaigns={[campaign]}
+            isReady
+          />,
+        );
 
-  it("permite elegir el modo antes de revisar", () => {
-    render(
-      <CatalogCompositionPanel
-        products={[product]}
-        campaigns={[campaign]}
-        isReady
-      />,
+        const scopePicker =
+          screen.getByRole(
+            "group",
+            {
+              name:
+                "Alcance comercial",
+            },
+          );
+
+        fireEvent.click(
+          within(
+            scopePicker,
+          ).getByRole(
+            "button",
+            {
+              name:
+                /Categoría/,
+            },
+          ),
+        );
+
+        const compositionBoard =
+          screen.getByLabelText(
+            "Composición del catálogo",
+          );
+
+        expect(
+          within(
+            compositionBoard,
+          ).getByText(
+            "Sin productos incluidos",
+          ),
+        ).toBeInTheDocument();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Flores/,
+            },
+          ),
+        );
+
+        expect(
+          within(
+            compositionBoard,
+          ).getByText(
+            "Ramo premium",
+          ),
+        ).toBeInTheDocument();
+      },
     );
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /Desde cero/,
-      }),
+    it(
+      "abre la salida comercial desde el Composition Board",
+      () => {
+        render(
+          <CatalogCompositionPanel
+            products={[product]}
+            campaigns={[campaign]}
+            isReady
+          />,
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Preparar salida",
+            },
+          ),
+        );
+
+        expect(
+          screen.getByRole(
+            "heading",
+            {
+              name:
+                "Generar catálogo",
+            },
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByRole(
+            "heading",
+            {
+              name:
+                "Genera el PDF de Wooly",
+            },
+          ),
+        ).toBeInTheDocument();
+      },
     );
-
-    expect(
-      screen.getByRole("button", {
-        name: /Desde cero/,
-      }),
-    ).toHaveAttribute("aria-pressed", "true");
-
-    expect(
-      screen.queryByLabelText("Buscar producto en catálogo"),
-    ).not.toBeInTheDocument();
-  });
-
-  it("abre Generar con el PDF como salida principal", () => {
-    render(
-      <CatalogCompositionPanel
-        products={[product]}
-        campaigns={[campaign]}
-        isReady
-      />,
-    );
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /Generar PDF y compartir/,
-      }),
-    );
-
-    expect(
-      screen.getByRole("heading", { name: "Generar catálogo" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Genera el PDF de Wooly" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getAllByRole("link", { name: "Generar PDF" }),
-    ).toHaveLength(1);
-  });
-});
+  },
+);

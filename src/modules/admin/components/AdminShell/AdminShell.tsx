@@ -6,12 +6,16 @@ import {
   NavLink,
 } from "react-router-dom";
 
+import {
+  Boxes,
+  Files,
+  Store,
+} from "lucide-react";
+
 import "./AdminShell.css";
 
 interface AdminShellProps {
-  children:
-    ReactNode;
-
+  children: ReactNode;
   title?: string;
   subtitle?: string;
 }
@@ -19,19 +23,23 @@ interface AdminShellProps {
 export default function AdminShell({
   children,
   title = "Productos",
-  subtitle = "Inventario comercial",
+  subtitle,
 }: AdminShellProps) {
   return (
     <div className="wooly-admin-shell">
       <aside className="wooly-admin-shell__sidebar">
         <div className="wooly-admin-shell__brand">
-          <strong>
+          <div
+            className="wooly-admin-shell__brandMark"
+            aria-hidden="true"
+          >
             W
-          </strong>
+          </div>
 
-          <span>
-            Wooly
-          </span>
+          <div className="wooly-admin-shell__brandCopy">
+            <strong>Wooly</strong>
+            <small>WOOLY ADMIN 2.0</small>
+          </div>
         </div>
 
         <nav
@@ -45,13 +53,17 @@ export default function AdminShell({
               isActive ? "is-active" : ""
             }
           >
-            <span className="wooly-admin-shell__navIcon">
-              ▣
+            <span
+              className="wooly-admin-shell__navIcon"
+              aria-hidden="true"
+            >
+              <Boxes
+                size={18}
+                strokeWidth={2}
+              />
             </span>
 
-            <span>
-              Productos
-            </span>
+            <span>Productos</span>
           </NavLink>
 
           <NavLink
@@ -60,44 +72,53 @@ export default function AdminShell({
               isActive ? "is-active" : ""
             }
           >
-            <span className="wooly-admin-shell__navIcon">
-              ▤
+            <span
+              className="wooly-admin-shell__navIcon"
+              aria-hidden="true"
+            >
+              <Files
+                size={18}
+                strokeWidth={2}
+              />
             </span>
 
-            <span>
-              Catálogos
-            </span>
+            <span>Catálogos</span>
           </NavLink>
         </nav>
+
+        <div className="wooly-admin-shell__sidebarFooter">
+          <a
+            className="wooly-admin-shell__storeLink"
+            href="/catalogo"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Store
+              size={15}
+              strokeWidth={1.9}
+              aria-hidden="true"
+            />
+
+            <span>Ver catálogo</span>
+          </a>
+
+          <div className="wooly-admin-shell__workspaceBrand">
+            <small>Workspace comercial</small>
+            <strong>JUNG</strong>
+          </div>
+        </div>
       </aside>
 
       <div className="wooly-admin-shell__stage">
         <header className="wooly-admin-shell__topbar">
           <div className="wooly-admin-shell__context">
-            <span>
-              WOOLY ADMIN 2.0
-            </span>
-
-            <div>
-              <strong>
-                {title}
-              </strong>
-
-              <small>
-                {subtitle}
-              </small>
-            </div>
+            <strong>Wooly Admin</strong>
+            <span>{title}</span>
           </div>
 
-          <div className="wooly-admin-shell__actions">
-            <a
-              href="/catalogo"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Ver catálogo
-            </a>
-          </div>
+          {subtitle ? (
+            <small>{subtitle}</small>
+          ) : null}
         </header>
 
         <div className="wooly-admin-shell__workspace">

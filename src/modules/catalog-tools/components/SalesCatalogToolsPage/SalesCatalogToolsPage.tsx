@@ -1,6 +1,12 @@
 import {
+  useEffect,
   useState,
 } from "react";
+
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import {
   useCatalogCampaigns,
@@ -17,14 +23,56 @@ import CatalogCompositionPanel from "@/modules/catalog-tools/components/CatalogC
 import AdminShell from "@/modules/admin/components/AdminShell/AdminShell";
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 
+import {
+  parseCatalogWorkspaceHandoff,
+} from "@/modules/catalog-tools/domain/CatalogWorkspaceHandoff";
+
 import "./SalesCatalogToolsPage.css";
 
 export default function SalesCatalogToolsPage() {
+  const location =
+    useLocation();
+
+  const navigate =
+    useNavigate();
+
+  const [
+    incomingHandoff,
+  ] = useState(
+    () =>
+      parseCatalogWorkspaceHandoff(
+        location.state,
+      ),
+  );
+
   const [
     isCatalogSyncOpen,
     setIsCatalogSyncOpen,
   ] = useState(
     false,
+  );
+
+  useEffect(
+    () => {
+      if (!incomingHandoff) {
+        return;
+      }
+
+      navigate(
+        `${location.pathname}${location.search}${location.hash}`,
+        {
+          replace: true,
+          state: null,
+        },
+      );
+    },
+    [
+      incomingHandoff,
+      location.hash,
+      location.pathname,
+      location.search,
+      navigate,
+    ],
   );
 
   const {
@@ -48,10 +96,7 @@ export default function SalesCatalogToolsPage() {
     !isCampaignRegistryLoading;
 
   return (
-    <AdminShell
-      title="Catálogos"
-      subtitle="Composición y publicación"
-    >
+    <AdminShell title="Catálogos">
       <main className="sales-catalog-tools">
         <AdminModal
           open={
@@ -89,6 +134,16 @@ export default function SalesCatalogToolsPage() {
           }
           isReady={
             isPanelReady
+          }
+          initialProductIds={
+            incomingHandoff
+              ?.productIds ??
+            []
+          }
+          onBackToProducts={() =>
+            navigate(
+              "/admin",
+            )
           }
           onOpenCatalogSync={() =>
             setIsCatalogSyncOpen(

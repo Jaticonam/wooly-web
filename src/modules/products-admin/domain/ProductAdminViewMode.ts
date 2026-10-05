@@ -1,1 +1,4 @@
-export type ProductAdminViewMode = "grid" | "list";
+export type ProductAdminViewMode =
+  | "grid"
+  | "list"
+  | "table";

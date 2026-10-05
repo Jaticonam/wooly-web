@@ -18,19 +18,31 @@ import {
 } from "./CategoryGrid";
 
 vi.mock(
-  "@/modules/catalog/components/ProductCard",
+  "@/modules/catalog/components/CatalogProductGrid",
   () => ({
-    ProductCard: ({
-      product,
+    CatalogProductGrid: ({
+      products,
     }: {
-      product:
-        Product;
+      products:
+        Product[];
     }) => (
-      <article>
-        {
-          product.title
-        }
-      </article>
+      <div data-catalog-product-grid>
+        {products.map(
+          (
+            product,
+          ) => (
+            <article
+              key={
+                product.id
+              }
+            >
+              {
+                product.title
+              }
+            </article>
+          ),
+        )}
+      </div>
     ),
   }),
 );
@@ -58,7 +70,7 @@ describe(
   "CategoryGrid",
   () => {
     it(
-      "usa la misma densidad responsive que Catalog V2",
+      "delega la grilla a CatalogProductGrid",
       () => {
         const {
           container,
@@ -78,21 +90,11 @@ describe(
             />,
           );
 
-        const grid =
-          container.querySelector(
-            "[data-category-grid]",
-          );
-
         expect(
-          grid,
-        ).toHaveClass(
-          "grid-cols-2",
-          "sm:grid-cols-3",
-          "md:grid-cols-4",
-          "lg:grid-cols-5",
-          "xl:grid-cols-6",
-          "2xl:grid-cols-7",
-        );
+          container.querySelector(
+            "[data-catalog-product-grid]",
+          ),
+        ).toBeInTheDocument();
       },
     );
   },

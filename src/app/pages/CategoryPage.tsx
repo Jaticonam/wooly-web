@@ -16,12 +16,16 @@ import {
 } from "@/modules/cart/store";
 
 import {
-  useCategoryProducts,
-} from "@/modules/category/hooks/useCategoryProducts";
+  useCatalogData,
+} from "@/modules/catalog/hooks/useCatalogData";
 
 import {
-  filterCategoryProducts,
-} from "@/modules/category/utils/filterCategoryProducts";
+  useCatalogFilters,
+} from "@/modules/catalog/hooks/useCatalogFilters";
+
+import {
+  isCatalogCategory,
+} from "@/modules/catalog/hooks/useCatalogNavigation";
 
 import type {
   Product,
@@ -40,8 +44,8 @@ import {
 } from "@/modules/category/components/CategoryEmpty";
 
 import {
-  CategoryGrid,
-} from "@/modules/category/components/CategoryGrid";
+  CatalogProductGrid,
+} from "@/modules/catalog/components/CatalogProductGrid";
 
 import {
   FloatingButtons,
@@ -121,22 +125,31 @@ const CategoryPage =
   const navigate =
     useNavigate();
 
-  const categoryId =
+  const requestedCategory =
     searchParams.get(
       "cat",
     ) ||
-    paramCategoryId;
-
-  const activeCategory =
-    categoryId ||
+    paramCategoryId ||
     "todas";
 
+  const activeCategory =
+    isCatalogCategory(
+      requestedCategory,
+    )
+      ? requestedCategory
+      : "todas";
+
   const {
-    products:
-      allProducts,
-    loading,
+    data:
+      allProducts = [],
+    isLoading:
+      loading,
+    isCategoryLoading,
+    isFullCatalogLoaded,
   } =
-    useCategoryProducts();
+    useCatalogData(
+      activeCategory,
+    );
 
   const {
     activeCampaigns,
@@ -218,29 +231,11 @@ const CategoryPage =
   useEffect(
     () => {
       if (
-        categoryId ===
-        "todas"
-      ) {
-        navigate(
-          "/catalogo",
-          {
-            replace:
-              true,
-          },
-        );
-
-        return;
-      }
-
-      const knownCategory =
-        CATEGORY_CONFIG.some(
-          (category) =>
-            category.id ===
-            activeCategory,
-        );
-
-      if (
-        !knownCategory
+        requestedCategory ===
+          "todas" ||
+        !isCatalogCategory(
+          requestedCategory,
+        )
       ) {
         navigate(
           "/catalogo",
@@ -252,9 +247,8 @@ const CategoryPage =
       }
     },
     [
-      activeCategory,
-      categoryId,
       navigate,
+      requestedCategory,
     ],
   );
 
@@ -300,32 +294,44 @@ const CategoryPage =
       );
     },
     [
-      categoryId,
+      activeCategory,
     ],
   );
 
-  const categoryInfo =
-    CATEGORY_CONFIG.find(
-      (category) =>
-        category.id ===
-        activeCategory,
-    );
-
   const {
-    categoryProducts,
     filteredProducts,
+    categoryCounts,
+    campaignCounts,
+    visibleCategories,
   } =
+    useCatalogFilters({
+      products:
+        allProducts,
+      activeCategory,
+      activeCampaign:
+        "",
+      searchQuery:
+        categorySearch,
+      showCounts:
+        isFullCatalogLoaded,
+    });
+
+  const categoryProducts =
     useMemo(
       () =>
-        filterCategoryProducts(
-          allProducts,
-          activeCategory,
-          categorySearch,
-        ),
+        activeCategory ===
+        "todas"
+          ? allProducts
+          : allProducts.filter(
+              (
+                product,
+              ) =>
+                product.category ===
+                activeCategory,
+            ),
       [
-        allProducts,
         activeCategory,
-        categorySearch,
+        allProducts,
       ],
     );
 
@@ -342,79 +348,34 @@ const CategoryPage =
       ],
     );
 
-  const categoryCounts =
+  const priorityImageIds =
     useMemo(
-      () => {
-        const counts:
-          Record<
-            string,
-            number
-          > = {
-            todas:
-              allProducts.length,
-          };
-
-        for (
-          const product of
-          allProducts
-        ) {
-          counts[
-            product.category
-          ] =
-            (
-              counts[
-                product.category
-              ] ||
-              0
-            ) +
-            1;
-        }
-
-        return counts;
-      },
+      () =>
+        new Set(
+          sortedProducts
+            .slice(
+              0,
+              6,
+            )
+            .map(
+              (
+                product,
+              ) =>
+                product.id,
+            ),
+        ),
       [
-        allProducts,
+        sortedProducts,
       ],
     );
 
-  const campaignCounts =
-    useMemo(
-      () =>
-        categoryProducts.reduce<
-          Record<
-            string,
-            number
-          >
-        >(
-          (
-            counts,
-            product,
-          ) => {
-            product.campaigns
-              ?.forEach(
-                (
-                  campaignId,
-                ) => {
-                  counts[
-                    campaignId
-                  ] =
-                    (
-                      counts[
-                        campaignId
-                      ] ||
-                      0
-                    ) +
-                    1;
-                },
-              );
-
-            return counts;
-          },
-          {},
-        ),
-      [
-        categoryProducts,
-      ],
+  const categoryInfo =
+    CATEGORY_CONFIG.find(
+      (
+        category,
+      ) =>
+        category.id ===
+        activeCategory,
     );
 
   const hasSearch =
@@ -511,6 +472,27 @@ const CategoryPage =
       [],
     );
 
+  const handleImageClick =
+    useCallback(
+      (
+        product:
+          Product,
+      ) => {
+        setZoomGallery({
+          media:
+            getProductMedia(
+              product,
+            ),
+          initialIndex:
+            0,
+          title:
+            product.title,
+          product,
+        });
+      },
+      [],
+    );
+
   const handleAddExtra =
     useCallback(
       (
@@ -548,6 +530,14 @@ const CategoryPage =
         )
       : 0;
 
+  const showLoading =
+    loading ||
+    (
+      isCategoryLoading &&
+      filteredProducts.length ===
+        0
+    );
+
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-36">
       <header className="sticky top-0 z-[100] flex w-full flex-col">
@@ -564,7 +554,7 @@ const CategoryPage =
             setCategorySearch
           }
           categories={
-            CATEGORY_CONFIG
+            visibleCategories
           }
           activeCategory={
             activeCategory
@@ -607,7 +597,7 @@ const CategoryPage =
       </header>
 
       <main className="mx-auto mt-3 w-full max-w-[1680px] px-2 sm:px-3 md:mt-4 md:px-4 xl:px-5">
-        {loading ? (
+        {showLoading ? (
           <CategorySkeleton />
         ) : (
           <div className="space-y-3">
@@ -619,7 +609,10 @@ const CategoryPage =
                 sortedProducts.length
               }
               filterCount={
-                1
+                activeCategory ===
+                "todas"
+                  ? 0
+                  : 1
               }
               sortMode={
                 sortMode
@@ -647,30 +640,21 @@ const CategoryPage =
                 }
               />
             ) : (
-              <CategoryGrid
+              <CatalogProductGrid
                 products={
                   sortedProducts
                 }
                 cart={
                   cart
                 }
+                imagePriorityIds={
+                  priorityImageIds
+                }
                 onAddToCart={
                   handleAddToCart
                 }
-                onImageClick={(
-                  product,
-                ) =>
-                  setZoomGallery({
-                    media:
-                      getProductMedia(
-                        product,
-                      ),
-                    initialIndex:
-                      0,
-                    title:
-                      product.title,
-                    product,
-                  })
+                onImageClick={
+                  handleImageClick
                 }
               />
             )}
@@ -696,7 +680,7 @@ const CategoryPage =
           categoryCounts
         }
         categories={
-          CATEGORY_CONFIG
+          visibleCategories
         }
         campaigns={
           activeCampaigns
@@ -737,6 +721,9 @@ const CategoryPage =
           setCartOpen(
             true,
           )
+        }
+        showCart={
+          false
         }
       />
 

@@ -11,7 +11,7 @@ import { CatalogSectionHeader } from "@/modules/catalog/components/CatalogSectio
 import { FloatingButtons } from "@/shared/components/layout/FloatingButtons";
 import { ImageZoomModal } from "@/shared/components/media/ImageZoomModal";
 import { CatalogSkeleton } from "@/shared/components/skeletons/CatalogSkeleton";
-import { ProductCard } from "@/modules/catalog/components/ProductCard";
+import { CatalogProductGrid } from "@/modules/catalog/components/CatalogProductGrid";
 import { ProductCaptureButton } from "@/modules/catalog/components/ProductCaptureButton";
 import { CartSidebar } from "@/modules/cart/components/CartSidebar";
 import { AddToCartModal } from "@/modules/cart/components/AddToCartModal";
@@ -144,6 +144,26 @@ const CatalogPage = () => {
     [],
   );
 
+  const handleImageClick = useCallback(
+    (product: Product) => {
+      const gallery =
+        getProductMedia(
+          product,
+        );
+
+      setZoomGallery({
+        media:
+          gallery,
+        initialIndex:
+          0,
+        title:
+          product.title,
+        product,
+      });
+    },
+    [],
+  );
+
   const handleCloseAddModal = useCallback(() => setAddModalOpen(false), []);
 
   const handleAddExtra = useCallback(
@@ -156,31 +176,6 @@ const CatalogPage = () => {
   const currentQtyInCart = selectedProduct
     ? (cart.find((item) => item.id === selectedProduct.id)?.qty ?? 0)
     : 0;
-
-  const renderGrid = (items: Product[]) => (
-    <div className="grid min-w-0 grid-cols-2 gap-x-1.5 gap-y-2 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-      {items.map((p) => (
-        <div key={p.id} className="min-w-0">
-          <ProductCard
-            product={p}
-            cart={cart}
-            imagePriority={priorityImageIds.has(p.id)}
-            onAddToCart={handleAddToCart}
-            onImageClick={(product) => {
-              const gallery = getProductMedia(product);
-
-              setZoomGallery({
-                media: gallery,
-                initialIndex: 0,
-                title: product.title,
-                product,
-              });
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
 
   const {
     showPriorityBlocks,
@@ -301,7 +296,13 @@ const CatalogPage = () => {
                   count={topProducts.length}
                 />
 
-                {renderGrid(topProducts)}
+                <CatalogProductGrid
+                  products={topProducts}
+                  cart={cart}
+                  imagePriorityIds={priorityImageIds}
+                  onAddToCart={handleAddToCart}
+                  onImageClick={handleImageClick}
+                />
               </section>
             )}
 
@@ -312,7 +313,13 @@ const CatalogPage = () => {
                   count={strongProducts.length}
                 />
 
-                {renderGrid(strongProducts)}
+                <CatalogProductGrid
+                  products={strongProducts}
+                  cart={cart}
+                  imagePriorityIds={priorityImageIds}
+                  onAddToCart={handleAddToCart}
+                  onImageClick={handleImageClick}
+                />
               </section>
             )}
 
@@ -323,7 +330,13 @@ const CatalogPage = () => {
                   count={highlightProducts.length}
                 />
 
-                {renderGrid(highlightProducts)}
+                <CatalogProductGrid
+                  products={highlightProducts}
+                  cart={cart}
+                  imagePriorityIds={priorityImageIds}
+                  onAddToCart={handleAddToCart}
+                  onImageClick={handleImageClick}
+                />
               </section>
             )}
 
@@ -336,7 +349,13 @@ const CatalogPage = () => {
                   />
                 )}
 
-                {renderGrid(displayRegularProducts)}
+                <CatalogProductGrid
+                  products={displayRegularProducts}
+                  cart={cart}
+                  imagePriorityIds={priorityImageIds}
+                  onAddToCart={handleAddToCart}
+                  onImageClick={handleImageClick}
+                />
               </section>
             )}
           </div>

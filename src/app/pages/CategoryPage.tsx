@@ -60,8 +60,8 @@ import {
 } from "@/modules/catalog/components/ProductCaptureButton";
 
 import {
-  CategorySkeleton,
-} from "@/shared/components/skeletons/CategorySkeleton";
+  CatalogSkeleton,
+} from "@/shared/components/skeletons/CatalogSkeleton";
 
 import {
   RecentActivity,
@@ -598,7 +598,7 @@ const CategoryPage =
 
       <main className="mx-auto mt-3 w-full max-w-[1680px] px-2 sm:px-3 md:mt-4 md:px-4 xl:px-5">
         {showLoading ? (
-          <CategorySkeleton />
+          <CatalogSkeleton />
         ) : (
           <div className="space-y-3">
             <CatalogResultsToolbar

@@ -34,29 +34,52 @@ function createUnavailableError():
   Error {
   const error =
     new Error(
-      "El provider simulado de JUNG CORE solo está disponible en desarrollo.",
+      "El provider de desarrollo de JUNG CORE solo está disponible en development.",
     );
 
   error.name =
-    "JungCoreSimulationUnavailableError";
+    "JungCoreDevelopmentUnavailableError";
 
   return error;
 }
 
 async function importDevelopmentProvider():
   Promise<CatalogProvider> {
-  if (import.meta.env.DEV) {
-    const {
-      simulatedJungCoreCatalogProvider,
-    } =
-      await import(
-        "./SimulatedJungCoreCatalogProvider"
-      );
-
-    return simulatedJungCoreCatalogProvider;
+  if (!import.meta.env.DEV) {
+    throw createUnavailableError();
   }
 
-  throw createUnavailableError();
+  const transport =
+    String(
+      import.meta.env
+        .VITE_JUNG_CORE_DEV_TRANSPORT ??
+        "",
+    )
+      .trim()
+      .toLowerCase();
+
+  if (
+    transport ===
+      "http-preview"
+  ) {
+    const {
+      developmentJungCorePreviewCatalogProvider,
+    } =
+      await import(
+        "./DevelopmentJungCorePreviewCatalogProvider"
+      );
+
+    return developmentJungCorePreviewCatalogProvider;
+  }
+
+  const {
+    simulatedJungCoreCatalogProvider,
+  } =
+    await import(
+      "./SimulatedJungCoreCatalogProvider"
+    );
+
+  return simulatedJungCoreCatalogProvider;
 }
 
 async function loadDevelopmentProvider():

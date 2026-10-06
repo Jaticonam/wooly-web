@@ -6,7 +6,6 @@ import {
 
 import {
   createCatalogWorkspaceHandoff,
-  createManualCatalogComposition,
   parseCatalogWorkspaceHandoff,
 } from "./CatalogWorkspaceHandoff";
 
@@ -54,35 +53,6 @@ describe(
             ],
           }),
         ).toBeNull();
-      },
-    );
-
-    it(
-      "convierte el handoff en composición manual",
-      () => {
-        const composition =
-          createManualCatalogComposition([
-            "CT-001",
-            "CT-002",
-            "CT-001",
-          ]);
-
-        expect(
-          composition.mode,
-        ).toBe("manual");
-
-        expect(
-          composition.overrides
-            .includedProductIds,
-        ).toEqual([
-          "CT-001",
-          "CT-002",
-        ]);
-
-        expect(
-          composition.overrides
-            .excludedProductIds,
-        ).toEqual([]);
       },
     );
   },

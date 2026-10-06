@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import type { Product } from "@/shared/types/product";
-import { getProductMedia } from "@/shared/lib/productMedia";
+import {
+  applyProductImageFallback,
+  getProductMedia,
+} from "@/shared/lib/productMedia";
 import { ProductBadgeStack } from "@/modules/catalog/components/ProductBadgeStack";
 import { ProductCaptureButton } from "@/modules/catalog/components/ProductCaptureButton";
 
@@ -148,6 +151,9 @@ export function ProductGallery({
                 <img
                   src={item.thumb || item.src}
                   alt={item.alt}
+                  onError={({ currentTarget }) =>
+                    applyProductImageFallback(currentTarget)
+                  }
                   className="h-full w-full object-cover object-center"
                 />
               </button>
@@ -165,6 +171,9 @@ export function ProductGallery({
                   media[maxVisibleThumbs]?.thumb || media[maxVisibleThumbs]?.src
                 }
                 alt="Ver todas"
+                onError={({ currentTarget }) =>
+                  applyProductImageFallback(currentTarget)
+                }
                 className="h-full w-full object-cover object-center brightness-50"
               />
 
@@ -192,6 +201,12 @@ export function ProductGallery({
           src={activeMedia.src}
           alt={activeMedia.alt}
           onLoad={() => setHeroLoaded(true)}
+          onError={({ currentTarget }) => {
+            applyProductImageFallback(
+              currentTarget,
+            );
+            setHeroLoaded(true);
+          }}
           className={[
             "h-full w-full object-cover object-center transition-all duration-300 ease-out group-hover:scale-[1.02]",
             heroLoaded ? "scale-100 opacity-100" : "scale-[0.985] opacity-0",

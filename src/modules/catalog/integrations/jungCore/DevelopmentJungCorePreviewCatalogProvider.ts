@@ -35,7 +35,7 @@ import type {
  * Datos temporales de presentación:
  * - pricing certificado H.2E
  * - stock agregado certificado H.2E
- * - imagen estática por categoría
+ * - placeholder institucional mientras JUNG Media no entregue asset
  * - status="publicado" solo dentro de este preview
  *
  * Cuando Admin + Snapshot V2 estén listos para el cutover,
@@ -188,21 +188,6 @@ function cleanText(
   ).trim();
 }
 
-function staticCategoryImage(
-  category:
-    string,
-): string {
-  const normalized =
-    cleanText(
-      category,
-    )
-      .toLowerCase();
-
-  return normalized
-    ? `/og/og-${normalized}.jpg`
-    : "/og/og-catalogo.jpg";
-}
-
 function isRecord(
   value:
     unknown,
@@ -334,15 +319,13 @@ export function mapDevelopmentCoreProduct(
       commercial.stock,
 
     /*
-     * Media corresponde a JUNG Media.
-     * Mientras no exista ProductAsset público,
-     * usamos únicamente una imagen estática
-     * de categoría para la vista local.
+     * Media corresponde exclusivamente a JUNG Media.
+     * El bridge nunca inventa una fotografía de producto.
+     * Mientras no exista ProductAsset público se expone
+     * el placeholder institucional de Wooly.
      */
     img:
-      staticCategoryImage(
-        category,
-      ),
+      "/placeholder.svg",
 
     gallery:
       undefined,
@@ -529,7 +512,7 @@ export const developmentJungCorePreviewCatalogProvider:
               "DEVELOPMENT_PREVIEW_STATIC_PRESENTATION",
 
             message:
-              "C2C.9A usa pricing/stock certificados temporalmente, imagen estática y publication status de preview. CORE permanece DRAFT.",
+              "C2C.9A usa pricing/stock certificados temporalmente, placeholder institucional y publication status de preview. CORE permanece DRAFT.",
           },
         ],
       };

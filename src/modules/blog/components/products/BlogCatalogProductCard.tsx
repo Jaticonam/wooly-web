@@ -19,6 +19,11 @@ import type {
 } from "@/shared/types/product";
 
 import {
+  applyProductImageFallback,
+  resolveProductImageSrc,
+} from "@/shared/lib/productMedia";
+
+import {
   getAvailableVolumePrices,
   getBaseUnitPrice,
 } from "@/shared/domain/volumePricing/VolumePricing";
@@ -196,14 +201,18 @@ export default function BlogCatalogProductCard({
     >
       <div className="blog-catalog-product-image">
         <img
-          src={
-            product.img ||
-            "/placeholder.svg"
-          }
+          src={resolveProductImageSrc(
+            product.img,
+          )}
           alt={
             product.title
           }
           loading="lazy"
+          onError={({ currentTarget }) =>
+            applyProductImageFallback(
+              currentTarget,
+            )
+          }
         />
 
         <span>

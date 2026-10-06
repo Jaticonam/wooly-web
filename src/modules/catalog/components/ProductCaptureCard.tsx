@@ -1,5 +1,10 @@
 import type { Product } from "@/shared/types/product";
 
+import {
+  applyProductImageFallback,
+  resolveProductImageSrc,
+} from "@/shared/lib/productMedia";
+
 import { getCategoryColor } from "@/shared/config/categoryColors";
 
 import {
@@ -71,11 +76,17 @@ export function ProductCaptureCard({
           className="relative aspect-[3/4] w-[324px] overflow-hidden rounded-[26px] bg-white shadow-[0_12px_30px_rgba(15,23,42,.14)]"
         >
           <img
-            src={
-              product.img ||
-              "/placeholder.svg"
-            }
+            src={resolveProductImageSrc(
+              product.img,
+            )}
             alt={product.title}
+            onError={({
+              currentTarget,
+            }) =>
+              applyProductImageFallback(
+                currentTarget,
+              )
+            }
             className="h-full w-full object-cover object-center"
           />
         </div>

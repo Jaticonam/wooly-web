@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
 import { X, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
-import type { ProductMedia } from "@/shared/lib/productMedia";
+import {
+  applyProductImageFallback,
+  type ProductMedia,
+} from "@/shared/lib/productMedia";
 
 interface ImageZoomModalProps {
   media?: ProductMedia[];
@@ -380,6 +383,9 @@ export function ImageZoomModal({
                 <img
                   src={item.thumb || item.src}
                   alt={item.alt}
+                  onError={({ currentTarget }) =>
+                    applyProductImageFallback(currentTarget)
+                  }
                   className="h-10 w-10 rounded-xl object-cover md:h-12 md:w-12 lg:h-20 lg:w-20"
                 />
               </button>
@@ -435,6 +441,9 @@ export function ImageZoomModal({
           <img
             src={activeMedia.src}
             alt={activeMedia.alt || title}
+            onError={({ currentTarget }) =>
+              applyProductImageFallback(currentTarget)
+            }
             className={[
               "max-h-full max-w-full object-contain drop-shadow-2xl transition-transform duration-75 origin-center",
               scale > 1

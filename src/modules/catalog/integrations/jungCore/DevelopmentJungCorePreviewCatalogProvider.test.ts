@@ -62,7 +62,7 @@ describe(
               150,
 
             img:
-              "/og/og-flores.jpg",
+              "/placeholder.svg",
 
             status:
               "publicado",
@@ -75,7 +75,7 @@ describe(
     );
 
     it(
-      "usa la imagen estática correspondiente a peluches",
+      "usa el placeholder institucional mientras JUNG Media no entrega imagen",
       () => {
         const product =
           mapDevelopmentCoreProduct({
@@ -102,7 +102,7 @@ describe(
         expect(
           product?.img,
         ).toBe(
-          "/og/og-peluches.jpg",
+          "/placeholder.svg",
         );
 
         expect(

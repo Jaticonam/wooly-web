@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Camera, MessageCircle, PlusCircle } from "lucide-react";
 
 import type { Product } from "@/shared/types/product";
+import {
+  applyProductImageFallback,
+  resolveProductImageSrc,
+} from "@/shared/lib/productMedia";
 import type { CartItem } from "@/modules/cart/types";
 import { getCategoryColor } from "@/shared/config/categoryColors";
 import { ProductCardBadges } from "@/modules/catalog/components/ProductCardBadges";
@@ -137,8 +141,11 @@ export function ProductCard({
         )}
 
         <img
-          src={p.img || "/placeholder.svg"}
+          src={resolveProductImageSrc(p.img)}
           alt={p.title}
+          onError={({ currentTarget }) =>
+            applyProductImageFallback(currentTarget)
+          }
           className={[
             "h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.035]",
             isAgotado ? "opacity-90 saturate-[.9]" : "",

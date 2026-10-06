@@ -1,8 +1,3 @@
-import {
-  createEmptyCatalogComposition,
-  type CatalogComposition,
-} from "@/modules/catalog/domain/CatalogComposition";
-
 export const CATALOG_WORKSPACE_HANDOFF_VERSION = 1 as const;
 
 export interface CatalogWorkspaceHandoffV1 {
@@ -83,23 +78,4 @@ export function parseCatalogWorkspaceHandoff(
   return createCatalogWorkspaceHandoff(
     productIds,
   );
-}
-
-export function createManualCatalogComposition(
-  productIds: readonly string[],
-): CatalogComposition {
-  const composition =
-    createEmptyCatalogComposition(
-      "manual",
-    );
-
-  composition.overrides.includedProductIds =
-    normalizeProductIds(
-      productIds,
-    );
-
-  composition.overrides.excludedProductIds =
-    [];
-
-  return composition;
 }

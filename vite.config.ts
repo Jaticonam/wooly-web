@@ -11,15 +11,15 @@ export default defineConfig(({ mode }) => ({
 
     /*
      * C2C.9A:
-     * Wooly local puede consumir CORE :8080 sin exponer
+     * Wooly local consume CORE :3000 sin exponer
      * CORS ni credenciales al navegador.
      *
      * Ejemplo:
-     * /jung-core/products -> http://127.0.0.1:8080/products
+     * /jung-core/products -> http://127.0.0.1:3000/products
      */
     proxy: {
       "/jung-core": {
-        target: "http://127.0.0.1:8080",
+        target: "http://127.0.0.1:3000",
         changeOrigin: true,
         rewrite: (requestPath) =>
           requestPath.replace(/^\/jung-core/, ""),

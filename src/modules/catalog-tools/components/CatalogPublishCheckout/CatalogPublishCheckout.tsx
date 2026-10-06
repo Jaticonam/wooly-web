@@ -1,4 +1,6 @@
 import {
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -14,6 +16,14 @@ import {
   type CatalogPublicationIdentity,
 } from "@/modules/catalog/domain/CatalogPublicationIdentity";
 
+import type {
+  CatalogPublicationProvider,
+} from "@/modules/catalog/providers/CatalogPublicationProvider";
+
+import {
+  catalogPublicationProvider,
+} from "@/modules/catalog/providers/DefaultCatalogPublicationProvider";
+
 import {
   createWoolyCatalogCompositionId,
   createWoolyCatalogDocumentRequest,
@@ -21,6 +31,10 @@ import {
 } from "@/modules/catalog-export/ports/WoolyCatalogDocumentPort";
 
 import CommercialOutputsPanel from "@/modules/catalog-tools/components/CommercialOutputsPanel/CommercialOutputsPanel";
+
+import {
+  publishResolvedCatalog,
+} from "@/modules/catalog-tools/services/PublishResolvedCatalog";
 
 import {
   buildApplicationWhatsAppUrl,
@@ -32,6 +46,14 @@ type PublicationEligibilityInput =
   Parameters<
     typeof resolveCatalogPublicationEligibility
   >[0];
+
+type PublicIdPublicationStatus =
+  | "idle"
+  | "publishing"
+  | "ready"
+  | "unavailable"
+  | "blocked"
+  | "error";
 
 interface CatalogPublishCheckoutProps {
   composition:
@@ -51,6 +73,9 @@ interface CatalogPublishCheckoutProps {
 
   campaignSummary:
     string;
+
+  publicationProvider?:
+    CatalogPublicationProvider | null;
 }
 
 const copyToClipboard =
@@ -159,6 +184,8 @@ export default function CatalogPublishCheckout({
   modeLabel,
   categorySummary,
   campaignSummary,
+  publicationProvider =
+    catalogPublicationProvider,
 }: CatalogPublishCheckoutProps) {
   const [
     copyStatus,
@@ -169,6 +196,32 @@ export default function CatalogPublishCheckout({
       "link" |
       "message"
     >(
+      "",
+    );
+
+  const [
+    publicIdStatus,
+    setPublicIdStatus,
+  ] =
+    useState<PublicIdPublicationStatus>(
+      "idle",
+    );
+
+  const [
+    publishedPublicId,
+    setPublishedPublicId,
+  ] =
+    useState(
+      "",
+    );
+
+  const publishInFlight =
+    useRef(
+      false,
+    );
+
+  const publicationKeyRef =
+    useRef(
       "",
     );
 
@@ -218,7 +271,62 @@ export default function CatalogPublishCheckout({
       .length >
     0;
 
-  const documentParams =
+  const compositionId =
+    createWoolyCatalogCompositionId(
+      composition,
+    );
+
+  const publicationKey =
+    JSON.stringify({
+      compositionId,
+
+      productIds:
+        resolution
+          .productIds,
+
+      publicationIdentity,
+
+      providerSource:
+        publicationProvider
+          ?.source ??
+        "",
+    });
+
+  publicationKeyRef.current =
+    publicationKey;
+
+  useEffect(
+    () => {
+      publishInFlight.current =
+        false;
+
+      setPublicIdStatus(
+        "idle",
+      );
+
+      setPublishedPublicId(
+        "",
+      );
+    },
+    [
+      publicationKey,
+    ],
+  );
+
+  const hasResolutionBlockers =
+    !resolution
+      .isFullyResolved ||
+    resolution
+      .blockedIncludedProductIds
+      .length > 0 ||
+    resolution
+      .missingIncludedProductIds
+      .length > 0 ||
+    resolution
+      .unsupportedAttributeFilters
+      .length > 0;
+
+  const legacyDocumentParams =
     hasProducts &&
     eligibility.status ===
       "v1-publicable"
@@ -242,11 +350,29 @@ export default function CatalogPublishCheckout({
           } as const)
         : null;
 
+  const publicIdDocumentParams =
+    hasProducts &&
+    eligibility.status ===
+      "requires-public-id" &&
+    publicIdStatus ===
+      "ready" &&
+    publishedPublicId
+      ? ({
+          origin:
+            window.location.origin,
+
+          publicId:
+            publishedPublicId,
+        } as const)
+      : null;
+
+  const documentParams =
+    legacyDocumentParams ??
+    publicIdDocumentParams;
+
   const documentRequest =
     createWoolyCatalogDocumentRequest(
-      createWoolyCatalogCompositionId(
-        composition,
-      ),
+      compositionId,
     );
 
   const documentPreparation =
@@ -296,6 +422,77 @@ export default function CatalogPublishCheckout({
           shareMessage,
         )
       : "";
+
+  const handlePublishPublicId =
+    async () => {
+      if (
+        eligibility.status !==
+          "requires-public-id" ||
+        publishInFlight.current
+      ) {
+        return;
+      }
+
+      const requestKey =
+        publicationKey;
+
+      publishInFlight.current =
+        true;
+
+      setPublicIdStatus(
+        "publishing",
+      );
+
+      setPublishedPublicId(
+        "",
+      );
+
+      try {
+        const result =
+          await publishResolvedCatalog({
+            provider:
+              publicationProvider,
+
+            composition,
+            publicationIdentity,
+            resolution,
+          });
+
+        if (
+          publicationKeyRef.current !==
+          requestKey
+        ) {
+          return;
+        }
+
+        if (
+          result.status ===
+          "ready"
+        ) {
+          setPublishedPublicId(
+            result.publicId,
+          );
+
+          setPublicIdStatus(
+            "ready",
+          );
+
+          return;
+        }
+
+        setPublicIdStatus(
+          result.status,
+        );
+      } finally {
+        if (
+          publicationKeyRef.current ===
+          requestKey
+        ) {
+          publishInFlight.current =
+            false;
+        }
+      }
+    };
 
   const handleCopyLink =
     async () => {
@@ -552,22 +749,115 @@ export default function CatalogPublishCheckout({
               </a>
             </div>
           </section>
-        ) : (
+        ) : eligibility.status ===
+            "requires-public-id" &&
+          !publicationProvider ? (
           <div className="catalog-publish-checkout__status is-custom">
             <strong>
-              Enlace público pendiente
+              Publicación personalizada no disponible en este entorno
             </strong>
 
             <p>
-              Esta composición requiere un enlace
-              público propio para conservar exactamente
-              su selección y presentación.
+              Esta selección necesita un enlace propio para conservar exactamente sus productos,
+              pero el provider de publicación no está configurado.
+            </p>
+          </div>
+        ) : eligibility.status ===
+            "requires-public-id" &&
+          (
+            hasResolutionBlockers ||
+            publicIdStatus ===
+              "blocked"
+          ) ? (
+          <div className="catalog-publish-checkout__status is-blocked">
+            <strong>
+              La selección todavía no puede publicarse
+            </strong>
+
+            <p>
+              Corrige los productos bloqueados, inexistentes o filtros pendientes antes de generar el enlace.
+            </p>
+          </div>
+        ) : eligibility.status ===
+            "requires-public-id" &&
+          publicIdStatus ===
+            "publishing" ? (
+          <div className="catalog-publish-checkout__status is-custom">
+            <strong>
+              Publicando catálogo...
+            </strong>
+
+            <p>
+              Estamos creando el snapshot exacto de esta selección.
             </p>
 
-            <small>
-              Puedes conservarla en Mis catálogos.
-              No se generará una URL parcial o incorrecta.
-            </small>
+            <div className="catalog-publish-checkout__actions">
+              <button
+                type="button"
+                className="is-primary"
+                disabled
+              >
+                Publicando catálogo...
+              </button>
+            </div>
+          </div>
+        ) : eligibility.status ===
+            "requires-public-id" &&
+          publicIdStatus ===
+            "error" ? (
+          <div className="catalog-publish-checkout__status is-blocked">
+            <strong>
+              No se pudo generar el enlace público
+            </strong>
+
+            <p>
+              La composición se conserva intacta. Puedes reintentar la publicación.
+            </p>
+
+            <div className="catalog-publish-checkout__actions">
+              <button
+                type="button"
+                className="is-primary"
+                onClick={
+                  handlePublishPublicId
+                }
+              >
+                Reintentar publicación
+              </button>
+            </div>
+          </div>
+        ) : eligibility.status ===
+            "requires-public-id" ? (
+          <div className="catalog-publish-checkout__status is-custom">
+            <strong>
+              Esta selección necesita un enlace propio
+            </strong>
+
+            <p>
+              Se publicará un snapshot fijo para conservar exactamente sus productos.
+            </p>
+
+            <div className="catalog-publish-checkout__actions">
+              <button
+                type="button"
+                className="is-primary"
+                onClick={
+                  handlePublishPublicId
+                }
+              >
+                Generar enlace público
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="catalog-publish-checkout__status is-blocked">
+            <strong>
+              No se pudo preparar la salida
+            </strong>
+
+            <p>
+              La selección se conserva intacta. Revisa el contrato documental antes de continuar.
+            </p>
           </div>
         )}
       </aside>

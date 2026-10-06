@@ -39,6 +39,43 @@ const normalizeIds = (
   return result;
 };
 
+const hasSameIds = (
+  currentValues:
+    readonly string[],
+
+  nextValues:
+    readonly string[],
+): boolean => {
+  const current =
+    normalizeIds(
+      currentValues,
+    );
+
+  const next =
+    normalizeIds(
+      nextValues,
+    );
+
+  if (
+    current.length !==
+    next.length
+  ) {
+    return false;
+  }
+
+  const nextIds =
+    new Set(
+      next,
+    );
+
+  return current.every(
+    (value) =>
+      nextIds.has(
+        value,
+      ),
+  );
+};
+
 const activateContentSources = (
   composition:
     CatalogComposition,
@@ -119,6 +156,21 @@ export const setCatalogContentCategoryIds = (
   categoryIds:
     readonly string[],
 ): CatalogComposition => {
+  const normalizedCategoryIds =
+    normalizeIds(
+      categoryIds,
+    );
+
+  if (
+    hasSameIds(
+      composition.filters
+        .categoryIds,
+      normalizedCategoryIds,
+    )
+  ) {
+    return composition;
+  }
+
   const active =
     activateContentSources(
       composition,
@@ -131,9 +183,7 @@ export const setCatalogContentCategoryIds = (
       ...active.filters,
 
       categoryIds:
-        normalizeIds(
-          categoryIds,
-        ),
+        normalizedCategoryIds,
     },
   };
 };
@@ -145,6 +195,21 @@ export const setCatalogContentCampaignIds = (
   campaignIds:
     readonly string[],
 ): CatalogComposition => {
+  const normalizedCampaignIds =
+    normalizeIds(
+      campaignIds,
+    );
+
+  if (
+    hasSameIds(
+      composition.filters
+        .campaignIds,
+      normalizedCampaignIds,
+    )
+  ) {
+    return composition;
+  }
+
   const active =
     activateContentSources(
       composition,
@@ -157,20 +222,46 @@ export const setCatalogContentCampaignIds = (
       ...active.filters,
 
       campaignIds:
-        normalizeIds(
-          campaignIds,
-        ),
+        normalizedCampaignIds,
     },
   };
 };
 
-export const mergeCatalogContentProductIds = (
+export const setCatalogContentProductOverrides = (
   composition:
     CatalogComposition,
 
-  productIds:
+  includedProductIds:
+    readonly string[],
+
+  excludedProductIds:
     readonly string[],
 ): CatalogComposition => {
+  const normalizedIncludedProductIds =
+    normalizeIds(
+      includedProductIds,
+    );
+
+  const normalizedExcludedProductIds =
+    normalizeIds(
+      excludedProductIds,
+    );
+
+  if (
+    hasSameIds(
+      composition.overrides
+        .includedProductIds,
+      normalizedIncludedProductIds,
+    ) &&
+    hasSameIds(
+      composition.overrides
+        .excludedProductIds,
+      normalizedExcludedProductIds,
+    )
+  ) {
+    return composition;
+  }
+
   const active =
     activateContentSources(
       composition,
@@ -183,12 +274,43 @@ export const mergeCatalogContentProductIds = (
       ...active.overrides,
 
       includedProductIds:
-        normalizeIds([
-          ...active.overrides
-            .includedProductIds,
+        normalizedIncludedProductIds,
 
-          ...productIds,
-        ]),
+      excludedProductIds:
+        normalizedExcludedProductIds,
     },
   };
+};
+
+export const mergeCatalogContentProductIds = (
+  composition:
+    CatalogComposition,
+
+  productIds:
+    readonly string[],
+): CatalogComposition => {
+  const includedProductIds =
+    normalizeIds([
+      ...composition.overrides
+        .includedProductIds,
+
+      ...productIds,
+    ]);
+
+  if (
+    hasSameIds(
+      composition.overrides
+        .includedProductIds,
+      includedProductIds,
+    )
+  ) {
+    return composition;
+  }
+
+  return setCatalogContentProductOverrides(
+    composition,
+    includedProductIds,
+    composition.overrides
+      .excludedProductIds,
+  );
 };

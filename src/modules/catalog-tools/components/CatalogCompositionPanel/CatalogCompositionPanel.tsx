@@ -18,9 +18,9 @@ import type {
 
 import {
   createCatalogContentSourcesComposition,
-  mergeCatalogContentProductIds,
   setCatalogContentCampaignIds,
   setCatalogContentCategoryIds,
+  setCatalogContentProductOverrides,
   usesCatalogContentSources,
 } from "@/modules/catalog-tools/domain/CatalogContentSources";
 
@@ -375,14 +375,6 @@ products,
 
   const openProductAdjuster =
     () => {
-      setComposition(
-        (current) =>
-          mergeCatalogContentProductIds(
-            current,
-            [],
-          ),
-      );
-
       setIsProductAdjusterOpen(
         true,
       );
@@ -465,15 +457,11 @@ products,
               );
           }
 
-          return {
-            ...current,
-
-            overrides: {
-              ...current.overrides,
-              includedProductIds,
-              excludedProductIds,
-            },
-          };
+          return setCatalogContentProductOverrides(
+            current,
+            includedProductIds,
+            excludedProductIds,
+          );
         },
       );
     };
@@ -1053,22 +1041,9 @@ products,
           isProductAdjusterOpen
         }
         onToggle={(event) => {
-          const nextOpen =
-            event.currentTarget.open;
-
           setIsProductAdjusterOpen(
-            nextOpen,
+            event.currentTarget.open,
           );
-
-          if (nextOpen) {
-            setComposition(
-              (current) =>
-                mergeCatalogContentProductIds(
-                  current,
-                  [],
-                ),
-            );
-          }
         }}
       >
         <summary>

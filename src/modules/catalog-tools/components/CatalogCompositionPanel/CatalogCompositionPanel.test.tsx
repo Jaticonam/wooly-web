@@ -17,12 +17,64 @@ import type {
   Product,
 } from "@/shared/types/product";
 
+import type {
+  CatalogComposition,
+} from "@/modules/catalog/domain/CatalogComposition";
+
 import CatalogCompositionPanel from "./CatalogCompositionPanel";
 
 vi.mock(
   "@/modules/catalog-tools/components/CatalogDraftManager/CatalogDraftManager",
   () => ({
-    default: () => null,
+    default: ({
+      onLoadComposition,
+    }: {
+      onLoadComposition:
+        (
+          composition:
+            CatalogComposition,
+        ) => void;
+    }) => (
+      <button
+        type="button"
+        onClick={() =>
+          onLoadComposition({
+            mode:
+              "automatic",
+
+            filters: {
+              categoryIds: [
+                "flores",
+              ],
+
+              campaignIds:
+                [],
+
+              sourceOperator:
+                "intersection",
+
+              attributes: {
+                colors:
+                  [],
+
+                tags:
+                  [],
+              },
+            },
+
+            overrides: {
+              includedProductIds:
+                [],
+
+              excludedProductIds:
+                [],
+            },
+          })
+        }
+      >
+        Cargar draft legacy
+      </button>
+    ),
   }),
 );
 
@@ -546,6 +598,227 @@ describe(
           ).getByText(
             "Ramo clásico",
           ),
+        ).toBeInTheDocument();
+      },
+    );
+  },
+);
+const renderDraftCompatibilityPanel =
+  () =>
+    render(
+      <CatalogCompositionPanel
+        products={
+          products
+        }
+        campaigns={[
+          campaign,
+        ]}
+        isReady
+      />,
+    );
+
+const loadLegacyDraftIntoPanel =
+  () => {
+    fireEvent.click(
+      screen.getByRole(
+        "button",
+        {
+          name:
+            "Mis catálogos",
+        },
+      ),
+    );
+
+    fireEvent.click(
+      screen.getByRole(
+        "button",
+        {
+          name:
+            "Cargar draft legacy",
+        },
+      ),
+    );
+
+    expect(
+      screen.getAllByText("Selección histórica")[0],
+    ).toBeInTheDocument();
+  };
+
+describe(
+  "CatalogCompositionPanel Draft Compatibility V2",
+  () => {
+    it(
+      "abrir Gestionar productos no migra un draft intersection",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Gestionar productos",
+            },
+          ),
+        );
+
+        expect(
+          screen.getAllByText("Selección histórica")[0],
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
+      "abrir y cerrar details de ajustes es no-op semántico",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        const details =
+          document.getElementById(
+            "catalog-product-adjustments",
+          ) as HTMLDetailsElement;
+
+        details.open =
+          true;
+
+        fireEvent(
+          details,
+          new Event(
+            "toggle",
+            {
+              bubbles:
+                true,
+            },
+          ),
+        );
+
+        expect(
+          screen.getAllByText("Selección histórica")[0],
+        ).toBeInTheDocument();
+
+        details.open =
+          false;
+
+        fireEvent(
+          details,
+          new Event(
+            "toggle",
+            {
+              bubbles:
+                true,
+            },
+          ),
+        );
+
+        expect(
+          screen.getAllByText("Selección histórica")[0],
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
+      "una acción real de producto migra intersection a Content Sources",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Gestionar productos",
+            },
+          ),
+        );
+
+        fireEvent.click(
+          screen.getAllByRole(
+            "button",
+            {
+              name:
+                "+ Agregar",
+            },
+          )[0],
+        );
+
+        expect(
+          (screen.queryAllByText("Selección histórica")[0] ?? null),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
+      "cambiar categoría realmente migra intersection a union",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Peluches/,
+            },
+          ),
+        );
+
+        expect(
+          (screen.queryAllByText("Selección histórica")[0] ?? null),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
+      "cambiar campaña realmente migra intersection a union",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                /Campaña prueba/,
+            },
+          ),
+        );
+
+        expect(
+          (screen.queryAllByText("Selección histórica")[0] ?? null),
+        ).not.toBeInTheDocument();
+      },
+    );
+
+    it(
+      "editar solo el título conserva intersection",
+      () => {
+        renderDraftCompatibilityPanel();
+        loadLegacyDraftIntoPanel();
+
+        fireEvent.change(
+          screen.getByRole(
+            "textbox",
+            {
+              name:
+                "Título del catálogo",
+            },
+          ),
+
+          {
+            target: {
+              value:
+                "Catálogo renombrado",
+            },
+          },
+        );
+
+        expect(
+          screen.getAllByText("Selección histórica")[0],
         ).toBeInTheDocument();
       },
     );

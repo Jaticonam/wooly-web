@@ -570,3 +570,234 @@ describe(
     );
   },
 );
+describe(
+  "LocalCatalogCompositionProvider Draft Compatibility V2",
+  () => {
+    const createLegacy =
+      () => {
+        const composition =
+          createEmptyCatalogComposition(
+            "automatic",
+          );
+
+        composition.filters
+          .categoryIds = [
+            "flores",
+          ];
+
+        composition.filters
+          .sourceOperator =
+            "intersection";
+
+        return composition;
+      };
+
+    it(
+      "renombrar y cambiar identidad no migran un draft legacy",
+      async () => {
+        const storage =
+          new MemoryStorage();
+
+        const provider =
+          new LocalCatalogCompositionProvider({
+            storage,
+
+            now: () =>
+              new Date(
+                "2026-10-06T17:30:00.000Z",
+              ),
+
+            createId: () =>
+              "CAT-LEGACY-0001",
+          });
+
+        const created =
+          await provider.createDraft({
+            name:
+              "Legacy",
+
+            composition:
+              createLegacy(),
+          });
+
+        const updated =
+          await provider.updateDraft(
+            created.id,
+            {
+              name:
+                "Legacy renombrado",
+
+              publicationIdentity: {
+                ...created
+                  .publicationIdentity,
+
+                title:
+                  "Título comercial",
+
+                description:
+                  "Descripción comercial",
+
+                cover: {
+                  ...created
+                    .publicationIdentity
+                    .cover,
+                },
+              },
+            },
+          );
+
+        expect(
+          updated.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+
+        expect(
+          (
+            await provider.getDraft(
+              created.id,
+            )
+          )?.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+      },
+    );
+
+    it(
+      "duplicar un draft legacy conserva intersection",
+      async () => {
+        const storage =
+          new MemoryStorage();
+
+        let sequence =
+          0;
+
+        const provider =
+          new LocalCatalogCompositionProvider({
+            storage,
+
+            createId: () => {
+              sequence += 1;
+
+              return `CAT-LEGACY-${sequence}`;
+            },
+          });
+
+        const original =
+          await provider.createDraft({
+            name:
+              "Original",
+
+            composition:
+              createLegacy(),
+          });
+
+        const duplicated =
+          await provider.createDraft({
+            name:
+              "Original - copia",
+
+            composition:
+              original
+                .composition,
+
+            publicationIdentity:
+              original
+                .publicationIdentity,
+          });
+
+        expect(
+          duplicated.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+
+        expect(
+          (
+            await provider.getDraft(
+              duplicated.id,
+            )
+          )?.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+      },
+    );
+
+    it(
+      "draft union guardado y recargado permanece union",
+      async () => {
+        const storage =
+          new MemoryStorage();
+
+        const provider =
+          new LocalCatalogCompositionProvider({
+            storage,
+
+            createId: () =>
+              "CAT-UNION-0001",
+          });
+
+        const composition =
+          createEmptyCatalogComposition(
+            "hybrid",
+          );
+
+        composition.filters
+          .sourceOperator =
+            "union";
+
+        composition.filters
+          .categoryIds = [
+            "flores",
+          ];
+
+        const created =
+          await provider.createDraft({
+            name:
+              "Content Sources",
+
+            composition,
+          });
+
+        const updated =
+          await provider.updateDraft(
+            created.id,
+            {
+              name:
+                "Content Sources guardado",
+            },
+          );
+
+        expect(
+          updated.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "union",
+        );
+
+        expect(
+          (
+            await provider.getDraft(
+              created.id,
+            )
+          )?.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "union",
+        );
+      },
+    );
+  },
+);

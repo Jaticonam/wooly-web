@@ -5,6 +5,7 @@ import {
 } from "vitest";
 
 import {
+  cloneCatalogComposition,
   sanitizeCatalogCompositionDraft,
   sanitizeCatalogCompositionDraftList,
 } from "@/modules/catalog/domain/CatalogCompositionDraft";
@@ -264,6 +265,119 @@ describe(
             },
           ]),
         ).toBeNull();
+      },
+    );
+  },
+);
+describe(
+  "CatalogCompositionDraft Draft Compatibility V2",
+  () => {
+    it(
+      "draft histórico sin sourceOperator sanitiza como intersection",
+      () => {
+        const result =
+          sanitizeCatalogCompositionDraft(
+            validDraft,
+          );
+
+        expect(
+          result?.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+
+        expect(
+          result?.version,
+        ).toBe(
+          3,
+        );
+      },
+    );
+
+    it(
+      "draft union permanece union al sanitizar",
+      () => {
+        const result =
+          sanitizeCatalogCompositionDraft({
+            ...validDraft,
+
+            composition: {
+              ...validDraft.composition,
+
+              filters: {
+                ...validDraft
+                  .composition
+                  .filters,
+
+                sourceOperator:
+                  "union",
+              },
+            },
+          });
+
+        expect(
+          result?.composition
+            .filters
+            .sourceOperator,
+        ).toBe(
+          "union",
+        );
+      },
+    );
+
+    it(
+      "clone preserva intersection y union sin reinterpretar",
+      () => {
+        const legacy =
+          sanitizeCatalogCompositionDraft(
+            validDraft,
+          );
+
+        expect(
+          legacy,
+        ).not.toBeNull();
+
+        const legacyClone =
+          cloneCatalogComposition(
+            legacy!.composition,
+          );
+
+        expect(
+          legacyClone.filters
+            .sourceOperator,
+        ).toBe(
+          "intersection",
+        );
+
+        const union = {
+          ...legacy!.composition,
+
+          mode:
+            "hybrid" as const,
+
+          filters: {
+            ...legacy!
+              .composition
+              .filters,
+
+            sourceOperator:
+              "union" as const,
+          },
+        };
+
+        const unionClone =
+          cloneCatalogComposition(
+            union,
+          );
+
+        expect(
+          unionClone.filters
+            .sourceOperator,
+        ).toBe(
+          "union",
+        );
       },
     );
   },

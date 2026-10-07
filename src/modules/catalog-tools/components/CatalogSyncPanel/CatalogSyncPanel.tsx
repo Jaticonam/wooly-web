@@ -14,6 +14,8 @@ import {
   type CatalogSyncResult,
 } from "@/modules/catalog-tools/services/CatalogSyncService";
 
+import CatalogShadowPanel from "@/modules/catalog-tools/components/CatalogShadowPanel/CatalogShadowPanel";
+
 import "./CatalogSyncPanel.css";
 
 type CatalogSyncPanelProps = {
@@ -733,6 +735,10 @@ export default function CatalogSyncPanel({
             )}
           </div>
         </div>
+      ) : null}
+
+      {import.meta.env.DEV ? (
+        <CatalogShadowPanel />
       ) : null}
       </div>
     </section>

@@ -134,7 +134,7 @@ export default function ProductAdminCard({
         </span>
 
         <div className="product-admin-card__meta">
-          <code>{product.id}</code>
+          <code>{product.sku ?? product.id}</code>
 
           {visibleCampaigns.length > 0 ? (
             <div className="product-admin-card__campaigns">

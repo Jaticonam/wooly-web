@@ -85,7 +85,7 @@ export default function ProductAdminRow({
         </div>
 
         <div>
-          <code>{product.id}</code>
+          <code>{product.sku ?? product.id}</code>
           <strong>{product.title}</strong>
         </div>
       </div>

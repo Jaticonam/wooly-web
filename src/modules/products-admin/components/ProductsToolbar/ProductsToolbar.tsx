@@ -34,6 +34,7 @@ import "./ProductsToolbar.css";
 
 interface ProductsToolbarProps {
   filters: ProductAdminFilterState;
+  categories?: readonly { id: string; name: string }[];
   campaigns: readonly Campaign[];
   resultCount: number;
   visibleCount: number;
@@ -59,6 +60,7 @@ interface ProductsToolbarProps {
 
 export default function ProductsToolbar({
   filters,
+  categories = CATEGORY_CONFIG,
   campaigns,
   resultCount,
   visibleCount,
@@ -183,7 +185,7 @@ export default function ProductsToolbar({
             Todas las categorías
           </option>
 
-          {CATEGORY_CONFIG
+          {categories
             .filter(
               (category) =>
                 category.id !== "todas",

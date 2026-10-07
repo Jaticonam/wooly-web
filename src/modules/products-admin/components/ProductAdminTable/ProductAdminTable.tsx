@@ -132,7 +132,7 @@ export default function ProductAdminTable({
 
                 <td>
                   <code>
-                    {product.id}
+                    {product.sku ?? product.id}
                   </code>
                 </td>
 

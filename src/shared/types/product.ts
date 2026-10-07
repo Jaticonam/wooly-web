@@ -43,6 +43,7 @@ export interface Campaign {
 }
 
 export interface Product {
+  sku?: string;
   id: string;
 
   title: string;

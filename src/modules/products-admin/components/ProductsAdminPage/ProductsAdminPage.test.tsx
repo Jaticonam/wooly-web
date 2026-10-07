@@ -23,13 +23,13 @@ import {
   useCatalogCampaigns,
 } from "@/modules/catalog/hooks/useCatalogCampaigns";
 import {
-  useCatalogData,
-} from "@/modules/catalog/hooks/useCatalogData";
+  useAdminProducts,
+} from "@/modules/products-admin/hooks/useAdminProducts";
 
 import ProductsAdminPage from "./ProductsAdminPage";
 
-vi.mock("@/modules/catalog/hooks/useCatalogData", () => ({
-  useCatalogData: vi.fn(),
+vi.mock("@/modules/products-admin/hooks/useAdminProducts", () => ({
+  useAdminProducts: vi.fn(),
 }));
 
 vi.mock("@/modules/catalog/hooks/useCatalogCampaigns", () => ({
@@ -64,7 +64,7 @@ vi.mock("@/modules/admin/components/AdminModal/AdminModal", () => ({
   ) : null,
 }));
 
-vi.mock("@/modules/catalog-tools/components/CatalogSyncPanel/CatalogSyncPanel", () => ({
+vi.mock("@/modules/products-admin/components/SheetsMasterPanel/SheetsMasterPanel", () => ({
   default: () => <div>Sincronización real</div>,
 }));
 
@@ -76,10 +76,11 @@ vi.mock("@/modules/products-admin/components/ProductAdminExplorer/ProductAdminEx
 
 describe("ProductsAdminPage", () => {
   it("muestra Productos sin controles de composición", () => {
-    vi.mocked(useCatalogData).mockReturnValue({
+    vi.mocked(useAdminProducts).mockReturnValue({
       data: [{
         id: "FL-001",
         title: "Ramo premium",
+        description: "Descripción", category: "flores",
         status: "publicado",
         price_1: 10,
         stock: 12,
@@ -87,7 +88,8 @@ describe("ProductsAdminPage", () => {
       }],
       isLoading: false,
       isFullCatalogLoaded: true,
-    } as ReturnType<typeof useCatalogData>);
+      categories: [], error: null, reload: vi.fn(),
+    } as ReturnType<typeof useAdminProducts>);
 
     vi.mocked(useCatalogCampaigns).mockReturnValue({
       campaigns: [],
@@ -122,6 +124,7 @@ describe("ProductsAdminPage", () => {
     expect(screen.getByRole("button", {
       name: /Preparar catálogo/,
     })).toBeDisabled();
+    expect(screen.queryByText("Crear producto")).not.toBeInTheDocument();
     expect(screen.queryByText("Publicar"))
       .not.toBeInTheDocument();
 

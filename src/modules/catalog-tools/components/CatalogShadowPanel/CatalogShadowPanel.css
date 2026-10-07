@@ -1,0 +1,224 @@
+.catalog-shadow-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.28);
+  padding-top: 16px;
+}
+
+.catalog-shadow-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.catalog-shadow-panel__header > div {
+  min-width: 0;
+}
+
+.catalog-shadow-panel__header span,
+.catalog-shadow-panel__result header > span,
+.catalog-shadow-panel__sourceGrid article > span {
+  display: block;
+  color: #64748b;
+  font-size: 0.64rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.catalog-shadow-panel__header h3,
+.catalog-shadow-panel__result h4 {
+  margin: 4px 0;
+  font-weight: 1000;
+  letter-spacing: -0.025em;
+}
+
+.catalog-shadow-panel__header h3 {
+  font-size: 0.92rem;
+}
+
+.catalog-shadow-panel__header p,
+.catalog-shadow-panel__result header p,
+.catalog-shadow-panel__failure p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.catalog-shadow-panel__header button {
+  min-height: 36px;
+  flex-shrink: 0;
+  border: 1px solid rgba(29, 130, 153, 0.24);
+  border-radius: 11px;
+  padding: 0 14px;
+  background: rgba(29, 130, 153, 0.08);
+  color: var(--w-primary-dark, #156f84);
+  font-size: 0.72rem;
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.catalog-shadow-panel__header button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.catalog-shadow-panel__activeSource,
+.catalog-shadow-panel__running,
+.catalog-shadow-panel__failure {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.catalog-shadow-panel__activeSource {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.catalog-shadow-panel__running {
+  background: #eff8fa;
+  color: #155e75;
+}
+
+.catalog-shadow-panel__result,
+.catalog-shadow-panel__failure {
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 16px;
+  padding: 13px;
+}
+
+.catalog-shadow-panel__result.is-equivalent {
+  background: #f0fdf4;
+}
+
+.catalog-shadow-panel__result.is-different {
+  background: #fffbeb;
+}
+
+.catalog-shadow-panel__result h4 {
+  font-size: 0.88rem;
+}
+
+.catalog-shadow-panel__sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.catalog-shadow-panel__sourceGrid article {
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.catalog-shadow-panel__sourceGrid strong,
+.catalog-shadow-panel__sourceGrid small {
+  display: block;
+}
+
+.catalog-shadow-panel__sourceGrid strong {
+  margin-top: 4px;
+  font-size: 0.84rem;
+  font-weight: 1000;
+}
+
+.catalog-shadow-panel__sourceGrid small {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+.catalog-shadow-panel__differences {
+  margin-top: 12px;
+}
+
+.catalog-shadow-panel__differenceSummary {
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.catalog-shadow-panel__differences ul {
+  display: grid;
+  gap: 6px;
+  max-height: 360px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.catalog-shadow-panel__differences li {
+  display: grid;
+  gap: 3px;
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.catalog-shadow-panel__differences li > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.catalog-shadow-panel__differences strong {
+  overflow-wrap: anywhere;
+  font-size: 0.69rem;
+}
+
+.catalog-shadow-panel__differences span,
+.catalog-shadow-panel__differences small {
+  color: #64748b;
+  font-size: 0.63rem;
+  font-weight: 800;
+}
+
+.catalog-shadow-panel__failure.is-unavailable {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.catalog-shadow-panel__failure.is-error {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.catalog-shadow-panel__failure strong,
+.catalog-shadow-panel__failure small {
+  display: block;
+}
+
+.catalog-shadow-panel__failure p {
+  margin-top: 4px;
+}
+
+.catalog-shadow-panel__failure small {
+  margin-top: 5px;
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .catalog-shadow-panel__header {
+    flex-direction: column;
+  }
+
+  .catalog-shadow-panel__header button {
+    width: 100%;
+  }
+
+  .catalog-shadow-panel__sourceGrid {
+    grid-template-columns: 1fr;
+  }
+}

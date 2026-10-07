@@ -21,15 +21,13 @@ import {
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 import AdminShell from "@/modules/admin/components/AdminShell/AdminShell";
 
-import CatalogSyncPanel from "@/modules/catalog-tools/components/CatalogSyncPanel/CatalogSyncPanel";
+import SheetsMasterPanel from "../SheetsMasterPanel/SheetsMasterPanel";
 
 import {
   useCatalogCampaigns,
 } from "@/modules/catalog/hooks/useCatalogCampaigns";
 
-import {
-  useCatalogData,
-} from "@/modules/catalog/hooks/useCatalogData";
+import { useAdminProducts } from "../../hooks/useAdminProducts";
 
 import ProductAdminExplorer from "@/modules/products-admin/components/ProductAdminExplorer/ProductAdminExplorer";
 import ProductDetailDrawer from "@/modules/products-admin/components/ProductDetailDrawer/ProductDetailDrawer";
@@ -70,6 +68,8 @@ import type {
 import {
   createCatalogWorkspaceHandoff,
 } from "@/modules/catalog-tools/domain/CatalogWorkspaceHandoff";
+
+import CreateProductPanel from "../CreateProductPanel/CreateProductPanel";
 
 import "./ProductsAdminPage.css";
 
@@ -151,9 +151,8 @@ const [
     data: products,
     isLoading,
     isFullCatalogLoaded,
-  } = useCatalogData(
-    "todas",
-  );
+    error, categories, reload,
+  } = useAdminProducts();
 
   const {
     campaigns,
@@ -163,9 +162,7 @@ const [
     includeInactive: true,
   });
 
-  const isReady =
-    isFullCatalogLoaded &&
-    !isCampaignRegistryLoading;
+  const isReady = isFullCatalogLoaded;
 
   const filteredProducts =
     useMemo(
@@ -349,18 +346,7 @@ const [
             )
           }
         >
-          <CatalogSyncPanel
-            currentProductCount={
-              products.length
-            }
-            campaignCount={
-              campaigns.length
-            }
-            isReady={
-              isReady
-            }
-            initiallyExpanded
-          />
+          <SheetsMasterPanel onSynced={reload} />
         </AdminModal>
 
         <header className="products-admin-page__hero">
@@ -371,7 +357,7 @@ const [
               </span>
 
               <small>
-                Solo lectura
+                Productos y sincronización
               </small>
             </div>
 
@@ -383,6 +369,8 @@ const [
               Explora y selecciona productos para preparar catálogos y futuras salidas comerciales.
             </p>
           </div>
+
+          {import.meta.env.VITE_ENABLE_PRODUCT_CREATION === "true" ? <CreateProductPanel /> : null}
 
           <button
             className="products-admin-page__syncButton"
@@ -497,6 +485,7 @@ const [
         </section>
 
         <ProductsToolbar
+          categories={categories}
           filters={
             filters
           }
@@ -686,6 +675,7 @@ const [
           }}
         />
 
+        {error ? <p role="alert">{error.message}</p> : null}
         {!isReady ? (
           <p
             className="products-admin-page__loading"

@@ -1,0 +1,70 @@
+.create-product-panel {
+  display: grid;
+  gap: 16px;
+  color: var(--wooly-admin-ink);
+}
+.create-product-panel fieldset {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--wooly-admin-border);
+  border-radius: 12px;
+}
+.create-product-panel legend {
+  font-weight: 700;
+  padding: 0 6px;
+}
+.create-product-panel label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.create-product-panel input,
+.create-product-panel textarea,
+.create-product-panel select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--wooly-admin-border);
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+  font: inherit;
+}
+.create-product-panel p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.create-product-panel [role="alert"] {
+  color: #a52a36;
+}
+.create-product-panel__prices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+.create-product-panel__prices label {
+  display: grid;
+  gap: 6px;
+}
+.create-product-panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.create-product-panel button {
+  padding: 10px 16px;
+  border: 1px solid var(--wooly-admin-border);
+  border-radius: 8px;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+.create-product-panel button[type="submit"] {
+  background: var(--wooly-admin-primary);
+  color: white;
+}
+.create-product-panel button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}

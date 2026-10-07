@@ -82,7 +82,7 @@ export default function ProductDetailDrawer({
       <SheetContent className="product-detail-drawer">
         <SheetHeader className="product-detail-drawer__header">
           <div className="product-detail-drawer__eyebrow">
-            <code>{product.id}</code>
+            <code>{product.sku ?? product.id}</code>
             <span>{product.category}</span>
           </div>
           <SheetTitle>{product.title}</SheetTitle>

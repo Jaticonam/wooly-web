@@ -16,12 +16,20 @@ const resultSchema = z.object({
   fingerprint: z.string().optional(),
   requiresPreparation: z.boolean().optional(),
   metadataWarning: z.string().optional(),
+  mode: z.string().optional(),
+  destructive: z.boolean().optional(),
+  deletions: z
+    .array(
+      z.object({ productId: z.string(), sku: z.string(), name: z.string() }),
+    )
+    .optional(),
   summary: z.object({
     created: z.number(),
     updated: z.number(),
     unchanged: z.number(),
     errors: z.number(),
     pending: z.number(),
+    deleted: z.number().default(0),
   }),
   rows: z.array(
     z.object({
@@ -93,8 +101,9 @@ export default function SheetsMasterPanel({
     <section aria-label="Sincronización Google Sheets a CORE">
       <p>
         Workbook: WOOLY - Catalogo Maestro. Captura productos, revisa cambios,
-        sincroniza desde Google Sheets y consulta los resultados. CORE valida y
-        guarda las filas; Productos Admin se actualiza al terminar.
+        sincroniza el snapshot completo desde Google Sheets y consulta los
+        resultados. En modo bootstrap, los productos Wooly ausentes de la hoja
+        se eliminan de CORE. Una hoja vacía deja el catálogo Wooly vacío.
       </p>
       {workbookLink(input) ? (
         <p>
@@ -152,8 +161,30 @@ export default function SheetsMasterPanel({
             {receipt ? "Resultado" : "Vista previa"}: Creados:{" "}
             {result.summary.created} · Actualizados: {result.summary.updated} ·
             Sin cambios: {result.summary.unchanged} · Errores:{" "}
-            {result.summary.errors} · Pendientes: {result.summary.pending}
+            {result.summary.errors} · Pendientes: {result.summary.pending} ·{" "}
+            {receipt ? "Eliminados por ausencia" : "Eliminar por ausencia"}:{" "}
+            {result.summary.deleted}
           </p>
+          {result.summary.deleted > 0 ? (
+            <p role="alert">
+              Snapshot completo destructivo: {result.summary.deleted} productos
+              Wooly ausentes de Google Sheets{" "}
+              {receipt ? "fueron eliminados" : "se eliminarán al sincronizar"}.
+              Las otras marcas y los archivos R2 se conservan.
+            </p>
+          ) : null}
+          {result.deletions?.length ? (
+            <details>
+              <summary>Productos eliminados por ausencia</summary>
+              <ul>
+                {result.deletions.map((product) => (
+                  <li key={product.productId}>
+                    {product.sku} — {product.name}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
           {result.metadataWarning ? (
             <p role="alert">{result.metadataWarning}</p>
           ) : null}

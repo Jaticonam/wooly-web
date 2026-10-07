@@ -45,6 +45,28 @@ describe("Sheets master explicit CORE sync", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Creados: 1");
     expect(screen.getByText(/Precio inválido/)).toBeInTheDocument();
   });
+  it("shows destructive absence deletions in Preview before Apply", async () => {
+    vi.mocked(jungCoreAdminProducts.request).mockResolvedValueOnce({
+      ...preview,
+      mode: "WOOLY_FULL_SNAPSHOT",
+      destructive: true,
+      summary: { ...preview.summary, created: 0, updated: 0, deleted: 10 },
+      deletions: [
+        { productId: "missing", sku: "OLD-SKU", name: "Absent product" },
+      ],
+    });
+    render(<SheetsMasterPanel onSynced={() => {}} />);
+    fireEvent.change(screen.getByLabelText("Workbook operativo"), {
+      target: { value: "spreadsheet-fixture" },
+    });
+    fireEvent.click(screen.getByText("Revisar cambios"));
+    await screen.findByText(/Snapshot completo destructivo/);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Eliminar por ausencia: 10",
+    );
+    expect(screen.getByText("OLD-SKU — Absent product")).toBeInTheDocument();
+    expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(1);
+  });
   it("uses the configured official workbook ahead of an older browser selection", () => {
     vi.stubEnv(
       "VITE_JUNG_CORE_SHEETS_WORKBOOK_ID",

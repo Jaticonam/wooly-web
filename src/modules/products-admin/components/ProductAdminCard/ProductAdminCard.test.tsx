@@ -15,7 +15,7 @@ import type {
 import ProductAdminCard from "./ProductAdminCard";
 
 const product: Product = {
-  id: "FL-001",
+  id: "technical-uuid", code: "CT-554",
   title: "Ramo premium",
   description: "Producto",
   category: "flores",
@@ -45,6 +45,8 @@ describe("ProductAdminCard", () => {
       />,
     );
 
+    expect(screen.getByText("CT-554")).toBeInTheDocument();
+    expect(screen.queryByText("technical-uuid")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ramo premium" }))
       .toBeInTheDocument();
     expect(screen.getByText(/Desde.*7\.00.*por volumen/))

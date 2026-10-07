@@ -52,7 +52,7 @@ describe("Sheets master explicit CORE sync", () => {
       destructive: true,
       summary: { ...preview.summary, created: 0, updated: 0, deleted: 10 },
       deletions: [
-        { productId: "missing", sku: "OLD-SKU", name: "Absent product" },
+        { productId: "missing", code: "OLD-CODE", name: "Absent product" },
       ],
     });
     render(<SheetsMasterPanel onSynced={() => {}} />);
@@ -64,7 +64,7 @@ describe("Sheets master explicit CORE sync", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       "Eliminar por ausencia: 10",
     );
-    expect(screen.getByText("OLD-SKU — Absent product")).toBeInTheDocument();
+    expect(screen.getByText("OLD-CODE — Absent product")).toBeInTheDocument();
     expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(1);
   });
   it("uses the configured official workbook ahead of an older browser selection", () => {

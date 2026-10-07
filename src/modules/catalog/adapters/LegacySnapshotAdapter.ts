@@ -33,7 +33,7 @@ export type LegacySnapshotAdapterOptions =
 export interface CatalogSnapshotProductIssue {
   productIndex: number;
   productId: string;
-  sku: string;
+  sku: string | null;
   categoryId: string;
 
   code: LegacyAdaptationIssueCode;
@@ -50,7 +50,7 @@ export interface CatalogSnapshotProductIssue {
 export interface CatalogSnapshotUnsupportedVolumePrice {
   productIndex: number;
   productId: string;
-  sku: string;
+  sku: string | null;
   categoryId: string;
 
   volumePrice:

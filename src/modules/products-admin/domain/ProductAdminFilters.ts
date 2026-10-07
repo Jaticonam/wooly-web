@@ -76,7 +76,7 @@ export function filterAdminProducts(
   return products.filter((product) => {
     const policy = resolveProductCommercialPolicy(product);
     const searchableText = normalizeSearch([
-      product.id, product.sku ?? "",
+      product.code ?? "", product.barcode ?? "", product.sku ?? "",
       product.title,
       product.description,
     ].join(" "));

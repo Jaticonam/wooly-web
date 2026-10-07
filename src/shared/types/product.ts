@@ -43,7 +43,11 @@ export interface Campaign {
 }
 
 export interface Product {
-  sku?: string;
+  code?: string | null;
+  barcode?: string | null;
+  sunatCode?: string | null;
+  /** @deprecated Legacy data only; id is the technical product key. */
+  sku?: string | null;
   id: string;
 
   title: string;

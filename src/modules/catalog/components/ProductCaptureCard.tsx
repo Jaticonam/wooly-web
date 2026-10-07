@@ -95,7 +95,7 @@ export function ProductCaptureCard({
       <div className="flex h-[192px] min-h-0 flex-col px-4 py-2">
         <div className="flex shrink-0 items-center justify-center gap-1">
           <span className="rounded-full bg-slate-100 px-2 py-[2px] text-[8px] font-black uppercase text-slate-500">
-            {product.id}
+            {product.code ?? "Sin código"}
           </span>
 
           <span

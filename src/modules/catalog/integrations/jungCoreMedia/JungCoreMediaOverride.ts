@@ -6,6 +6,7 @@ import {
 
 
 interface CoreMediaAsset {
+  readonly code?: unknown;
   readonly sku?: unknown;
 
   readonly url?: unknown;
@@ -78,7 +79,7 @@ function projectFlatAsset(
 
   const directSku =
     cleanText(
-      value.sku,
+      value.code ?? value.sku,
     );
 
   const directUrl =
@@ -105,7 +106,7 @@ function projectFlatAsset(
     return [
       {
         sku:
-          value.sku,
+          value.code ?? value.sku,
 
         url:
           value.url,
@@ -128,7 +129,7 @@ function projectFlatAsset(
    * asset.products[]
    *   relation.position
    *   relation.isPrimary
-   *   relation.product.sku
+   *   relation.product.code (sku fallback for legacy manifests)
    *   relation.product.status
    */
   const publicUrl =
@@ -172,7 +173,7 @@ function projectFlatAsset(
           cleanText(
             relation
               .product
-              .sku,
+              .code ?? relation.product.sku,
           );
 
 
@@ -217,7 +218,7 @@ function projectPublicSkuPayload(
 
   const sku =
     cleanText(
-      payload.data.sku,
+      payload.data.code ?? payload.data.sku,
     );
 
 
@@ -345,7 +346,7 @@ function mediaForSku(
   const normalizedSku =
     cleanText(
       sku,
-    ).toLowerCase();
+    );
 
 
   return assets
@@ -353,7 +354,7 @@ function mediaForSku(
       (asset) =>
         cleanText(
           asset.sku,
-        ).toLowerCase() ===
+        ) ===
         normalizedSku,
     )
     .filter(
@@ -437,13 +438,19 @@ export function applyCoreMediaAssets(
   }
 
 
+  const assetsByIdentity = new Map<string, CoreMediaAsset[]>();
+  for (const asset of assets) {
+    const code = cleanText(asset.code ?? asset.sku);
+    const group = assetsByIdentity.get(code) ?? [];
+    group.push(asset); assetsByIdentity.set(code, group);
+  }
   return products.map(
     (product) => {
 
       const media =
         mediaForSku(
-          assets,
-          product.id,
+          assetsByIdentity.get(cleanText(product.code ?? product.sku ?? product.id)) ?? [],
+          product.code ?? product.sku ?? product.id,
         );
 
 

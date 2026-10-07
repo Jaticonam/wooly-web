@@ -44,7 +44,9 @@ export interface CommercialItemIdentifiers {
  */
 export interface CommercialItem {
   productId: string;
-  sku: string;
+  code?: string | null;
+  /** @deprecated Legacy field; never populated from a technical UUID. */
+  sku: string | null;
   title: string;
   description: string;
   price: number | null;

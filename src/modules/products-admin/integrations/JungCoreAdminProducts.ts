@@ -7,7 +7,10 @@ const assetSchema = z.object({
 });
 export const adminProductSchema = z.object({
   id: z.string(),
-  sku: z.string(),
+  code: z.string().nullable().optional(),
+  barcode: z.string().nullable().optional(),
+  sunatCode: z.string().nullable().optional(),
+  sku: z.string().nullable().optional(),
   name: z.string(),
   description: z.string().nullable(),
   status: z.string(),
@@ -61,6 +64,9 @@ export function mapAdminProduct(
     );
   return {
     id: raw.id,
+    code: raw.code ?? null,
+    barcode: raw.barcode ?? null,
+    sunatCode: raw.sunatCode ?? null,
     sku: raw.sku,
     title: raw.name,
     description: raw.description ?? "",

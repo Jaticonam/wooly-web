@@ -19,8 +19,8 @@ import {
 
 const product:
   Product = {
-  id:
-    "FLOR-001",
+  id: "technical-uuid",
+  code: "FLOR-001",
 
   title:
     "Rosa premium",

@@ -97,7 +97,7 @@ export function buildProductWhatsappMessage(
       product.title,
     )}`,
     `Código: ${cleanText(
-      product.id,
+      product.code ?? "Sin código",
     )}`,
   ];
 

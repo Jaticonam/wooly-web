@@ -138,3 +138,10 @@ describe(
     );
   },
 );
+
+it('preserves the technical UUID and commercial code independently in cart lines', () => {
+  const product = createProduct({ id: 'a8d4cb8d-2da0-4f32-babe-b8e7e6796bf6', code: 'CT-554', sku: undefined });
+  const lines = addItemToCart([], product, 1);
+  expect(lines[0].id).toBe(product.id);
+  expect(lines[0].code).toBe('CT-554');
+});

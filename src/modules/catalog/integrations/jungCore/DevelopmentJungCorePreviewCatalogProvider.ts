@@ -43,6 +43,8 @@ import type {
  */
 
 interface CoreProductRecord {
+  readonly code?: unknown;
+  readonly barcode?: unknown;
   readonly sku?: unknown;
   readonly name?: unknown;
   readonly description?: unknown;
@@ -284,8 +286,10 @@ export function mapDevelopmentCoreProduct(
   }
 
   return {
-    id:
-      sku,
+    id: cleanText(value.id),
+    code: cleanText(value.code) || null,
+    barcode: cleanText(value.barcode) || null,
+    sku,
 
     title,
 

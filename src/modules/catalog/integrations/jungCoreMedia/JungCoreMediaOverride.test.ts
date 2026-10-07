@@ -649,3 +649,9 @@ describe(
     );
   },
 );
+it('resolves media by commercial code when product.id is a technical UUID', () => {
+  const input = { ...product('technical-uuid', '/old.jpg'), code: 'CT-554' };
+  const result = applyCoreMediaAssets([input], [{ publicUrl: 'https://r2.test/CT-554_01.jpg', status: 'ACTIVE', products: [{ product: { id: input.id, code: 'CT-554', sku: null, status: 'ACTIVE' }, position: 1, isPrimary: true }] }]);
+  expect(result[0].img).toBe('https://r2.test/CT-554_01.jpg');
+  expect(result[0].id).toBe('technical-uuid');
+});

@@ -172,7 +172,7 @@ export function validateCatalogSnapshotContractV1(
       errors,
       "EMPTY_FIELD",
       "brandId",
-      "brandId debe ser texto no vacío.",
+      "brandId debe ser texto no vacÃ­o.",
       value.brandId,
     );
   }
@@ -182,7 +182,7 @@ export function validateCatalogSnapshotContractV1(
       errors,
       "EMPTY_FIELD",
       "revision",
-      "revision debe ser texto no vacío.",
+      "revision debe ser texto no vacÃ­o.",
       value.revision,
     );
   }
@@ -192,7 +192,7 @@ export function validateCatalogSnapshotContractV1(
       errors,
       "INVALID_DATE",
       "generatedAt",
-      "generatedAt debe ser una fecha válida.",
+      "generatedAt debe ser una fecha vÃ¡lida.",
       value.generatedAt,
     );
   }
@@ -397,11 +397,10 @@ export function validateCatalogSnapshotContractV1(
     errors,
   );
 
+  reportDuplicateValues(products.flatMap(product => product.code ? [product.code] : []), "products", "code", errors);
+  reportDuplicateValues(products.flatMap(product => product.barcode ? [product.barcode] : []), "products", "barcode", errors);
   reportDuplicateValues(
-    products.map(
-      (product) =>
-        product.sku,
-    ),
+    products.flatMap(product => product.sku ? [product.sku] : []),
     "products",
     "sku",
     errors,

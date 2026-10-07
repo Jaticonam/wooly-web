@@ -219,7 +219,7 @@ export function CartRow({
               </h4>
 
               <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[#94a3b8]">
-                {item.id}
+                {item.code ?? "Sin código"}
               </p>
             </div>
 

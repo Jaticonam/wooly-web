@@ -21,6 +21,9 @@ export default function CreateProductPanel({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState<CreatedCanonicalProduct | null>(null);
+  const [code, setCode] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [sunatCode, setSunatCode] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -49,6 +52,7 @@ export default function CreateProductPanel({
   }
 
   function start() {
+    setCode(""); setBarcode(""); setSunatCode("");
     setName("");
     setDescription("");
     setCategoryId("");
@@ -67,10 +71,10 @@ export default function CreateProductPanel({
     event.preventDefault();
     if (pending.current || !options) return;
     if (
-      !name.trim() ||
+      !code.trim() || !name.trim() ||
       !options.categories.some((category) => category.id === categoryId)
     ) {
-      setError("Ingresa un nombre y selecciona una categoría de CORE.");
+      setError("Ingresa un código, un nombre y selecciona una categoría de CORE.");
       return;
     }
     const tiers = quantities
@@ -97,6 +101,7 @@ export default function CreateProductPanel({
     try {
       setCreated(
         await provider.create({
+          code, barcode, sunatCode,
           name,
           description,
           brandId: options.id,
@@ -132,7 +137,7 @@ export default function CreateProductPanel({
               <h3>Producto creado correctamente</h3>
               <p>{created.name}</p>
               <p>
-                SKU: <strong>{created.sku}</strong>
+                Código: <strong>{created.code}</strong>
               </p>
               <p>Estado: {created.status}</p>
               <p>
@@ -164,6 +169,12 @@ export default function CreateProductPanel({
                 <legend>
                   Información{options ? " · " + options.name : ""}
                 </legend>
+                <label htmlFor="create-product-code">Código</label>
+                <input id="create-product-code" required value={code} onChange={event => setCode(event.target.value)} />
+                <label htmlFor="create-product-barcode">Código de barras</label>
+                <input id="create-product-barcode" value={barcode} onChange={event => setBarcode(event.target.value)} />
+                <label htmlFor="create-product-sunat">Código SUNAT</label>
+                <input id="create-product-sunat" value={sunatCode} onChange={event => setSunatCode(event.target.value)} />
                 <label htmlFor="create-product-name">Nombre</label>
                 <input
                   id="create-product-name"
@@ -249,7 +260,7 @@ export default function CreateProductPanel({
                 Inventario: el stock se administra por ubicación después del
                 alta.
               </p>
-              <p>SKU: Se generará automáticamente por JUNG CORE</p>
+              <p>El código es obligatorio. Código de barras y Código SUNAT son opcionales.</p>
               <div className="create-product-panel__actions">
                 <button type="button" disabled={submitting} onClick={close}>
                   Cancelar

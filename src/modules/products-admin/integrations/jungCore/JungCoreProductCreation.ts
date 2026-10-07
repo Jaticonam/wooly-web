@@ -13,7 +13,10 @@ const optionsSchema = z.object({
 });
 const productSchema = z.object({
   id: z.string().min(1),
-  sku: z.string().min(1),
+  code: z.string().min(1),
+  barcode: z.string().nullable().optional(),
+  sunatCode: z.string().nullable().optional(),
+  sku: z.string().nullable().optional(),
   name: z.string(),
   status: z.literal("DRAFT"),
   categoryId: z.string(),
@@ -22,6 +25,9 @@ const productSchema = z.object({
 export type ProductCreationOptions = z.infer<typeof optionsSchema>;
 export type CreatedCanonicalProduct = z.infer<typeof productSchema>;
 export interface CreateCanonicalProductInput {
+  code: string;
+  barcode?: string;
+  sunatCode?: string;
   name: string;
   description?: string;
   brandId: string;
@@ -102,6 +108,9 @@ export class JungCoreProductCreation implements ProductCreationProvider {
   ): Promise<CreatedCanonicalProduct> {
     // Explicit user fields only: runtime callers cannot inject SKU, slug or status.
     const body: CreateCanonicalProductInput = {
+      code: input.code.trim(),
+      barcode: input.barcode?.trim(),
+      sunatCode: input.sunatCode?.trim(),
       name: input.name.trim(),
       description: input.description?.trim(),
       brandId: input.brandId,

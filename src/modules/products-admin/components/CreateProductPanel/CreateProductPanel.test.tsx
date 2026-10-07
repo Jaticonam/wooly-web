@@ -15,7 +15,8 @@ const options = {
 };
 const product: CreatedCanonicalProduct = {
   id: "core-id",
-  sku: "CORE-SKU-123",
+  code: "CT-554",
+  sku: null,
   name: "Ramo nuevo",
   status: "DRAFT",
   categoryId: "category-1",
@@ -30,6 +31,7 @@ function provider() {
 async function fill() {
   fireEvent.click(screen.getByRole("button", { name: "+ Crear producto" }));
   await waitFor(() => expect(screen.getByLabelText("Categoría")).toBeEnabled());
+  fireEvent.change(screen.getByLabelText("Código"), { target: { value: "CT-554" } });
   fireEvent.change(screen.getByLabelText("Nombre"), {
     target: { value: "Ramo nuevo" },
   });
@@ -50,7 +52,7 @@ describe("CreateProductPanel", () => {
       screen.getByRole("dialog", { name: "Crear producto" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("SKU: Se generará automáticamente por JUNG CORE"),
+      screen.getByText("El código es obligatorio. Código de barras y Código SUNAT son opcionales."),
     ).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("1 unidad"), {
       target: { value: "10" },
@@ -58,13 +60,14 @@ describe("CreateProductPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Crear producto" }));
     await screen.findByText("Producto creado correctamente");
     expect(core.create).toHaveBeenCalledWith({
+      code: "CT-554", barcode: "", sunatCode: "",
       name: "Ramo nuevo",
       description: "Descripción nueva",
       brandId: "brand-1",
       categoryId: "category-1",
       tiers: [{ minimumQuantity: 1, unitPrice: 10 }],
     });
-    expect(screen.getByText("CORE-SKU-123")).toBeInTheDocument();
+    expect(screen.getByText("CT-554")).toBeInTheDocument();
     expect(screen.getByText("Estado: DRAFT")).toBeInTheDocument();
   });
   it("blocks submission while options load and supports retry after load failure", async () => {
@@ -105,7 +108,7 @@ describe("CreateProductPanel", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(core.create).toHaveBeenCalledTimes(1);
     resolve(product);
-    await screen.findByText("CORE-SKU-123");
+    await screen.findByText("CT-554");
   });
   it("shows persistence error and retains input for correction", async () => {
     const core = provider();
@@ -128,7 +131,7 @@ describe("CreateProductPanel", () => {
     await fill();
     expect(screen.queryByLabelText("1 unidad")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Crear producto" }));
-    await screen.findByText("CORE-SKU-123");
+    await screen.findByText("CT-554");
     expect(core.create.mock.calls[0][0]).not.toHaveProperty("tiers");
   });
   it("requires a base tier before sending quantity prices", async () => {

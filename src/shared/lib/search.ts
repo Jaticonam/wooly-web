@@ -16,6 +16,8 @@ export const searchProducts = (products: Product[], query: string) => {
 
   return products
     .map((p) => {
+      const code = normalize(p.code);
+      const barcode = normalize(p.barcode);
       const id = normalize(p.id);
       const title = normalize(p.title);
       const description = normalize(p.description);
@@ -24,10 +26,14 @@ export const searchProducts = (products: Product[], query: string) => {
 
       let score = 0;
 
-      // 🔥 PRIORIDAD ID
-      if (id === term) score += 1000;
-      else if (id.startsWith(term)) score += 700;
-      else if (term.length >= 3 && id.includes(term)) score += 500;
+      // Commercial identity outranks combined descriptive matches.
+      if (p.code?.trim() === rawTerm) score += 10000;
+      else if (code && code === term) score += 9000;
+      else if (code && code.startsWith(term)) score += 800;
+      else if (code && term.length >= 3 && code.includes(term)) score += 600;
+      if (p.barcode?.trim() === rawTerm) score += 8000;
+      else if (barcode && barcode === term) score += 7000;
+      if (id === term) score += 50;
 
       // 🧠 NOMBRE
       if (title.includes(term)) score += 300;

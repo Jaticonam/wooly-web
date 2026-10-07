@@ -82,7 +82,9 @@ export default function ProductDetailDrawer({
       <SheetContent className="product-detail-drawer">
         <SheetHeader className="product-detail-drawer__header">
           <div className="product-detail-drawer__eyebrow">
-            <code>{product.sku ?? product.id}</code>
+            <code>Código: {product.code ?? "Sin código"}</code>
+            <p>Código de barras: {product.barcode ?? "Sin asignar"}</p>
+            <p>Código SUNAT: {product.sunatCode ?? "Sin asignar"}</p>
             <span>{product.category}</span>
           </div>
           <SheetTitle>{product.title}</SheetTitle>

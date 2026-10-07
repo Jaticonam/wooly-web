@@ -21,7 +21,7 @@ function validContract(
   return {
     contractVersion: CATALOG_PRODUCT_CONTRACT_VERSION,
     id: "product-1",
-    sku: "SKU-1",
+    code: "CT-554", barcode: "00123", sku: "SKU-1",
     slug: "product-1",
     brandId: "brand-1",
     categoryId: "flores",
@@ -108,11 +108,10 @@ describe("LegacyProductAdapter boundary", () => {
 
   it("registra identificador, moneda, marca y slug descartados", () => {
     const result = adaptCatalogProductToLegacyProduct(validContract());
-    expect(result.product.id).toBe("SKU-1");
+    expect(result.product.id).toBe("product-1");
     expect(result.issues.map((issue) => issue.code)).toEqual(
       expect.arrayContaining([
-        "IDENTIFIER_REPLACED_BY_SKU",
-        "CURRENCY_NOT_REPRESENTED",
+          "CURRENCY_NOT_REPRESENTED",
         "BRAND_DROPPED",
         "SLUG_DROPPED",
       ]),

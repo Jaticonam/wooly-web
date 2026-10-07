@@ -134,7 +134,7 @@ export function AddToCartModalInfo({
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="rounded-full bg-white px-2 py-[3px] text-[9px] font-black uppercase text-slate-500 shadow-sm">
               Código:{" "}
-              {product.id}
+              {product.code ?? "Sin código"}
             </span>
 
             <span className="rounded-full bg-[#e6f6f8] px-2 py-[3px] text-[9px] font-black capitalize text-[#1d8299]">

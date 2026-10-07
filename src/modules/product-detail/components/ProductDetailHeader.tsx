@@ -139,7 +139,7 @@ export function ProductDetailHeader({
             </h1>
 
             <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.06em] text-[#94a3b8] sm:text-[9px] md:text-[10px]">
-              {product.id}
+              {product.code ?? "Sin código"}
             </p>
           </div>
 

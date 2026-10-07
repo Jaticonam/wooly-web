@@ -100,7 +100,7 @@ export function buildProductSeoSchema(
     "@type": "Product",
     name,
     description,
-    sku: id,
+    ...(product.code ? { sku: product.code } : product.sku ? { sku: product.sku } : {}),
     url: seo.canonical,
     image: [clean(product.img)],
     category: clean(product.category),

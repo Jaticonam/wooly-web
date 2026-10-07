@@ -263,20 +263,11 @@ export function adaptCatalogProductToLegacyProduct(
     );
 
   const product: Product = {
-    /**
-     * Wooly utiliza Product.id como código visible,
-     * clave del carrito y parámetro de navegación.
-     *
-     * Mientras exista este modelo de compatibilidad,
-     * se conserva el SKU como identificador operativo.
-     */
-    id:
-      cleanText(
-        contract.sku,
-      ) ||
-      cleanText(
-        contract.id,
-      ),
+    // Preserve CORE UUID for relationships, selection, routes and cart lines.
+    id: cleanText(contract.id),
+    code: contract.code ?? null,
+    barcode: contract.barcode ?? null,
+    sku: contract.sku,
 
     title:
       cleanText(
@@ -377,11 +368,11 @@ export function adaptCatalogProductToLegacyProduct(
             ),
       );
 
-  if (cleanText(contract.id) !== cleanText(contract.sku)) {
+  if (cleanText(contract.id) !== product.id) {
     issues.push(adaptationIssue(
       "IDENTIFIER_REPLACED_BY_SKU",
       "id",
-      "Product.id utiliza el SKU y no conserva directamente el ID canónico.",
+      "Product.id debe conservar el ID canónico.",
       contract.id,
     ));
   }

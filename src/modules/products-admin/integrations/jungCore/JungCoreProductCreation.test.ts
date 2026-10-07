@@ -6,7 +6,8 @@ import {
 
 const product = {
   id: "core-id",
-  sku: "CORE-SKU",
+  code: "CT-554",
+  sku: null,
   name: "Nuevo",
   status: "DRAFT",
   brandId: "brand-1",
@@ -24,6 +25,7 @@ describe("JungCoreProductCreation", () => {
     vi.stubGlobal("fetch", fetchMock);
     const provider = new JungCoreProductCreation("/jung-core", "wooly");
     const result = await provider.create({
+      code: "CT-554",
       name: " Nuevo ",
       description: " Texto ",
       brandId: "brand-1",
@@ -32,11 +34,12 @@ describe("JungCoreProductCreation", () => {
       status: "ACTIVE",
       tiers: [{ minimumQuantity: 1, unitPrice: 10 }],
     } as CreateCanonicalProductInput);
-    expect(result.sku).toBe("CORE-SKU");
+    expect(result.code).toBe("CT-554");
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("/jung-core/products");
     expect(init.method).toBe("POST");
     expect(JSON.parse(String(init.body))).toEqual({
+      code: "CT-554",
       name: "Nuevo",
       description: "Texto",
       brandId: "brand-1",
@@ -51,7 +54,8 @@ describe("JungCoreProductCreation", () => {
       .mockResolvedValue(
         response({
           id: "brand-1",
-          name: "Wooly",
+          code: "CT-554",
+      name: "Wooly",
           categories: [{ id: "category-1", name: "Flores" }],
           priceLists: [],
         }),
@@ -73,7 +77,8 @@ describe("JungCoreProductCreation", () => {
     vi.stubGlobal("fetch", fetchMock);
     await expect(
       new JungCoreProductCreation().create({
-        name: "Nuevo",
+        code: "CT-554",
+      name: "Nuevo",
         brandId: "b",
         categoryId: "c",
       }),
@@ -85,7 +90,8 @@ describe("JungCoreProductCreation", () => {
     vi.stubGlobal("fetch", fetchMock);
     await expect(
       new JungCoreProductCreation().create({
-        name: "Nuevo",
+        code: "CT-554",
+      name: "Nuevo",
         brandId: "b",
         categoryId: "c",
       }),
@@ -95,11 +101,12 @@ describe("JungCoreProductCreation", () => {
   it("rejects success responses without a returned SKU", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(response({ ...product, sku: undefined })),
+      vi.fn().mockResolvedValue(response({ ...product, code: undefined })),
     );
     await expect(
       new JungCoreProductCreation().create({
-        name: "Nuevo",
+        code: "CT-554",
+      name: "Nuevo",
         brandId: "b",
         categoryId: "c",
       }),

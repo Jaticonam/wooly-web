@@ -24,6 +24,7 @@ export interface PdfVolumePrice {
 }
 
 export interface PdfProduct {
+  code?: string | null;
   id:
     string;
 

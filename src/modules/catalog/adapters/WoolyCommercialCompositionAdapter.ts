@@ -60,7 +60,8 @@ const toCommercialItem = (
   productUrl?: (product: Product) => string | null,
 ): CommercialItem => ({
   productId: product.id,
-  sku: product.id,
+  code: product.code ?? null,
+  sku: product.sku ?? null,
   title: product.title,
   description: product.description,
   price: product.price_offer ?? product.price_1,

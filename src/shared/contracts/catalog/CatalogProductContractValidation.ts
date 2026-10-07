@@ -139,11 +139,14 @@ export function validateCatalogProductContractV1(
   }
 
   for (const key of [
-    "id", "sku", "slug", "brandId", "categoryId", "title", "description",
+    "id", "slug", "brandId", "categoryId", "title", "description",
   ]) {
     requiredString(value, key, errors);
   }
 
+  for (const field of ['sku', 'code', 'barcode']) {
+    if (value[field] !== undefined && value[field] !== null) requiredString(value, field, errors);
+  }
   if (
     typeof value.publicationStatus !== "string" ||
     !PUBLICATION_STATUSES.has(value.publicationStatus)

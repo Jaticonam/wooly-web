@@ -20,7 +20,7 @@ const resultSchema = z.object({
   destructive: z.boolean().optional(),
   deletions: z
     .array(
-      z.object({ productId: z.string(), sku: z.string(), name: z.string() }),
+      z.object({ productId: z.string(), code: z.string().nullable().optional(), sku: z.string().nullable().optional(), name: z.string() }),
     )
     .optional(),
   summary: z.object({
@@ -105,6 +105,7 @@ export default function SheetsMasterPanel({
         resultados. En modo bootstrap, los productos Wooly ausentes de la hoja
         se eliminan de CORE. Una hoja vacía deja el catálogo Wooly vacío.
       </p>
+      <p>Código · Código de barras · Código SUNAT. Para una fila nueva, completa código, nombre y categoría; los otros identificadores son opcionales.</p>
       {workbookLink(input) ? (
         <p>
           <a href={workbookLink(input)} target="_blank" rel="noreferrer">
@@ -179,7 +180,7 @@ export default function SheetsMasterPanel({
               <ul>
                 {result.deletions.map((product) => (
                   <li key={product.productId}>
-                    {product.sku} — {product.name}
+                    {product.code ?? "Sin código"} — {product.name}
                   </li>
                 ))}
               </ul>

@@ -6,6 +6,7 @@ import {
 } from "./JungCoreAdminProducts";
 const raw = {
   id: "technical-uuid",
+  code: "CT-554", barcode: "00123", sunatCode: "10101501",
   sku: "USER-SKU",
   name: "New draft",
   description: null,
@@ -21,7 +22,8 @@ describe("CORE administrative products", () => {
     const product = mapAdminProduct(adminProductSchema.parse(raw));
     expect(product).toMatchObject({
       id: "technical-uuid",
-      sku: "USER-SKU",
+      code: "CT-554", barcode: "00123", sunatCode: "10101501",
+  sku: "USER-SKU",
       status: "borrador",
       img: "",
       price_1: 12.5,

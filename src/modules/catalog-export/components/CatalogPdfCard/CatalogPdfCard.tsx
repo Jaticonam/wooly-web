@@ -132,7 +132,7 @@ export default function CatalogPdfCard({
       <div className="catalog-pdf-card__content">
         <div className="catalog-pdf-card__meta">
           <span className="catalog-pdf-card__code">
-            {product.id}
+            {product.code ?? "Sin código"}
           </span>
 
           <span className="catalog-pdf-card__category">

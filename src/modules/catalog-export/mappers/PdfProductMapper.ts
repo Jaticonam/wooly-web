@@ -64,7 +64,7 @@ const getMainImage = (
 ) => {
   const productId =
     cleanText(
-      product.id,
+      product.code ?? product.id,
     );
 
   const optimizedPdfImage =
@@ -248,6 +248,7 @@ export const mapProductToPdfProduct = (
       product.price_1;
 
   return {
+    code: product.code ?? null,
     id:
       cleanText(
         product.id,

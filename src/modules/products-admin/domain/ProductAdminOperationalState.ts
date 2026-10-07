@@ -25,7 +25,7 @@ const STATUS_LABELS = {
 
 const ISSUE_LABELS: Partial<Record<ProductCommercialIssue, string>> = {
   "invalid-status": "Estado inválido",
-  "missing-id": "Sin SKU",
+  "missing-id": "Sin identidad técnica",
   "missing-title": "Sin nombre",
   "missing-image": "Sin imagen",
   "missing-description": "Sin descripción",

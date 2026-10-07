@@ -35,7 +35,10 @@ export interface CatalogProductContract {
     CatalogProductContractVersion;
 
   id: string;
-  sku: string;
+  code?: string | null;
+  barcode?: string | null;
+  /** @deprecated Legacy compatibility. */
+  sku: string | null;
   slug: string;
 
   brandId: string;

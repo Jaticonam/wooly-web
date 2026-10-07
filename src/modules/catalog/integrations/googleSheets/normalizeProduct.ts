@@ -124,7 +124,9 @@ export function normalizeProduct(
     CampaignNameToIdMap = {},
 ): SheetProduct {
   return {
-    id: cleanText(row.id),
+    id: cleanText(row.__productId || row.id),
+    code: cleanText(row.code || row["Código"]) || null,
+    barcode: cleanText(row.barcode || row["Código de barras"]) || null,
     title: cleanText(row.title),
     description:
       cleanText(row.description),

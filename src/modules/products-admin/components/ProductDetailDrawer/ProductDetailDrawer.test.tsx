@@ -17,7 +17,7 @@ import type {
 } from "@/shared/types/product";
 
 const product: Product = {
-  id: "CT-553",
+  id: "technical-uuid", code: "CT-553", barcode: "00123", sunatCode: "10101501",
   title: "Ramo Minirosas Premium",
   description: "Ramo decorativo de seis tallos.",
   category: "flores",

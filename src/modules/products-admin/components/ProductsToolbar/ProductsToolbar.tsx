@@ -87,7 +87,11 @@ export default function ProductsToolbar({
 
   return (
     <section
-      className="products-toolbar"
+      className={
+        viewMode === "table"
+          ? "products-toolbar is-table-view"
+          : "products-toolbar"
+      }
       aria-label="Buscar y filtrar productos"
     >
       <label className="products-toolbar__field products-toolbar__search">
@@ -279,70 +283,74 @@ export default function ProductsToolbar({
         </div>
       </div>
 
-      <label className="products-toolbar__field products-toolbar__density">
-        <span className="products-toolbar__label">
-          Densidad
-        </span>
+      {viewMode === "table" ? (
+        <>
+          <label className="products-toolbar__field products-toolbar__density">
+            <span className="products-toolbar__label">
+              Densidad
+            </span>
 
-        <select
-          aria-label="Densidad de productos"
-          value={density}
-          onChange={(event) =>
-            onDensityChange(
-              event.target.value as ProductAdminDensity,
-            )
-          }
-        >
-          <option value="comfortable">
-            Cómoda
-          </option>
+            <select
+              aria-label="Densidad de productos"
+              value={density}
+              onChange={(event) =>
+                onDensityChange(
+                  event.target.value as ProductAdminDensity,
+                )
+              }
+            >
+              <option value="comfortable">
+                Cómoda
+              </option>
 
-          <option value="compact">
-            Compacta
-          </option>
-        </select>
-      </label>
+              <option value="compact">
+                Compacta
+              </option>
+            </select>
+          </label>
 
-      <div className="products-toolbar__field products-toolbar__columnsField">
-        <span className="products-toolbar__label">
-          Columnas
-        </span>
+          <div className="products-toolbar__field products-toolbar__columnsField">
+            <span className="products-toolbar__label">
+              Columnas
+            </span>
 
-        <details className="products-toolbar__columns">
-          <summary>
-            <Columns3
-              size={14}
-              strokeWidth={1.9}
-              aria-hidden="true"
-            />
-            Columnas
-          </summary>
+            <details className="products-toolbar__columns">
+              <summary>
+                <Columns3
+                  size={14}
+                  strokeWidth={1.9}
+                  aria-hidden="true"
+                />
+                Columnas
+              </summary>
 
-          <div className="products-toolbar__columnsMenu">
-            {PRODUCT_ADMIN_COLUMN_OPTIONS.map(
-              (option) => (
-                <label key={option.key}>
-                  <input
-                    type="checkbox"
-                    checked={
-                      columns[option.key]
-                    }
-                    onChange={() =>
-                      onToggleColumn(
-                        option.key,
-                      )
-                    }
-                  />
+              <div className="products-toolbar__columnsMenu">
+                {PRODUCT_ADMIN_COLUMN_OPTIONS.map(
+                  (option) => (
+                    <label key={option.key}>
+                      <input
+                        type="checkbox"
+                        checked={
+                          columns[option.key]
+                        }
+                        onChange={() =>
+                          onToggleColumn(
+                            option.key,
+                          )
+                        }
+                      />
 
-                  <span>
-                    {option.label}
-                  </span>
-                </label>
-              ),
-            )}
+                      <span>
+                        {option.label}
+                      </span>
+                    </label>
+                  ),
+                )}
+              </div>
+            </details>
           </div>
-        </details>
-      </div>
+        </>
+      ) : null}
 
       <details className="products-toolbar__more">
         <summary>

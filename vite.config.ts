@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => {
 
   const masterWriteKey = mode === "development" ? process.env.JUNG_CORE_WRITE_KEY?.trim() || loadEnv(mode, process.cwd(), "JUNG_CORE_WRITE_KEY").JUNG_CORE_WRITE_KEY?.trim() : undefined;
 
+  const jungCoreDevTarget =
+    process.env.JUNG_CORE_DEV_ORIGIN?.trim() ||
+    "http://127.0.0.1:3000";
   return {
     server: {
       host: "::",
@@ -35,7 +38,7 @@ export default defineConfig(({ mode }) => {
        */
       proxy: {
         "/jung-core": {
-          target: "http://127.0.0.1:3000",
+          target: jungCoreDevTarget,
           configure(proxy) {
             proxy.on("proxyReq", (proxyRequest, request) => {
               if (masterWriteKey && request.method === "POST" && /^\/catalog-bulk\/brands\/[^/]+\/google-sheets\/[^/]+\/temporary-master\/(preview|prepare|apply)$/.test(proxyRequest.path)) proxyRequest.setHeader("x-jung-core-write-key", masterWriteKey);

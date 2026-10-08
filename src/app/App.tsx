@@ -29,6 +29,16 @@ import {
   TooltipProvider,
 } from "@/shared/components/ui/tooltip";
 
+import {
+  AdminAuthProvider,
+} from "@/modules/admin-auth/context/AdminAuthContext";
+
+import AdminProtectedRoute from "@/modules/admin-auth/components/AdminProtectedRoute";
+
+const AdminLoginPage = lazy(
+  () => import("@/modules/admin-auth/pages/AdminLoginPage"),
+);
+
 const HomePage = lazy(
   () => import("@/app/pages/HomePage"),
 );
@@ -126,198 +136,218 @@ export default function App() {
                 true,
             }}
           >
-            <Suspense
-              fallback={
-                <RouteLoadingFallback />
-              }
-            >
-              <Routes>
-              {/* SUPERFICIES COMERCIALES */}
-              <Route
-                element={
-                  <CommerceCampaignScope />
+            <AdminAuthProvider>
+              <Suspense
+                fallback={
+                  <RouteLoadingFallback />
                 }
               >
-                <Route
-                  path="/"
-                  element={
-                    <HomePage />
-                  }
-                />
+                <Routes>
+                  <Route
+                    path="/admin/login"
+                    element={
+                      <AdminLoginPage />
+                    }
+                  />
 
-                <Route
-                  path="/catalogo"
-                  element={
-                    <CatalogPage />
-                  }
-                />
-
-                <Route
-                  path="/catalogo/pdf"
-                  element={
-                    <CatalogPdfPage />
-                  }
-                />
-
-                {/* PANEL ADMINISTRATIVO */}
-                <Route
-                  path="/admin"
-                  element={
-                    <ProductsAdminPage />
-                  }
-                />
-
-                <Route
-                  path="/admin/catalogos"
-                  element={
-                    <SalesCatalogToolsPage />
-                  }
-                />
-
-                {/* COMPATIBILIDAD DE RUTA */}
-                <Route
-                  path="/ventas/catalogos"
-                  element={
-                    <Navigate
-                      to="/admin/catalogos"
-                      replace
+                  {/* SUPERFICIES COMERCIALES */}
+                  <Route
+                    element={
+                      <CommerceCampaignScope />
+                    }
+                  >
+                    <Route
+                      path="/"
+                      element={
+                        <HomePage />
+                      }
                     />
-                  }
-                />
 
-                <Route
-                  path="/catalogo/producto.html"
-                  element={
-                    <ProductDetailPage />
-                  }
-                />
+                    <Route
+                      path="/catalogo"
+                      element={
+                        <CatalogPage />
+                      }
+                    />
 
-                <Route
-                  path="/catalogo/categoria.html"
-                  element={
-                    <CategoryPage />
-                  }
-                />
+                    <Route
+                      path="/catalogo/pdf"
+                      element={
+                        <CatalogPdfPage />
+                      }
+                    />
 
-                {/* COMPATIBILIDAD COMERCIAL */}
-                <Route
-                  path="/producto/:id"
-                  element={
-                    <ProductDetailPage />
-                  }
-                />
+                    {/* PANEL ADMINISTRATIVO PROTEGIDO */}
+                    <Route
+                      element={
+                        <AdminProtectedRoute />
+                      }
+                    >
+                      <Route
+                        path="/admin"
+                        element={
+                          <ProductsAdminPage />
+                        }
+                      />
 
-                <Route
-                  path="/categoria/:id"
-                  element={
-                    <CategoryPage />
-                  }
-                />
-              </Route>
+                      <Route
+                        path="/admin/catalogos"
+                        element={
+                          <SalesCatalogToolsPage />
+                        }
+                      />
+                    </Route>
 
-              {/* BLOG */}
-              <Route
-                path="/blog"
-                element={
-                  <BlogPage />
-                }
-              />
+                    {/* COMPATIBILIDAD DE RUTA */}
+                    <Route
+                      path="/ventas/catalogos"
+                      element={
+                        <Navigate
+                          to="/admin/catalogos"
+                          replace
+                        />
+                      }
+                    />
 
-              <Route
-                path="/blog/laboratorio"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                    <Route
+                      path="/catalogo/producto.html"
+                      element={
+                        <ProductDetailPage />
+                      }
+                    />
 
-              <Route
-                path="/blog/tendencias"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                    <Route
+                      path="/catalogo/categoria.html"
+                      element={
+                        <CategoryPage />
+                      }
+                    />
 
-              <Route
-                path="/blog/oportunidades"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                    {/* COMPATIBILIDAD COMERCIAL */}
+                    <Route
+                      path="/producto/:id"
+                      element={
+                        <ProductDetailPage />
+                      }
+                    />
 
-              <Route
-                path="/blog/herramientas"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                    <Route
+                      path="/categoria/:id"
+                      element={
+                        <CategoryPage />
+                      }
+                    />
+                  </Route>
 
-              <Route
-                path="/blog/herramientas/:tool"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                  {/* BLOG */}
+                  <Route
+                    path="/blog"
+                    element={
+                      <BlogPage />
+                    }
+                  />
 
-              <Route
-                path="/blog/campanas"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                  <Route
+                    path="/blog/laboratorio"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              <Route
-                path="/blog/campanas/:campaign"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                  <Route
+                    path="/blog/tendencias"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              <Route
-                path="/blog/catalogo"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                  <Route
+                    path="/blog/oportunidades"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              <Route
-                path="/blog/guias"
-                element={
-                  <BlogSectionPage />
-                }
-              />
+                  <Route
+                    path="/blog/herramientas"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              <Route
-                path="/blog/:slug"
-                element={
-                  <BlogArticlePage />
-                }
-              />
+                  <Route
+                    path="/blog/herramientas/:tool"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              {/* COMMERCIAL CENTER */}
-              <Route
-                path="/admin/commercial"
-                element={
-                  <CommercialCenter />
-                }
-              />
+                  <Route
+                    path="/blog/campanas"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              {/* WOOLY CONNECT */}
-              <Route
-                path="/admin/integrations"
-                element={
-                  <IntegrationsPage />
-                }
-              />
+                  <Route
+                    path="/blog/campanas/:campaign"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
 
-              {/* 404 */}
-              <Route
-                path="*"
-                element={
-                  <NotFound />
-                }
-              />
-              </Routes>
-            </Suspense>
+                  <Route
+                    path="/blog/catalogo"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
+
+                  <Route
+                    path="/blog/guias"
+                    element={
+                      <BlogSectionPage />
+                    }
+                  />
+
+                  <Route
+                    path="/blog/:slug"
+                    element={
+                      <BlogArticlePage />
+                    }
+                  />
+
+                  {/* OTRAS SUPERFICIES ADMIN PROTEGIDAS */}
+                  <Route
+                    element={
+                      <AdminProtectedRoute />
+                    }
+                  >
+                    <Route
+                      path="/admin/commercial"
+                      element={
+                        <CommercialCenter />
+                      }
+                    />
+
+                    <Route
+                      path="/admin/integrations"
+                      element={
+                        <IntegrationsPage />
+                      }
+                    />
+                  </Route>
+
+                  {/* 404 */}
+                  <Route
+                    path="*"
+                    element={
+                      <NotFound />
+                    }
+                  />
+                </Routes>
+              </Suspense>
+            </AdminAuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </HelmetProvider>

@@ -359,3 +359,100 @@
   display: block;
   flex: 0 0 auto;
 }
+
+.wooly-admin-shell__topbarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wooly-admin-shell__topbarActions > small {
+  color: #929bad;
+  font-size: 11px;
+}
+
+.wooly-admin-shell__coreStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  min-height: 30px;
+  padding: 0 10px;
+
+  border: 1px solid #ccebdc;
+  border-radius: 999px;
+
+  background: #f0fbf5;
+
+  color: #287a52;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.wooly-admin-shell__account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding-left: 12px;
+
+  border-left: 1px solid var(--wooly-admin-border);
+}
+
+.wooly-admin-shell__account > span {
+  max-width: 150px;
+
+  overflow: hidden;
+
+  color: #4e5a70;
+  font-size: 11px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wooly-admin-shell__account button {
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  border: 1px solid var(--wooly-admin-border);
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #7d8798;
+
+  cursor: pointer;
+
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    background 140ms ease;
+}
+
+.wooly-admin-shell__account button:hover {
+  border-color: rgba(8, 127, 156, 0.25);
+  background: var(--wooly-admin-primary-faint);
+  color: var(--wooly-admin-primary-strong);
+}
+
+@media (max-width: 760px) {
+  .wooly-admin-shell__coreStatus span,
+  .wooly-admin-shell__account > span {
+    display: none;
+  }
+
+  .wooly-admin-shell__coreStatus {
+    width: 30px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .wooly-admin-shell__account {
+    padding-left: 8px;
+  }
+}

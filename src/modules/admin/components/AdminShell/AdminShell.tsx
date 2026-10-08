@@ -9,8 +9,14 @@ import {
 import {
   Boxes,
   Files,
+  LogOut,
+  ShieldCheck,
   Store,
 } from "lucide-react";
+
+import {
+  useOptionalAdminAuth,
+} from "@/modules/admin-auth/context/AdminAuthContext";
 
 import "./AdminShell.css";
 
@@ -25,6 +31,9 @@ export default function AdminShell({
   title = "Productos",
   subtitle,
 }: AdminShellProps) {
+  const adminAuth =
+    useOptionalAdminAuth();
+
   return (
     <div className="wooly-admin-shell">
       <aside className="wooly-admin-shell__sidebar">
@@ -116,9 +125,54 @@ export default function AdminShell({
             <span>{title}</span>
           </div>
 
-          {subtitle ? (
-            <small>{subtitle}</small>
-          ) : null}
+          <div className="wooly-admin-shell__topbarActions">
+            {subtitle ? (
+              <small>
+                {subtitle}
+              </small>
+            ) : null}
+
+            {adminAuth?.status ===
+            "authenticated" ? (
+              <>
+                <div className="wooly-admin-shell__coreStatus">
+                  <ShieldCheck
+                    size={14}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+
+                  <span>
+                    CORE conectado
+                  </span>
+                </div>
+
+                <div className="wooly-admin-shell__account">
+                  <span>
+                    {
+                      adminAuth.session
+                        ?.user
+                        .displayName
+                    }
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void adminAuth.logout()
+                    }
+                    title="Cerrar sesión"
+                    aria-label="Cerrar sesión"
+                  >
+                    <LogOut
+                      size={15}
+                      strokeWidth={2}
+                    />
+                  </button>
+                </div>
+              </>
+            ) : null}
+          </div>
         </header>
 
         <div className="wooly-admin-shell__workspace">

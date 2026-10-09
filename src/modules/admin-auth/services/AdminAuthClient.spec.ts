@@ -223,6 +223,15 @@ describe(
           {
             name:
               "Peluches",
+
+            icon:
+              "🧸",
+
+            accentColor:
+              "#E94F8A",
+
+            ogMediaRef:
+              "flores-amarillas.jpg",
           },
         );
 
@@ -271,6 +280,15 @@ describe(
         ).toEqual({
           name:
             "Peluches",
+
+          icon:
+            "🧸",
+
+          accentColor:
+            "#E94F8A",
+
+          ogMediaRef:
+            "flores-amarillas.jpg",
         });
       },
     );

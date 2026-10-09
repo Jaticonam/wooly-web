@@ -6,6 +6,8 @@ import {
   ImageOff,
   Layers3,
   Megaphone,
+  Pencil,
+  Plus,
   ShieldCheck,
   Tags,
 } from "lucide-react";
@@ -19,6 +21,10 @@ import {
 import type {
   AdminReferenceMediaAsset,
 } from "@/modules/admin-auth/services/AdminAuthClient";
+
+import CatalogMasterFormModal, {
+  type CatalogMasterEditor,
+} from "@/modules/catalog-settings/components/CatalogMasterFormModal";
 
 import "./CatalogSettingsPage.css";
 
@@ -53,10 +59,10 @@ function statusLabel(
   return (
     {
       ACTIVE:
-        "Activo",
+        "Publicado",
 
       INACTIVE:
-        "Inactivo",
+        "Oculto",
 
       ARCHIVED:
         "Archivado",
@@ -244,6 +250,14 @@ export default function CatalogSettingsPage() {
       "categories",
     );
 
+  const [
+    editor,
+    setEditor,
+  ] =
+    useState<CatalogMasterEditor | null>(
+      null,
+    );
+
   const configuration =
     auth.configuration;
 
@@ -282,6 +296,83 @@ export default function CatalogSettingsPage() {
     configuration
       ?.badgeDefinitions ??
     [];
+
+  const activeKind =
+    activeTab ===
+    "categories"
+      ? "category"
+      : activeTab ===
+        "campaigns"
+        ? "campaign"
+        : "badge";
+
+  const createLabel =
+    activeKind ===
+    "category"
+      ? "Nueva categoría"
+      : activeKind ===
+        "campaign"
+        ? "Nueva campaña"
+        : "Nuevo badge";
+
+  const openCreate =
+    () => {
+      if (!canWrite) {
+        return;
+      }
+
+      if (
+        activeKind ===
+        "category"
+      ) {
+        setEditor({
+          kind:
+            "category",
+
+          entity:
+            null,
+        });
+
+        return;
+      }
+
+      if (
+        activeKind ===
+        "campaign"
+      ) {
+        setEditor({
+          kind:
+            "campaign",
+
+          entity:
+            null,
+        });
+
+        return;
+      }
+
+      setEditor({
+        kind:
+          "badge",
+
+        entity:
+          null,
+      });
+    };
+
+  const openEdit =
+    (
+      nextEditor:
+        CatalogMasterEditor,
+    ) => {
+      if (!canWrite) {
+        return;
+      }
+
+      setEditor(
+        nextEditor,
+      );
+    };
 
   return (
     <AdminShell
@@ -414,9 +505,29 @@ export default function CatalogSettingsPage() {
               </strong>
 
               <p>
-                Consulta la definición vigente en JUNG CORE. La edición se habilitará en el siguiente lote.
+                Consulta y administra la definición vigente gobernada por JUNG CORE.
               </p>
             </div>
+
+            {canWrite ? (
+              <button
+                type="button"
+                className="catalog-settings-page__registryAction"
+                onClick={
+                  openCreate
+                }
+              >
+                <Plus
+                  size={15}
+                  strokeWidth={2.2}
+                  aria-hidden="true"
+                />
+
+                <span>
+                  {createLabel}
+                </span>
+              </button>
+            ) : null}
           </header>
 
           <div
@@ -547,7 +658,7 @@ export default function CatalogSettingsPage() {
                       </th>
 
                       <th>
-                        Código / slug
+                        ID categoría / slug
                       </th>
 
                       <th>
@@ -557,6 +668,12 @@ export default function CatalogSettingsPage() {
                       <th>
                         Estado
                       </th>
+
+                      {canWrite ? (
+                        <th>
+                          Acciones
+                        </th>
+                      ) : null}
                     </tr>
                   </thead>
 
@@ -634,6 +751,35 @@ export default function CatalogSettingsPage() {
                               }
                             </span>
                           </td>
+
+                          {canWrite ? (
+                            <td>
+                              <button
+                                type="button"
+                                className="catalog-settings-page__rowAction"
+                                aria-label={`Editar categoría ${category.name}`}
+                                onClick={() =>
+                                  openEdit({
+                                    kind:
+                                      "category",
+
+                                    entity:
+                                      category,
+                                  })
+                                }
+                              >
+                                <Pencil
+                                  size={13}
+                                  strokeWidth={2}
+                                  aria-hidden="true"
+                                />
+
+                                <span>
+                                  Editar
+                                </span>
+                              </button>
+                            </td>
+                          ) : null}
                         </tr>
                       ),
                     )}
@@ -689,6 +835,12 @@ export default function CatalogSettingsPage() {
                       <th>
                         Publicación
                       </th>
+
+                      {canWrite ? (
+                        <th>
+                          Acciones
+                        </th>
+                      ) : null}
                     </tr>
                   </thead>
 
@@ -764,6 +916,35 @@ export default function CatalogSettingsPage() {
                               }
                             </span>
                           </td>
+
+                          {canWrite ? (
+                            <td>
+                              <button
+                                type="button"
+                                className="catalog-settings-page__rowAction"
+                                aria-label={`Editar campaña ${campaign.name}`}
+                                onClick={() =>
+                                  openEdit({
+                                    kind:
+                                      "campaign",
+
+                                    entity:
+                                      campaign,
+                                  })
+                                }
+                              >
+                                <Pencil
+                                  size={13}
+                                  strokeWidth={2}
+                                  aria-hidden="true"
+                                />
+
+                                <span>
+                                  Editar
+                                </span>
+                              </button>
+                            </td>
+                          ) : null}
                         </tr>
                       ),
                     )}
@@ -823,6 +1004,12 @@ export default function CatalogSettingsPage() {
                       <th>
                         Estado
                       </th>
+
+                      {canWrite ? (
+                        <th>
+                          Acciones
+                        </th>
+                      ) : null}
                     </tr>
                   </thead>
 
@@ -897,6 +1084,35 @@ export default function CatalogSettingsPage() {
                               }
                             </span>
                           </td>
+
+                          {canWrite ? (
+                            <td>
+                              <button
+                                type="button"
+                                className="catalog-settings-page__rowAction"
+                                aria-label={`Editar badge ${badge.label}`}
+                                onClick={() =>
+                                  openEdit({
+                                    kind:
+                                      "badge",
+
+                                    entity:
+                                      badge,
+                                  })
+                                }
+                              >
+                                <Pencil
+                                  size={13}
+                                  strokeWidth={2}
+                                  aria-hidden="true"
+                                />
+
+                                <span>
+                                  Editar
+                                </span>
+                              </button>
+                            </td>
+                          ) : null}
                         </tr>
                       ),
                     )}
@@ -922,6 +1138,36 @@ export default function CatalogSettingsPage() {
             </div>
           ) : null}
         </section>
+
+        <CatalogMasterFormModal
+          open={
+            editor !==
+            null
+          }
+          brandId={
+            configuration
+              ?.brandId ??
+            ""
+          }
+          canWrite={
+            canWrite
+          }
+          editor={
+            editor
+          }
+          onClose={() =>
+            setEditor(
+              null,
+            )
+          }
+          onSaved={async () => {
+            setEditor(
+              null,
+            );
+
+            await auth.refresh();
+          }}
+        />
       </main>
     </AdminShell>
   );

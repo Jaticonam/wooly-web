@@ -41,6 +41,29 @@ vi.mock(
 );
 
 vi.mock(
+  "@/modules/admin-auth/services/AdminAuthClient",
+  () => ({
+    createAdminCategory:
+      vi.fn(),
+
+    updateAdminCategory:
+      vi.fn(),
+
+    createAdminCampaign:
+      vi.fn(),
+
+    updateAdminCampaign:
+      vi.fn(),
+
+    createAdminBadge:
+      vi.fn(),
+
+    updateAdminBadge:
+      vi.fn(),
+  }),
+);
+
+vi.mock(
   "@/modules/admin-auth/context/AdminAuthContext",
   () => ({
     useAdminAuth:
@@ -51,7 +74,10 @@ vi.mock(
 
 import CatalogSettingsPage from "./CatalogSettingsPage";
 
-function createAuth() {
+function createAuth(
+  role =
+    "ADMIN",
+) {
   return {
     status:
       "authenticated",
@@ -70,8 +96,7 @@ function createAuth() {
 
       accesses: [
         {
-          role:
-            "ADMIN",
+          role,
 
           brand: {
             id:
@@ -147,6 +172,9 @@ function createAuth() {
             title:
               "Peluches OG",
 
+            originalFilename:
+              "flores-amarillas.jpg",
+
             publicUrl:
               "https://example.com/peluches.jpg",
 
@@ -165,35 +193,6 @@ function createAuth() {
             status:
               "ACTIVE",
           },
-        },
-
-        {
-          id:
-            "category-2",
-
-          code:
-            "flores",
-
-          name:
-            "Flores",
-
-          slug:
-            "flores",
-
-          description:
-            null,
-
-          priority:
-            80,
-
-          status:
-            "INACTIVE",
-
-          ogMediaAssetId:
-            null,
-
-          ogMediaAsset:
-            null,
         },
       ],
 
@@ -239,7 +238,10 @@ function createAuth() {
       vi.fn(),
 
     refresh:
-      vi.fn(),
+      vi.fn()
+        .mockResolvedValue(
+          undefined,
+        ),
   };
 }
 
@@ -254,23 +256,10 @@ describe(
     );
 
     it(
-      "muestra categorías canónicas y su OG por defecto",
+      "mantiene la lectura canónica y habilita acciones para ADMIN",
       () => {
         render(
           <CatalogSettingsPage />,
-        );
-
-        expect(
-          screen.getByRole(
-            "tab",
-            {
-              name:
-                /Categorías 2/,
-            },
-          ),
-        ).toHaveAttribute(
-          "aria-selected",
-          "true",
         );
 
         expect(
@@ -280,30 +269,29 @@ describe(
         ).toBeInTheDocument();
 
         expect(
-          screen.getByText(
-            "Flores",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Nueva categoría",
+            },
           ),
         ).toBeInTheDocument();
 
         expect(
-          screen.getByAltText(
-            "OG Peluches",
-          ),
-        ).toHaveAttribute(
-          "src",
-          "https://example.com/peluches.jpg",
-        );
-
-        expect(
-          screen.getByText(
-            "Inactivo",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Editar categoría Peluches",
+            },
           ),
         ).toBeInTheDocument();
       },
     );
 
     it(
-      "muestra estado vacío real cuando no existen campañas",
+      "cambia la acción de creación según el maestro activo",
       () => {
         render(
           <CatalogSettingsPage />,
@@ -320,25 +308,20 @@ describe(
         );
 
         expect(
-          screen.getByText(
-            "Sin campañas canónicas",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Nueva campaña",
+            },
           ),
         ).toBeInTheDocument();
 
         expect(
           screen.getByText(
-            /todavía no tiene campañas registradas en JUNG CORE/,
+            "Sin campañas canónicas",
           ),
         ).toBeInTheDocument();
-      },
-    );
-
-    it(
-      "presenta el registro de badges sin habilitar mutaciones",
-      () => {
-        render(
-          <CatalogSettingsPage />,
-        );
 
         fireEvent.click(
           screen.getByRole(
@@ -351,34 +334,101 @@ describe(
         );
 
         expect(
-          screen.getByText(
-            "Nuevo",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Nuevo badge",
+            },
           ),
         ).toBeInTheDocument();
 
         expect(
-          screen.getAllByText(
-            "merchandising.new",
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Editar badge Nuevo",
+            },
           ),
-        ).toHaveLength(
-          2,
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
+      "abre el formulario de edición de categoría",
+      () => {
+        render(
+          <CatalogSettingsPage />,
+        );
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Editar categoría Peluches",
+            },
+          ),
         );
 
         expect(
-          screen.getByText(
-            "merchandising",
+          screen.getByRole(
+            "dialog",
           ),
         ).toBeInTheDocument();
+
+        expect(
+          screen.getByDisplayValue(
+            "Peluches",
+          ),
+        ).toBeInTheDocument();
+
+        expect(
+          screen.getByDisplayValue(
+            "flores-amarillas.jpg",
+          ),
+        ).toBeInTheDocument();
+      },
+    );
+
+    it(
+      "oculta todas las mutaciones para VIEWER",
+      () => {
+        testState.auth =
+          createAuth(
+            "VIEWER",
+          );
+
+        render(
+          <CatalogSettingsPage />,
+        );
 
         expect(
           screen.queryByRole(
             "button",
             {
               name:
-                /crear|editar|guardar/i,
+                "Nueva categoría",
             },
           ),
         ).not.toBeInTheDocument();
+
+        expect(
+          screen.queryByRole(
+            "button",
+            {
+              name:
+                "Editar categoría Peluches",
+            },
+          ),
+        ).not.toBeInTheDocument();
+
+        expect(
+          screen.getByText(
+            /VIEWER · solo lectura/,
+          ),
+        ).toBeInTheDocument();
       },
     );
   },

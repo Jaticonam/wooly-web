@@ -633,3 +633,85 @@
     min-width: 700px;
   }
 }
+
+.catalog-settings-page__registryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-height: 34px;
+  padding: 0 11px;
+
+  border:
+    1px solid
+    var(--wooly-admin-primary);
+
+  border-radius: 10px;
+
+  background:
+    var(--wooly-admin-primary);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+.catalog-settings-page__registryAction:hover {
+  background:
+    var(--wooly-admin-primary-strong);
+}
+
+.catalog-settings-page__rowAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  min-height: 29px;
+  padding: 0 9px;
+
+  border:
+    1px solid
+    var(--wooly-admin-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--wooly-admin-surface);
+
+  color:
+    var(--wooly-admin-primary-strong);
+
+  font: inherit;
+  font-size: 9px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.catalog-settings-page__rowAction:hover {
+  border-color:
+    rgba(8, 127, 156, 0.28);
+
+  background:
+    var(--wooly-admin-primary-faint);
+}
+
+.catalog-settings-page__registryAction span {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.catalog-settings-page__registryAction svg {
+  color: #ffffff;
+  flex: 0 0 auto;
+}

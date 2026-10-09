@@ -29,6 +29,7 @@ export interface AdminReferenceMediaAsset {
   readonly id: string;
   readonly mediaCode: string;
   readonly title: string;
+  readonly originalFilename: string;
   readonly publicUrl: string | null;
   readonly thumbnailUrl: string | null;
   readonly mimeType: string | null;
@@ -41,8 +42,10 @@ export interface AdminCategoryDefinition {
   readonly id: string;
   readonly code: string;
   readonly name: string;
+  readonly icon?: string | null;
   readonly slug: string;
   readonly description: string | null;
+  readonly accentColor?: string | null;
   readonly priority: number;
   readonly status: string;
   readonly ogMediaAssetId: string | null;
@@ -55,8 +58,10 @@ export interface AdminCampaignDefinition {
   readonly code: string;
   readonly slug: string;
   readonly name: string;
+  readonly description?: string | null;
   readonly icon: string | null;
   readonly color: string | null;
+  readonly accentColor?: string | null;
   readonly themeToken: string | null;
   readonly startsAt: string | null;
   readonly endsAt: string | null;
@@ -72,6 +77,7 @@ export interface AdminBadgeDefinition {
   readonly code: string;
   readonly label: string;
   readonly icon: string | null;
+  readonly accentColor?: string | null;
   readonly kind: string;
   readonly themeToken: string | null;
   readonly priority: number;
@@ -125,11 +131,13 @@ export interface AdminLoginCredentials {
 export interface CreateAdminCategoryInput {
   readonly code: string;
   readonly name: string;
+  readonly icon?: string | null;
   readonly slug: string;
   readonly description?: string;
+  readonly accentColor?: string | null;
   readonly priority?: number;
   readonly status?: string;
-  readonly ogMediaAssetId?: string | null;
+  readonly ogMediaRef?: string | null;
 }
 
 export type UpdateAdminCategoryInput =
@@ -139,14 +147,16 @@ export interface CreateAdminCampaignInput {
   readonly code: string;
   readonly slug: string;
   readonly name: string;
+  readonly description?: string | null;
   readonly icon?: string;
   readonly color?: string;
+  readonly accentColor?: string | null;
   readonly themeToken?: string;
   readonly startsAt?: string | null;
   readonly endsAt?: string | null;
   readonly priority?: number;
   readonly publicationStatus?: string;
-  readonly ogMediaAssetId?: string | null;
+  readonly ogMediaRef?: string | null;
 }
 
 export type UpdateAdminCampaignInput =
@@ -156,6 +166,7 @@ export interface CreateAdminBadgeInput {
   readonly code: string;
   readonly label: string;
   readonly icon?: string | null;
+  readonly accentColor?: string | null;
   readonly kind: string;
   readonly themeToken?: string | null;
   readonly priority?: number;

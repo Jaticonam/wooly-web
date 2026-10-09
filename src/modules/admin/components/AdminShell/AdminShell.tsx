@@ -10,6 +10,7 @@ import {
   Boxes,
   Files,
   LogOut,
+  Settings2,
   ShieldCheck,
   Store,
 } from "lucide-react";
@@ -92,6 +93,24 @@ export default function AdminShell({
             </span>
 
             <span>Catálogos</span>
+          </NavLink>
+          <NavLink
+            to="/admin/configuracion/catalogo"
+            className={({ isActive }) =>
+              isActive ? "is-active" : ""
+            }
+          >
+            <span
+              className="wooly-admin-shell__navIcon"
+              aria-hidden="true"
+            >
+              <Settings2
+                size={18}
+                strokeWidth={2}
+              />
+            </span>
+
+            <span>Configuración</span>
           </NavLink>
         </nav>
 

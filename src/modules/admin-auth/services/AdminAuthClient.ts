@@ -300,10 +300,15 @@ async function requestJson<T>(
     );
 
   if (!response.ok) {
-    throw new AdminAuthHttpError(
-      response.status,
-      `JUNG CORE respondió HTTP ${response.status}`,
-    );
+    let message = `JUNG CORE respondió HTTP ${response.status}`;
+    try {
+      const body: unknown = await response.json();
+      if (body && typeof body === "object" && "message" in body) {
+        if (typeof body.message === "string" && body.message.trim()) message = body.message;
+        else if (Array.isArray(body.message) && body.message.every(item => typeof item === "string")) message = body.message.join(" · ") || message;
+      }
+    } catch { /* Keep the HTTP fallback for non-JSON errors. */ }
+    throw new AdminAuthHttpError(response.status, message);
   }
 
   return (await response.json()) as T;
@@ -457,6 +462,125 @@ export function updateAdminBadge(
     )}/badges/${encodeURIComponent(
       badgeId,
     )}`,
+    "PUT",
+    input,
+  );
+}
+
+export type AdminAttributeType = "TEXT" | "NUMBER" | "SELECT" | "MEASUREMENT" | "COLOR";
+export type AdminAttributeStatus = "ACTIVE" | "INACTIVE" | "ARCHIVED";
+export type AdminAttributeValue =
+  | { kind: "TEXT" | "SELECT"; text: string }
+  | { kind: "NUMBER"; amount: string }
+  | { kind: "MEASUREMENT"; amount: string; unitCode: string }
+  | { kind: "COLOR"; label: string; hex: string | null };
+export interface AdminAttributeConfig {
+  allowedUnitCodes?: string[];
+  defaultUnitCode?: string;
+}
+export interface AdminCategoryAttributeOption {
+  id: string;
+  code: string;
+  label: string;
+  value: AdminAttributeValue;
+  position: number;
+  status: AdminAttributeStatus;
+}
+export interface AdminCategoryAttributeFields {
+  label: string;
+  type: AdminAttributeType;
+  role: "ATTRIBUTE" | "SIZE";
+  required: boolean;
+  multiple: boolean;
+  position: number;
+  status: AdminAttributeStatus;
+  allowCustomValue: boolean;
+  config: AdminAttributeConfig;
+}
+export interface AdminCategoryAttributeDefinition extends AdminCategoryAttributeFields {
+  id: string;
+  code: string;
+  options: AdminCategoryAttributeOption[];
+}
+export type CreateAdminCategoryAttributeInput = Omit<
+  AdminCategoryAttributeFields,
+  "position" | "status"
+>;
+export type UpdateAdminCategoryAttributeInput = Partial<AdminCategoryAttributeFields>;
+export interface CreateAdminCategoryAttributeOptionInput {
+  label: string;
+  amount?: string;
+  unitCode?: string;
+  hex?: string | null;
+}
+export type UpdateAdminCategoryAttributeOptionInput = Partial<
+  Pick<AdminCategoryAttributeOption, "label" | "position" | "status">
+>;
+export interface AdminCategoryAttributesEnvelope {
+  success: boolean;
+  message: string;
+  data: AdminCategoryAttributeDefinition[];
+}
+function categoryAttributesPath(brandId: string, categoryId: string) {
+  return `/catalog-commercial/brands/${encodeURIComponent(brandId)}/categories/${encodeURIComponent(categoryId)}/attributes`;
+}
+export function loadAdminCategoryAttributes(brandId: string, categoryId: string) {
+  return requestJson<AdminCategoryAttributesEnvelope>(
+    categoryAttributesPath(brandId, categoryId),
+    "GET",
+  );
+}
+export function createAdminCategoryAttribute(
+  brandId: string,
+  categoryId: string,
+  input: CreateAdminCategoryAttributeInput,
+) {
+  return requestJson<AdminMutationEnvelope>(
+    categoryAttributesPath(brandId, categoryId),
+    "POST",
+    input,
+  );
+}
+export function updateAdminCategoryAttribute(
+  brandId: string,
+  categoryId: string,
+  attributeId: string,
+  input: UpdateAdminCategoryAttributeInput,
+) {
+  return requestJson<AdminMutationEnvelope>(
+    categoryAttributesPath(brandId, categoryId) + "/" + encodeURIComponent(attributeId),
+    "PUT",
+    input,
+  );
+}
+export function createAdminCategoryAttributeOption(
+  brandId: string,
+  categoryId: string,
+  attributeId: string,
+  input: CreateAdminCategoryAttributeOptionInput,
+) {
+  return requestJson<AdminMutationEnvelope>(
+    categoryAttributesPath(brandId, categoryId) +
+      "/" +
+      encodeURIComponent(attributeId) +
+      "/options",
+    "POST",
+    input,
+  );
+}
+export function updateAdminCategoryAttributeOption(
+  brandId: string,
+  categoryId: string,
+  attributeId: string,
+  optionId: string,
+  input: UpdateAdminCategoryAttributeOptionInput,
+) {
+  return requestJson<AdminMutationEnvelope>(
+    categoryAttributesPath(brandId, categoryId) +
+      "/" +
+      encodeURIComponent(attributeId) +
+      "/options/" +
+      encodeURIComponent(optionId),
     "PUT",
     input,
   );

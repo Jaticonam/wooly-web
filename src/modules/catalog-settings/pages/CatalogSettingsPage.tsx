@@ -20,11 +20,14 @@ import {
 
 import type {
   AdminReferenceMediaAsset,
+  AdminCategoryDefinition,
 } from "@/modules/admin-auth/services/AdminAuthClient";
 
 import CatalogMasterFormModal, {
   type CatalogMasterEditor,
 } from "@/modules/catalog-settings/components/CatalogMasterFormModal";
+
+import CategoryAttributeRegistryModal from "@/modules/catalog-settings/components/CategoryAttributeRegistryModal/CategoryAttributeRegistryModal";
 
 import "./CatalogSettingsPage.css";
 
@@ -257,6 +260,8 @@ export default function CatalogSettingsPage() {
     useState<CatalogMasterEditor | null>(
       null,
     );
+
+  const [selectedAttributeCategory, setSelectedAttributeCategory] = useState<AdminCategoryDefinition | null>(null);
 
   const configuration =
     auth.configuration;
@@ -669,11 +674,7 @@ export default function CatalogSettingsPage() {
                         Estado
                       </th>
 
-                      {canWrite ? (
-                        <th>
-                          Acciones
-                        </th>
-                      ) : null}
+                      <th>Acciones</th>
                     </tr>
                   </thead>
 
@@ -752,8 +753,7 @@ export default function CatalogSettingsPage() {
                             </span>
                           </td>
 
-                          {canWrite ? (
-                            <td>
+                          <td><div className="catalog-settings-page__categoryActions"><button type="button" className="catalog-settings-page__rowAction" aria-label={`Atributos de ${category.name}`} onClick={()=>setSelectedAttributeCategory(category)}><Layers3 size={13} aria-hidden="true"/> Atributos</button>{canWrite ? (<>
                               <button
                                 type="button"
                                 className="catalog-settings-page__rowAction"
@@ -777,9 +777,7 @@ export default function CatalogSettingsPage() {
                                 <span>
                                   Editar
                                 </span>
-                              </button>
-                            </td>
-                          ) : null}
+                              </button></>) : null}</div></td>
                         </tr>
                       ),
                     )}
@@ -1139,6 +1137,7 @@ export default function CatalogSettingsPage() {
           ) : null}
         </section>
 
+        {selectedAttributeCategory && <CategoryAttributeRegistryModal key={selectedAttributeCategory.id} brandId={configuration?.brandId ?? ""} category={selectedAttributeCategory} canWrite={canWrite} onClose={()=>setSelectedAttributeCategory(null)}/>}
         <CatalogMasterFormModal
           open={
             editor !==

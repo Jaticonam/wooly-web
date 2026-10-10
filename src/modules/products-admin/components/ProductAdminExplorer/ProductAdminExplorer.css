@@ -1,14 +1,7 @@
 .product-admin-explorer__grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(
-        min(100%, 220px),
-        1fr
-      )
-    );
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
 
   gap: 14px;
 
@@ -16,14 +9,7 @@
 }
 
 .product-admin-explorer__grid.is-compact {
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(
-        min(100%, 190px),
-        1fr
-      )
-    );
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
 
   gap: 10px;
 }
@@ -42,7 +28,7 @@
 }
 
 .product-admin-explorer__list {
-  overflow: hidden;
+  overflow-x: auto;
 
   border: 1px solid var(--wooly-admin-border);
   border-radius: 14px;
@@ -53,17 +39,14 @@
 .product-admin-explorer__list > header {
   display: grid;
 
-  grid-template-columns:
-    38px
-    minmax(260px, 2fr)
-    minmax(90px, 0.65fr)
-    minmax(90px, 0.65fr)
-    minmax(120px, 0.8fr)
-    minmax(110px, 0.7fr);
+  grid-template-columns: 38px minmax(260px, 2fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(
+      90px,
+      0.65fr
+    ) minmax(130px, 0.9fr) 90px;
 
-  gap: 12px;
-
-  padding: 11px 15px;
+  gap: 14px;
+  min-width: 1032px;
+  padding: 11px 12px;
 
   border-bottom: 1px solid var(--wooly-admin-border);
 
@@ -106,36 +89,20 @@
 
 @media (min-width: 1700px) {
   .product-admin-explorer__grid {
-    grid-template-columns:
-      repeat(
-        auto-fill,
-        minmax(230px, 1fr)
-      );
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   }
 
   .product-admin-explorer__grid.is-compact {
-    grid-template-columns:
-      repeat(
-        auto-fill,
-        minmax(195px, 1fr)
-      );
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
   }
 }
 
 @media (max-width: 760px) {
   .product-admin-explorer__grid,
   .product-admin-explorer__grid.is-compact {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     gap: 10px;
-  }
-
-  .product-admin-explorer__list > header {
-    display: none;
   }
 }
 
@@ -144,4 +111,7 @@
   .product-admin-explorer__grid.is-compact {
     grid-template-columns: 1fr;
   }
+}
+.product-admin-explorer__list .product-admin-row {
+  min-width: 1032px;
 }

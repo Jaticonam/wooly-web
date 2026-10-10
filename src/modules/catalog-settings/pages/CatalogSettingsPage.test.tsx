@@ -6,6 +6,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from "@testing-library/react";
 
 import {
@@ -43,6 +44,11 @@ vi.mock(
 vi.mock(
   "@/modules/admin-auth/services/AdminAuthClient",
   () => ({
+    loadAdminCategoryAttributes: vi.fn().mockResolvedValue({success:true,data:[]}),
+    createAdminCategoryAttribute: vi.fn(),
+    updateAdminCategoryAttribute: vi.fn(),
+    createAdminCategoryAttributeOption: vi.fn(),
+    updateAdminCategoryAttributeOption: vi.fn(),
     createAdminCategory:
       vi.fn(),
 
@@ -433,3 +439,30 @@ describe(
     );
   },
 );
+
+import { loadAdminCategoryAttributes } from "@/modules/admin-auth/services/AdminAuthClient";
+
+describe("Lazy category registry integration", () => {
+  beforeEach(() => {
+    testState.auth = createAuth();
+    vi.mocked(loadAdminCategoryAttributes).mockClear();
+  });
+  it.each(["ADMIN", "OWNER", "VIEWER"])(
+    "opens the selected category for %s without eager requests",
+    async (role) => {
+      testState.auth = createAuth(role);
+      render(<CatalogSettingsPage />);
+      expect(loadAdminCategoryAttributes).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByRole("button", { name: "Atributos de Peluches" }));
+      await waitFor(() =>
+        expect(loadAdminCategoryAttributes).toHaveBeenCalledWith("brand-1", "category-1"),
+      );
+      expect(screen.getByRole("dialog", { name: "Atributos · Peluches" })).toBeInTheDocument();
+      await screen.findByText("Esta categoría todavía no tiene atributos.");
+      if (role === "VIEWER")
+        expect(screen.queryByRole("button", { name: /Agregar atributo/ })).not.toBeInTheDocument();
+      else expect(screen.getByRole("button", { name: /Agregar atributo/ })).toBeInTheDocument();
+      expect((testState.auth as ReturnType<typeof createAuth>).refresh).not.toHaveBeenCalled();
+    },
+  );
+});

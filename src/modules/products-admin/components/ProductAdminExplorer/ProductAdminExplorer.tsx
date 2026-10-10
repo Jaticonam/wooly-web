@@ -3,14 +3,9 @@ import type {
   ProductAdminDensity,
 } from "@/modules/products-admin/domain/ProductAdminDisplay";
 
-import type {
-  ProductAdminViewMode,
-} from "@/modules/products-admin/domain/ProductAdminViewMode";
+import type { ProductAdminViewMode } from "@/modules/products-admin/domain/ProductAdminViewMode";
 
-import type {
-  Campaign,
-  Product,
-} from "@/shared/types/product";
+import type { Campaign, Product } from "@/shared/types/product";
 
 import ProductAdminCard from "@/modules/products-admin/components/ProductAdminCard/ProductAdminCard";
 import ProductAdminRow from "@/modules/products-admin/components/ProductAdminRow/ProductAdminRow";
@@ -18,9 +13,7 @@ import ProductAdminTable from "@/modules/products-admin/components/ProductAdminT
 
 import "./ProductAdminExplorer.css";
 
-const EMPTY_SELECTED_PRODUCT_IDS:
-  ReadonlySet<string> =
-    new Set<string>();
+const EMPTY_SELECTED_PRODUCT_IDS: ReadonlySet<string> = new Set<string>();
 
 interface ProductAdminExplorerProps {
   products: readonly Product[];
@@ -31,9 +24,7 @@ interface ProductAdminExplorerProps {
   isReady: boolean;
   onSelectProduct: (product: Product) => void;
   selectedProductIds?: ReadonlySet<string>;
-  onToggleProductSelection?:
-    | ((product: Product) => void)
-    | undefined;
+  onToggleProductSelection?: ((product: Product) => void) | undefined;
 }
 
 const DEFAULT_COLUMNS: ProductAdminColumnVisibility = {
@@ -53,23 +44,13 @@ export default function ProductAdminExplorer({
   columns = DEFAULT_COLUMNS,
   isReady,
   onSelectProduct,
-  selectedProductIds =
-    EMPTY_SELECTED_PRODUCT_IDS,
+  selectedProductIds = EMPTY_SELECTED_PRODUCT_IDS,
   onToggleProductSelection,
 }: ProductAdminExplorerProps) {
-  const campaignsById = new Map(
-    campaigns.map((campaign) => [
-      campaign.id,
-      campaign,
-    ]),
-  );
+  const campaignsById = new Map(campaigns.map((campaign) => [campaign.id, campaign]));
 
   if (!isReady) {
-    return (
-      <div className="product-admin-explorer__empty">
-        Cargando productos…
-      </div>
-    );
+    return <div className="product-admin-explorer__empty">Cargando productos…</div>;
   }
 
   if (products.length === 0) {
@@ -84,18 +65,11 @@ export default function ProductAdminExplorer({
     return (
       <ProductAdminTable
         products={products}
-        selectedProductIds={
-          selectedProductIds
-        }
+        selectedProductIds={selectedProductIds}
         columns={columns}
         density={density}
-        onSelectProduct={
-          onSelectProduct
-        }
-        onToggleProductSelection={
-          onToggleProductSelection ??
-          (() => undefined)
-        }
+        onSelectProduct={onSelectProduct}
+        onToggleProductSelection={onToggleProductSelection ?? (() => undefined)}
       />
     );
   }
@@ -103,35 +77,18 @@ export default function ProductAdminExplorer({
   if (viewMode === "grid") {
     return (
       <section
-        className={
-          `product-admin-explorer__grid is-${density}`
-        }
+        className={`product-admin-explorer__grid is-${density}`}
         aria-label="Cuadrícula de productos"
       >
         {products.map((product) => (
           <ProductAdminCard
             key={product.id}
             product={product}
-            campaignsById={
-              campaignsById
-            }
-            isSelected={
-              selectedProductIds.has(
-                product.id,
-              )
-            }
-            onSelect={() =>
-              onSelectProduct(
-                product,
-              )
-            }
+            campaignsById={campaignsById}
+            isSelected={selectedProductIds.has(product.id)}
+            onSelect={() => onSelectProduct(product)}
             onToggleSelection={
-              onToggleProductSelection
-                ? () =>
-                    onToggleProductSelection(
-                      product,
-                    )
-                : undefined
+              onToggleProductSelection ? () => onToggleProductSelection(product) : undefined
             }
           />
         ))}
@@ -141,41 +98,27 @@ export default function ProductAdminExplorer({
 
   return (
     <section
-      className={
-        `product-admin-explorer__list is-${density}`
-      }
+      className={`product-admin-explorer__list is-${density}`}
       aria-label="Lista de productos"
     >
       <header>
         <span aria-hidden="true" />
         <span>Producto</span>
-        <span>Precio</span>
-        <span>Stock</span>
         <span>Categoría</span>
         <span>Estado</span>
+        <span>Precio</span>
+        <span>Stock</span>
+        <span>Acciones</span>
       </header>
 
       {products.map((product) => (
         <ProductAdminRow
           key={product.id}
           product={product}
-          isSelected={
-            selectedProductIds.has(
-              product.id,
-            )
-          }
-          onSelect={() =>
-            onSelectProduct(
-              product,
-            )
-          }
+          isSelected={selectedProductIds.has(product.id)}
+          onSelect={() => onSelectProduct(product)}
           onToggleSelection={
-            onToggleProductSelection
-              ? () =>
-                  onToggleProductSelection(
-                    product,
-                  )
-              : undefined
+            onToggleProductSelection ? () => onToggleProductSelection(product) : undefined
           }
         />
       ))}

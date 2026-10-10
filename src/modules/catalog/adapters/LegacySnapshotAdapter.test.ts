@@ -303,8 +303,8 @@ describe(
                 product.id,
             ),
         ).toEqual([
-          "HIGH",
-          "LOW",
+          "high",
+          "low",
         ]);
       },
     );
@@ -353,7 +353,7 @@ describe(
                 product.id,
             ),
         ).toEqual([
-          "HIDDEN-001",
+          "hidden-product",
         ]);
       },
     );
@@ -380,9 +380,9 @@ describe(
               categoryId:
                 "flores",
               code:
-                "IDENTIFIER_REPLACED_BY_SKU",
+                "CURRENCY_NOT_REPRESENTED",
               path:
-                "products[0].id",
+                "products[0].pricing.currency",
             }),
           ]),
         );

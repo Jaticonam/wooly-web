@@ -469,13 +469,14 @@ describe(
           campaigns,
         ).toHaveLength(1);
 
+        expect(products[0].sku).toBe("WLY-001");
         expect(
           products.map(
             (product) =>
               product.id,
           ),
         ).toEqual([
-          "WLY-001",
+          "core-product-1",
         ]);
 
         await provider

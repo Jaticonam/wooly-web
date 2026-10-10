@@ -23,7 +23,8 @@ function createProduct(
   overrides: Partial<Product> = {},
 ): Product {
   return {
-    id: "FLOR-001",
+    id: "core-product-1",
+    code: "FLOR-001",
     title: "Rosa premium",
     description: "Producto de prueba.",
     category: "flores",

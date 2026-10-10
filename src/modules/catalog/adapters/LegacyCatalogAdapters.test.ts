@@ -172,7 +172,8 @@ describe(
           result.product,
         ).toEqual(
           expect.objectContaining({
-            id: "WLY-001",
+            id: "core-product-1",
+            sku: "WLY-001",
             category: "flores",
 
             price_1: 10,

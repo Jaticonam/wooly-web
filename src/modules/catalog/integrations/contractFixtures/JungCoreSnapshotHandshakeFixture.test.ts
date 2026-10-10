@@ -102,8 +102,8 @@ describe(
               "flores",
             )?.[0],
         ).toMatchObject({
-          id:
-            "WLY001",
+          id: "product-001",
+          sku: "WLY001",
 
           title:
             "Producto contractual",
@@ -178,8 +178,8 @@ describe(
         ).resolves.toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              id:
-                "WLY001",
+              id: "product-001",
+              sku: "WLY001",
 
               price_1:
                 10,

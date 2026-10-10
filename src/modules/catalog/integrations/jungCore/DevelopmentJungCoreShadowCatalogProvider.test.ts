@@ -322,13 +322,14 @@ describe(
           "dia-madre",
         ]);
 
+        expect(products[0].sku).toBe("WLY-001");
         expect(
           products.map(
             (item) =>
               item.id,
           ),
         ).toEqual([
-          "WLY-001",
+          "core-id-1",
         ]);
       },
     );
@@ -467,8 +468,8 @@ describe(
         expect(
           products[0],
         ).toMatchObject({
-          id:
-            "WLY-001",
+          id: "core-id-1",
+          sku: "WLY-001",
 
           price_1:
             77,

@@ -1,4 +1,5 @@
 import {
+  afterEach,
   describe,
   expect,
   it,
@@ -47,6 +48,8 @@ function provider(
       ),
   } as CatalogProvider;
 }
+
+afterEach(() => vi.unstubAllEnvs());
 
 describe(
   "CatalogProviderFactory",
@@ -154,6 +157,7 @@ describe(
     it(
       "compone el provider simulado de JUNG CORE sin fallback ni HTTP",
       async () => {
+        vi.stubEnv("VITE_JUNG_CORE_DEV_TRANSPORT", "simulated");
         const selected =
           createCatalogProvider(
             "jung-core",
@@ -220,7 +224,7 @@ describe(
               product.id,
           ),
         ).toEqual([
-          "SIM-WLY-001",
+          "simulated-product-001",
         ]);
       },
     );

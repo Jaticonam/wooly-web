@@ -45,7 +45,8 @@ function createProduct(
   overrides: Partial<Product> = {},
 ): Product {
   return {
-    id: "FLOR-001",
+    id: "core-product-1",
+    code: "FLOR-001",
     title: "Rosa premium",
     description: "Producto de prueba.",
     category: "flores",
@@ -61,7 +62,7 @@ const seo: ProductSeoData = {
   title: "Rosa premium",
   description: "Producto de prueba.",
   canonical:
-    "https://www.woolyimports.com/catalogo/producto.html?id=FLOR-001",
+    "https://www.woolyimports.com/catalogo/producto.html?id=core-product-1",
   image:
     "https://example.com/product.jpg",
 };

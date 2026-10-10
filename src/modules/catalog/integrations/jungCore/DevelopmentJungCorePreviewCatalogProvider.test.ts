@@ -16,6 +16,7 @@ describe(
       () => {
         const product =
           mapDevelopmentCoreProduct({
+            id: "core-preview-product-1",
             sku:
               "AKT-RG702",
 
@@ -40,8 +41,8 @@ describe(
           product,
         ).toEqual(
           expect.objectContaining({
-            id:
-              "AKT-RG702",
+            id: "core-preview-product-1",
+            sku: "AKT-RG702",
 
             title:
               "Ramo de hortensias grandes",
@@ -79,6 +80,7 @@ describe(
       () => {
         const product =
           mapDevelopmentCoreProduct({
+            id: "core-preview-product-1",
             sku:
               "CER001",
 
@@ -118,6 +120,7 @@ describe(
       () => {
         const product =
           mapDevelopmentCoreProduct({
+            id: "core-preview-product-1",
             sku:
               "SKU-FUTURO",
 
@@ -149,6 +152,7 @@ describe(
       () => {
         const product =
           mapDevelopmentCoreProduct({
+            id: "core-preview-product-1",
             sku:
               "AKT-RG702",
 

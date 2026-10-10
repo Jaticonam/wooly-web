@@ -90,8 +90,9 @@ describe(
         expect(products).toHaveLength(
           fixtures.length,
         );
+        expect(products[0].sku).toBe("FIX-AVAILABLE");
         expect(products[0].id).toBe(
-          "FIX-AVAILABLE",
+          "canonical-available",
         );
       },
     );
@@ -111,13 +112,13 @@ describe(
           products.find(
             (product) =>
               product.id ===
-              "FIX-TIERS",
+              "canonical-tiers",
           );
         const media =
           products.find(
             (product) =>
               product.id ===
-              "FIX-MEDIA",
+              "canonical-media",
           );
 
         expect(tiers).toMatchObject({
@@ -234,7 +235,7 @@ describe(
           products.find(
             (product) =>
               product.id ===
-              "FIX-AVAILABLE",
+              "canonical-available",
           ),
         ).toSatisfy(
           isProductPublicationDataValid,
@@ -244,7 +245,7 @@ describe(
             products.find(
               (product) =>
                 product.id ===
-                "FIX-ARCHIVED",
+                "canonical-archived",
             )!,
           ),
         ).toBe(false);

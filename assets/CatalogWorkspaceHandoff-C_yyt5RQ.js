@@ -1,0 +1,1 @@
+function n(r){return[...new Set(r.map(o=>o.trim()).filter(Boolean))]}function c(r){return{version:1,source:"product-explorer",productIds:n(r)}}function s(r){if(typeof r!="object"||r===null)return null;const o=r;if(o.version!==1||o.source!=="product-explorer"||!Array.isArray(o.productIds))return null;const t=o.productIds.filter(e=>typeof e=="string");return c(t)}export{c,s as p};

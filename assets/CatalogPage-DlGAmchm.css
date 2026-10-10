@@ -1,0 +1,81 @@
+.catalogSectionHeader {
+  min-height: 24px;
+  padding: 0 1px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.catalogSectionHeader h2 {
+  margin: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #1e293b;
+
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.catalogSectionHeaderCount {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.catalogSectionHeaderCount strong {
+  color: inherit;
+  font-size: inherit;
+  font-weight: 900;
+}
+
+@media (min-width: 768px) {
+  .catalogSectionHeader {
+    min-height: 26px;
+  }
+
+  .catalogSectionHeader h2 {
+    font-size: 14px;
+  }
+
+  .catalogSectionHeaderCount {
+    font-size: 9.5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catalogSectionHeader {
+    min-height: 21px;
+    gap: 4px;
+  }
+
+  .catalogSectionHeader h2 {
+    font-size: 12px;
+  }
+
+  .catalogSectionHeaderCount {
+    gap: 2px;
+    font-size: 8.5px;
+  }
+
+  .catalogSectionHeaderCountLabel {
+    display: none;
+  }
+}

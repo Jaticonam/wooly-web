@@ -16,6 +16,8 @@ interface ProductAdminTableProps {
   columns: ProductAdminColumnVisibility;
   density: ProductAdminDensity;
   onSelectProduct: (product: Product) => void;
+  onPublishProduct?: ((product: Product) => void) | undefined;
+  publishingProductId?: string | null | undefined;
   onToggleProductSelection: (product: Product) => void;
 }
 
@@ -25,6 +27,8 @@ export default function ProductAdminTable({
   columns,
   density,
   onSelectProduct,
+  onPublishProduct,
+  publishingProductId,
   onToggleProductSelection,
 }: ProductAdminTableProps) {
   return (
@@ -136,6 +140,21 @@ export default function ProductAdminTable({
                     <Eye size={15} strokeWidth={1.9} aria-hidden="true" />
                     Abrir
                   </button>
+                  {onPublishProduct && (
+                    <button
+                      className="product-admin-table__detail"
+                      type="button"
+                      aria-label={`Publicar ${product.title}`}
+                      disabled={!!publishingProductId || product.status === "publicado"}
+                      onClick={() => onPublishProduct(product)}
+                    >
+                      {product.status === "publicado"
+                        ? "Publicado"
+                        : publishingProductId === product.id
+                          ? "Publicando…"
+                          : "Publicar"}
+                    </button>
+                  )}
                 </td>
               </tr>
             );

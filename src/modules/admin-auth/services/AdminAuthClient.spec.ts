@@ -1,10 +1,4 @@
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   loadAdminSession,
@@ -13,288 +7,151 @@ import {
   updateAdminCategory,
 } from "./AdminAuthClient";
 
-describe(
-  "AdminAuthClient",
-  () => {
-    afterEach(
-      () => {
-        vi.unstubAllGlobals();
-      },
+describe("AdminAuthClient", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("construye rutas sobre el proxy de JUNG CORE", () => {
+    expect(resolveAdminCoreUrl("/admin-auth/me", "/jung-core")).toBe("/jung-core/admin-auth/me");
+  });
+
+  it("usa credentials include y no envía llaves internas al consultar sesión", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+
+      json: async () => ({
+        authenticated: true,
+
+        user: {
+          id: "admin-1",
+
+          displayName: "Admin Test",
+        },
+
+        accesses: [],
+
+        session: {
+          expiresAt: new Date().toISOString(),
+        },
+      }),
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await loadAdminSession();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/jung-core/admin-auth/me",
+      expect.objectContaining({
+        method: "GET",
+
+        credentials: "include",
+      }),
     );
 
-    it(
-      "construye rutas sobre el proxy de JUNG CORE",
-      () => {
-        expect(
-          resolveAdminCoreUrl(
-            "/admin-auth/me",
-            "/jung-core",
-          ),
-        ).toBe(
-          "/jung-core/admin-auth/me",
-        );
-      },
-    );
+    const request = fetchMock.mock.calls[0]?.[1];
 
-    it(
-      "usa credentials include y no envía llaves internas al consultar sesión",
-      async () => {
-        const fetchMock =
-          vi.fn()
-            .mockResolvedValue({
-              ok: true,
-              status: 200,
+    expect(request.headers["x-jung-core-read-key"]).toBeUndefined();
 
-              json:
-                async () => ({
-                  authenticated:
-                    true,
+    expect(request.headers["x-jung-core-write-key"]).toBeUndefined();
+  });
 
-                  user: {
-                    id:
-                      "admin-1",
+  it("envía DNI y password solo en el body del login", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
 
-                    displayName:
-                      "Admin Test",
-                  },
+      json: async () => ({
+        authenticated: true,
 
-                  accesses:
-                    [],
+        user: {
+          id: "admin-1",
 
-                  session: {
-                    expiresAt:
-                      new Date()
-                        .toISOString(),
-                  },
-                }),
-            });
+          displayName: "Admin Test",
+        },
 
-        vi.stubGlobal(
-          "fetch",
-          fetchMock,
-        );
+        accesses: [],
 
-        await loadAdminSession();
+        session: {
+          expiresAt: new Date().toISOString(),
+        },
+      }),
+    });
 
-        expect(
-          fetchMock,
-        ).toHaveBeenCalledWith(
-          "/jung-core/admin-auth/me",
-          expect.objectContaining({
-            method:
-              "GET",
+    vi.stubGlobal("fetch", fetchMock);
 
-            credentials:
-              "include",
-          }),
-        );
+    await loginAdmin({
+      documentNumber: "12345678",
 
-        const request =
-          fetchMock
-            .mock
-            .calls[0]?.[1];
+      password: "password-test",
+    });
 
-        expect(
-          request.headers[
-            "x-jung-core-read-key"
-          ],
-        ).toBeUndefined();
+    const [url, request] = fetchMock.mock.calls[0];
 
-        expect(
-          request.headers[
-            "x-jung-core-write-key"
-          ],
-        ).toBeUndefined();
-      },
-    );
+    expect(url).toBe("/jung-core/admin-auth/login");
 
-    it(
-      "envía DNI y password solo en el body del login",
-      async () => {
-        const fetchMock =
-          vi.fn()
-            .mockResolvedValue({
-              ok: true,
-              status: 200,
+    expect(request.credentials).toBe("include");
 
-              json:
-                async () => ({
-                  authenticated:
-                    true,
+    expect(JSON.parse(request.body)).toEqual({
+      documentType: "DNI",
 
-                  user: {
-                    id:
-                      "admin-1",
+      documentNumber: "12345678",
 
-                    displayName:
-                      "Admin Test",
-                  },
+      password: "password-test",
+    });
+  });
 
-                  accesses:
-                    [],
+  it("usa PUT con sesión HttpOnly y sin machine keys al editar categoría", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
 
-                  session: {
-                    expiresAt:
-                      new Date()
-                        .toISOString(),
-                  },
-                }),
-            });
+      json: async () => ({
+        success: true,
 
-        vi.stubGlobal(
-          "fetch",
-          fetchMock,
-        );
+        message: "Category updated",
 
-        await loginAdmin({
-          documentNumber:
-            "12345678",
+        data: {},
+      }),
+    });
 
-          password:
-            "password-test",
-        });
+    vi.stubGlobal("fetch", fetchMock);
 
-        const [
-          url,
-          request,
-        ] =
-          fetchMock
-            .mock
-            .calls[0];
+    await updateAdminCategory("brand wooly", "category/1", {
+      name: "Peluches",
 
-        expect(
-          url,
-        ).toBe(
-          "/jung-core/admin-auth/login",
-        );
+      icon: "🧸",
 
-        expect(
-          request.credentials,
-        ).toBe(
-          "include",
-        );
+      accentColor: "#E94F8A",
 
-        expect(
-          JSON.parse(
-            request.body,
-          ),
-        ).toEqual({
-          documentType:
-            "DNI",
+      ogMediaRef: "flores-amarillas.jpg",
+    });
 
-          documentNumber:
-            "12345678",
+    const [url, request] = fetchMock.mock.calls[0];
 
-          password:
-            "password-test",
-        });
-      },
-    );
+    expect(url).toBe("/jung-core/catalog-commercial/brands/brand%20wooly/categories/category%2F1");
 
-    it(
-      "usa PUT con sesión HttpOnly y sin machine keys al editar categoría",
-      async () => {
-        const fetchMock =
-          vi.fn()
-            .mockResolvedValue({
-              ok: true,
-              status: 200,
+    expect(request.method).toBe("PUT");
 
-              json:
-                async () => ({
-                  success:
-                    true,
+    expect(request.credentials).toBe("include");
 
-                  message:
-                    "Category updated",
+    expect(request.headers["x-jung-core-read-key"]).toBeUndefined();
 
-                  data: {},
-                }),
-            });
+    expect(request.headers["x-jung-core-write-key"]).toBeUndefined();
 
-        vi.stubGlobal(
-          "fetch",
-          fetchMock,
-        );
+    expect(JSON.parse(request.body)).toEqual({
+      name: "Peluches",
 
-        await updateAdminCategory(
-          "brand wooly",
-          "category/1",
-          {
-            name:
-              "Peluches",
+      icon: "🧸",
 
-            icon:
-              "🧸",
+      accentColor: "#E94F8A",
 
-            accentColor:
-              "#E94F8A",
-
-            ogMediaRef:
-              "flores-amarillas.jpg",
-          },
-        );
-
-        const [
-          url,
-          request,
-        ] =
-          fetchMock
-            .mock
-            .calls[0];
-
-        expect(
-          url,
-        ).toBe(
-          "/jung-core/catalog-commercial/brands/brand%20wooly/categories/category%2F1",
-        );
-
-        expect(
-          request.method,
-        ).toBe(
-          "PUT",
-        );
-
-        expect(
-          request.credentials,
-        ).toBe(
-          "include",
-        );
-
-        expect(
-          request.headers[
-            "x-jung-core-read-key"
-          ],
-        ).toBeUndefined();
-
-        expect(
-          request.headers[
-            "x-jung-core-write-key"
-          ],
-        ).toBeUndefined();
-
-        expect(
-          JSON.parse(
-            request.body,
-          ),
-        ).toEqual({
-          name:
-            "Peluches",
-
-          icon:
-            "🧸",
-
-          accentColor:
-            "#E94F8A",
-
-          ogMediaRef:
-            "flores-amarillas.jpg",
-        });
-      },
-    );
-  },
-);
-
+      ogMediaRef: "flores-amarillas.jpg",
+    });
+  });
+});
 
 import * as attributeClient from "./AdminAuthClient";
 describe("Human category attribute HTTP commands", () => {
@@ -371,4 +228,33 @@ describe("Human category attribute HTTP commands", () => {
       status: 503,
     });
   });
+});
+
+it("publishes one encoded canonical product using only the human session", async () => {
+  const { publishAdminProduct } = await import("./AdminAuthClient");
+  const fetchMock = vi
+    .fn()
+    .mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        success: true,
+        message: "OK",
+        data: { id: "p/1", status: "PUBLISHED" },
+      }),
+    });
+  vi.stubGlobal("fetch", fetchMock);
+  try {
+    await expect(publishAdminProduct("b/1", "p/1")).resolves.toMatchObject({
+      success: true,
+      data: { id: "p/1" },
+    });
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toContain("/catalog-commercial/brands/b%2F1/products/p%2F1/publish");
+    expect(init).toMatchObject({ method: "POST", credentials: "include" });
+    expect(init.body).toBeUndefined();
+    expect(Object.keys(init.headers)).toEqual(["Accept"]);
+  } finally {
+    vi.unstubAllGlobals();
+  }
 });

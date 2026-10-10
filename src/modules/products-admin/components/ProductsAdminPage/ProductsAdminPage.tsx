@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Boxes,
@@ -15,7 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 import AdminShell from "@/modules/admin/components/AdminShell/AdminShell";
 
-import { useCatalogCampaigns } from "@/modules/catalog/hooks/useCatalogCampaigns";
+import { useAdminAuth } from "@/modules/admin-auth/context/AdminAuthContext";
+import { publishAdminProduct } from "@/modules/admin-auth/services/AdminAuthClient";
+import { getCampaignComputedStatus } from "@/modules/catalog/domain/CampaignRules";
 
 import { useAdminProducts } from "../../hooks/useAdminProducts";
 
@@ -50,7 +52,7 @@ import {
 
 import type { ProductAdminViewMode } from "@/modules/products-admin/domain/ProductAdminViewMode";
 
-import type { Product } from "@/shared/types/product";
+import type { Campaign, Product } from "@/shared/types/product";
 
 import { createCatalogWorkspaceHandoff } from "@/modules/catalog-tools/domain/CatalogWorkspaceHandoff";
 
@@ -94,9 +96,66 @@ export default function ProductsAdminPage() {
     reload,
   } = useAdminProducts();
 
-  const { campaigns, isLoading: isCampaignRegistryLoading } = useCatalogCampaigns({
-    includeInactive: true,
-  });
+  const auth = useAdminAuth();
+  const brandId = auth.configuration?.brandId;
+  const canPublish =
+    !!brandId &&
+    !!auth.session?.accesses.some(
+      (access) => access.brand.id === brandId && ["OWNER", "ADMIN"].includes(access.role),
+    );
+  const campaigns = useMemo<Campaign[]>(
+    () =>
+      (auth.configuration?.campaigns ?? []).map((campaign) => {
+        const dates = {
+          startDate: campaign.startsAt ?? "",
+          endDate: campaign.endsAt ?? "",
+          publicationStatus:
+            campaign.publicationStatus.toUpperCase() === "PUBLISHED"
+              ? "publicado"
+              : campaign.publicationStatus.toUpperCase() === "DRAFT"
+                ? "borrador"
+                : "oculto",
+        };
+        return {
+          id: campaign.id,
+          name: campaign.name,
+          icon: campaign.icon ?? "",
+          color: campaign.color ?? "",
+          themeToken: campaign.themeToken ?? "",
+          colorClass: "",
+          priority: campaign.priority,
+          ...dates,
+          computedStatus: getCampaignComputedStatus(dates),
+        };
+      }),
+    [auth.configuration?.campaigns],
+  );
+  const [publishingProductId, setPublishingProductId] = useState<string | null>(null);
+  const publishing = useRef(false);
+  const [publishError, setPublishError] = useState("");
+  const publishProduct = async (product: Product) => {
+    if (!canPublish || !brandId || publishing.current || normalizedStatus(product) === "publicado")
+      return;
+    publishing.current = true;
+    setPublishingProductId(product.id);
+    setPublishError("");
+    try {
+      const response = await publishAdminProduct(brandId, product.id);
+      if (!response.success) throw new Error(response.message);
+      await reload();
+    } catch (error) {
+      setPublishError(error instanceof Error ? error.message : "No se pudo publicar el producto.");
+    } finally {
+      publishing.current = false;
+      setPublishingProductId(null);
+    }
+  };
+
+  useEffect(() => {
+    setSelectedProduct((current) =>
+      current ? (products.find((product) => product.id === current.id) ?? current) : null,
+    );
+  }, [products]);
 
   const isReady = isFullCatalogLoaded;
 
@@ -334,6 +393,7 @@ export default function ProductsAdminPage() {
           </div>
         </section>
 
+        {publishError && <p role="alert">{publishError}</p>}
         <ProductAdminExplorer
           products={filteredProducts}
           campaigns={campaigns}
@@ -343,6 +403,8 @@ export default function ProductsAdminPage() {
           columns={columns}
           selectedProductIds={selectedProductIds}
           onSelectProduct={setSelectedProduct}
+          onPublishProduct={canPublish ? publishProduct : undefined}
+          publishingProductId={publishingProductId}
           onToggleProductSelection={toggleProductSelection}
         />
 
@@ -360,7 +422,7 @@ export default function ProductsAdminPage() {
         {error ? <p role="alert">{error.message}</p> : null}
         {!isReady ? (
           <p className="products-admin-page__loading" role="status">
-            {isLoading || isCampaignRegistryLoading
+            {isLoading
               ? "Cargando productos y campañas oficiales..."
               : "El inventario todavía está consolidando sus categorías."}
           </p>

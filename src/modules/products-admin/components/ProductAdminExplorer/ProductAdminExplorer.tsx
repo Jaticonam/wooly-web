@@ -23,6 +23,8 @@ interface ProductAdminExplorerProps {
   columns?: ProductAdminColumnVisibility;
   isReady: boolean;
   onSelectProduct: (product: Product) => void;
+  onPublishProduct?: ((product: Product) => void) | undefined;
+  publishingProductId?: string | null | undefined;
   selectedProductIds?: ReadonlySet<string>;
   onToggleProductSelection?: ((product: Product) => void) | undefined;
 }
@@ -44,6 +46,8 @@ export default function ProductAdminExplorer({
   columns = DEFAULT_COLUMNS,
   isReady,
   onSelectProduct,
+  onPublishProduct,
+  publishingProductId,
   selectedProductIds = EMPTY_SELECTED_PRODUCT_IDS,
   onToggleProductSelection,
 }: ProductAdminExplorerProps) {
@@ -69,6 +73,8 @@ export default function ProductAdminExplorer({
         columns={columns}
         density={density}
         onSelectProduct={onSelectProduct}
+        onPublishProduct={onPublishProduct}
+        publishingProductId={publishingProductId}
         onToggleProductSelection={onToggleProductSelection ?? (() => undefined)}
       />
     );
@@ -117,6 +123,9 @@ export default function ProductAdminExplorer({
           product={product}
           isSelected={selectedProductIds.has(product.id)}
           onSelect={() => onSelectProduct(product)}
+          onPublish={onPublishProduct ? () => onPublishProduct(product) : undefined}
+          publishing={publishingProductId === product.id}
+          publishDisabled={!!publishingProductId}
           onToggleSelection={
             onToggleProductSelection ? () => onToggleProductSelection(product) : undefined
           }

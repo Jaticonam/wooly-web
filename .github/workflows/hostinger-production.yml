@@ -34,12 +34,15 @@ jobs:
           Options -MultiViews
           RewriteEngine On
           RewriteBase /
+          RewriteRule ^jung-core(?:/.*)?$ jung-core/index.php [END,QSA]
           RewriteCond %{REQUEST_FILENAME} -f [OR]
           RewriteCond %{REQUEST_FILENAME} -d
           RewriteRule ^ - [L]
           RewriteRule ^ index.html [L]
           EOF
           test -f dist/index.html
+          test -f dist/jung-core/index.php
+          test -f dist/.htaccess
 
       - name: Publish versioned artifact branch
         shell: bash

@@ -8,6 +8,9 @@ import "./ProductAdminRow.css";
 interface ProductAdminRowProps {
   product: Product;
   onSelect: () => void;
+  onPublish?: (() => void) | undefined;
+  publishing?: boolean | undefined;
+  publishDisabled?: boolean | undefined;
   isSelected?: boolean;
   onToggleSelection?: (() => void) | undefined;
 }
@@ -15,6 +18,9 @@ interface ProductAdminRowProps {
 export default function ProductAdminRow({
   product,
   onSelect,
+  onPublish,
+  publishing,
+  publishDisabled,
   isSelected = false,
   onToggleSelection,
 }: ProductAdminRowProps) {
@@ -64,15 +70,28 @@ export default function ProductAdminRow({
         {presentation.stockLabel}
       </span>
 
-      <button
-        className="product-admin-row__detail"
-        type="button"
-        aria-label={`Abrir ${product.title}`}
-        onClick={onSelect}
-      >
-        <Eye size={15} aria-hidden="true" />
-        Abrir
-      </button>
+      <div className="product-admin-row__actions">
+        <button
+          className="product-admin-row__detail"
+          type="button"
+          aria-label={`Abrir ${product.title}`}
+          onClick={onSelect}
+        >
+          <Eye size={15} aria-hidden="true" />
+          Abrir
+        </button>
+        {onPublish && (
+          <button
+            className="product-admin-row__detail"
+            type="button"
+            aria-label={`Publicar ${product.title}`}
+            disabled={publishDisabled || product.status === "publicado"}
+            onClick={onPublish}
+          >
+            {product.status === "publicado" ? "Publicado" : publishing ? "Publicando…" : "Publicar"}
+          </button>
+        )}
+      </div>
     </article>
   );
 }

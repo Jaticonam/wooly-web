@@ -39,13 +39,12 @@
 .product-admin-explorer__list > header {
   display: grid;
 
-  grid-template-columns: 38px minmax(260px, 2fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(
-      90px,
-      0.65fr
-    ) minmax(130px, 0.9fr) 90px;
+  grid-template-columns:
+    38px minmax(260px, 2fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(90px, 0.65fr)
+    minmax(130px, 0.9fr) 190px;
 
   gap: 14px;
-  min-width: 1032px;
+  min-width: 1132px;
   padding: 11px 12px;
 
   border-bottom: 1px solid var(--wooly-admin-border);

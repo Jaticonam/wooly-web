@@ -85,7 +85,7 @@
 }
 
 .product-admin-table__actionColumn {
-  width: 92px;
+  width: 190px;
   text-align: center !important;
 }
 
@@ -267,4 +267,15 @@
 
 .product-admin-table__selection[aria-pressed="true"] {
   color: #ffffff;
+}
+
+.product-admin-table__actionColumn {
+  white-space: nowrap;
+}
+.product-admin-table__detail + .product-admin-table__detail {
+  margin-left: 6px;
+}
+.product-admin-table__detail:disabled {
+  opacity: 0.6;
+  cursor: default;
 }

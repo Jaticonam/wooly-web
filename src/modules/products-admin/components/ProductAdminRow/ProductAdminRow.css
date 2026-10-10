@@ -2,10 +2,9 @@
   position: relative;
 
   display: grid;
-  grid-template-columns: 38px minmax(260px, 2fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(
-      90px,
-      0.65fr
-    ) minmax(130px, 0.9fr) 90px;
+  grid-template-columns:
+    38px minmax(260px, 2fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(90px, 0.65fr)
+    minmax(130px, 0.9fr) 190px;
 
   align-items: center;
   gap: 14px;
@@ -189,4 +188,13 @@
   font: inherit;
   font-size: 11px;
   cursor: pointer;
+}
+
+.product-admin-row__actions {
+  display: flex;
+  gap: 6px;
+}
+.product-admin-row__detail:disabled {
+  opacity: 0.6;
+  cursor: default;
 }

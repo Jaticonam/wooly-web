@@ -108,3 +108,28 @@ it("orders optional table columns and always exposes Abrir under Acciones", () =
   ]);
   expect(screen.getByText("Abrir")).toBeInTheDocument();
 });
+
+it.each(["list", "table"] as const)(
+  "publishes only the row product in %s, keeping opening separate",
+  (viewMode) => {
+    const onPublishProduct = vi.fn(),
+      onSelectProduct = vi.fn();
+    const draft = { ...product, status: "borrador" };
+    const props = {
+      products: [draft],
+      campaigns: [],
+      viewMode,
+      isReady: true,
+      onSelectProduct,
+      onPublishProduct,
+    };
+    const { rerender } = render(<ProductAdminExplorer {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Publicar " + product.title }));
+    expect(onPublishProduct).toHaveBeenCalledWith(draft);
+    expect(onSelectProduct).not.toHaveBeenCalled();
+    rerender(<ProductAdminExplorer {...props} publishingProductId={draft.id} />);
+    expect(screen.getByText("Publicando…")).toBeDisabled();
+    rerender(<ProductAdminExplorer {...props} products={[product]} />);
+    expect(screen.getByRole("button", {name: "Publicar " + product.title})).toBeDisabled();
+  },
+);

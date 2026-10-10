@@ -1,6 +1,7 @@
 Options -MultiViews
 RewriteEngine On
 RewriteBase /
+RewriteRule ^jung-core(?:/.*)?$ jung-core/index.php [END,QSA]
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]

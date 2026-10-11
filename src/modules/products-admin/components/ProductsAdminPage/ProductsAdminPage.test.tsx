@@ -198,14 +198,14 @@ describe("ProductsAdminPage", () => {
     expect(screen.queryByText("Sincronización real")).not.toBeInTheDocument();
     const metric = screen.getByText("Sin stock").closest("article")!;
     expect(within(metric).getByText("1")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Actualizar productos" }));
+    fireEvent.click(screen.getByRole("button", { name: "CORE" }));
     const updating = screen.getByRole("button", { name: "Actualizando…" });
     expect(updating).toBeDisabled();
     fireEvent.click(updating);
     expect(reload).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     await act(async () => finish());
-    expect(screen.getByRole("button", { name: "Actualizar productos" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "CORE" })).toBeEnabled();
   });
 });
 

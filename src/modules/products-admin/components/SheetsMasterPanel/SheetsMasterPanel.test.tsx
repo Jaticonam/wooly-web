@@ -10,6 +10,9 @@ const preview = {
   changeSetId: "receipt",
   fingerprint: "fingerprint",
   requiresPreparation: false,
+  mode: "WOOLY_INCREMENTAL_SYNC",
+  destructive: false,
+  deletions: [],
   summary: { created: 1, updated: 1, unchanged: 0, errors: 1, pending: 1 },
   rows: [{ gid: 5, rowNumber: 4, status: "ERROR", message: "Precio inválido" }],
 };
@@ -34,9 +37,10 @@ describe("Sheets master explicit CORE sync", () => {
       target: { value: "spreadsheet-fixture" },
     });
     fireEvent.click(screen.getByText("Revisar cambios"));
-    await screen.findByText("Sincronizar desde Google Sheets");
+    await screen.findByText("Confirmar importación");
     expect(reload).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByText("Sincronizar desde Google Sheets"));
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByText("Confirmar importación"));
     await waitFor(() => expect(reload).toHaveBeenCalledOnce());
     expect(jungCoreAdminProducts.request).toHaveBeenLastCalledWith(
       "/catalog-bulk/brands/brand/google-sheets/spreadsheet-fixture/temporary-master/apply",
@@ -61,8 +65,9 @@ describe("Sheets master explicit CORE sync", () => {
     });
     fireEvent.click(screen.getByText("Revisar cambios"));
     await screen.findByText(/Snapshot completo destructivo/);
+    expect(screen.getByText("Confirmar importación")).toBeDisabled();
     expect(screen.getByRole("status")).toHaveTextContent(
-      "Eliminar por ausencia: 10",
+      "Eliminaciones: 10",
     );
     expect(screen.getByText("OLD-CODE — Absent product")).toBeInTheDocument();
     expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(1);

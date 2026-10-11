@@ -21,6 +21,7 @@ import { getCampaignComputedStatus } from "@/modules/catalog/domain/CampaignRule
 
 import { useAdminProducts } from "../../hooks/useAdminProducts";
 
+
 import ProductAdminExplorer from "@/modules/products-admin/components/ProductAdminExplorer/ProductAdminExplorer";
 import ProductDetailDrawer from "@/modules/products-admin/components/ProductDetailDrawer/ProductDetailDrawer";
 import ProductsToolbar from "@/modules/products-admin/components/ProductsToolbar/ProductsToolbar";
@@ -70,6 +71,7 @@ export default function ProductsAdminPage() {
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshing = useRef(false);
+
 
   const [filters, setFilters] = useState<ProductAdminFilterState>(EMPTY_PRODUCT_ADMIN_FILTERS);
 
@@ -248,27 +250,31 @@ export default function ProductsAdminPage() {
 
           {import.meta.env.VITE_ENABLE_PRODUCT_CREATION === "true" ? <CreateProductPanel /> : null}
 
-          <button
-            className="products-admin-page__syncButton"
-            type="button"
-            disabled={isRefreshing}
-            onClick={async () => {
-              if (refreshing.current) return;
-              refreshing.current = true;
-              setIsRefreshing(true);
-              try {
-                await reload();
-              } finally {
-                refreshing.current = false;
-                setIsRefreshing(false);
-              }
-            }}
-          >
-            <RefreshCw size={15} strokeWidth={1.9} aria-hidden="true" />
+          <div className="products-admin-page__syncActions" aria-label="Sincronización temporal">
+            <button
+              className="products-admin-page__syncButton"
+              type="button"
+              disabled={isRefreshing}
+              onClick={async () => {
+                if (refreshing.current) return;
+                refreshing.current = true;
+                setIsRefreshing(true);
+                try {
+                  await reload();
+                } finally {
+                  refreshing.current = false;
+                  setIsRefreshing(false);
+                }
+              }}
+            >
+              <RefreshCw size={15} strokeWidth={1.9} aria-hidden="true" />
+              {isRefreshing ? "Actualizando…" : "CORE"}
+            </button>
 
-            {isRefreshing ? "Actualizando…" : "Actualizar productos"}
-          </button>
+          </div>
         </header>
+
+
 
         <section className="products-admin-page__metrics" aria-label="Resumen de productos">
           <article className="products-admin-page__metric is-total">

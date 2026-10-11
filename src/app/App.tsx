@@ -340,7 +340,7 @@ export default function App() {
                     />
 
                     <Route
-                      path="/admin/integrations"
+                      path="/admin/integrations/*"
                       element={
                         <IntegrationsPage />
                       }

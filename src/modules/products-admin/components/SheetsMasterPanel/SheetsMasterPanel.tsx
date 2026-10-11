@@ -1,7 +1,8 @@
 import { workbookId } from "../../integrations/WorkbookIdentity";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { z } from "zod";
 import { jungCoreAdminProducts } from "../../integrations/JungCoreAdminProducts";
+import "./SheetsMasterPanel.css";
 function workbookLink(input: string): string | undefined {
   try {
     return (
@@ -57,9 +58,36 @@ export default function SheetsMasterPanel({
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [receipt, setReceipt] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const running = useRef(false);
+
+  const safeToApply = Boolean(
+    result &&
+    result.mode === "WOOLY_INCREMENTAL_SYNC" &&
+    result.destructive === false &&
+    Array.isArray(result.deletions) &&
+    result.deletions.length === 0 &&
+    result.summary.deleted === 0 &&
+    result.requiresPreparation === false &&
+    result.changeSetId.trim() !== ""
+  );
   async function run(action: "preview" | "prepare" | "apply") {
+    if (busy || running.current) return;
+    if (action === "apply" && (
+      !safeToApply ||
+      (!confirmed && !(receipt && Boolean(result?.metadataWarning)))
+    )) {
+      setError("Importación bloqueada: revisa y confirma una vista previa incremental segura.");
+      return;
+    }
+    running.current = true;
     setBusy(true);
     setError("");
+    if (action !== "apply") {
+      setConfirmed(false);
+      setResult(null);
+      setReceipt(false);
+    }
     try {
       const id = workbookId(input),
         brand = await jungCoreAdminProducts.options();
@@ -89,24 +117,41 @@ export default function SheetsMasterPanel({
         );
         setResult(data);
         setReceipt(action === "apply");
-        if (action === "apply") await onSynced();
+        if (action === "apply") {
+          setConfirmed(false);
+          await onSynced();
+        }
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "No se pudo sincronizar");
     } finally {
+      running.current = false;
       setBusy(false);
     }
   }
   return (
-    <section aria-label="Sincronización Google Sheets a CORE">
+    <section
+      className="sheets-master-panel"
+      aria-label="Sincronización Google Sheets a CORE"
+    >
+      <div className="sheets-master-panel__heading">
+        <div>
+          <strong>Sincronización de productos</strong>
+          <small>Google Sheets → JUNG CORE</small>
+        </div>
+        <span className="sheets-master-panel__badge">
+          Sincronización incremental
+        </span>
+      </div>
       <p>
-        Workbook: WOOLY - Catalogo Maestro. Captura productos, revisa cambios,
-        sincroniza el snapshot completo desde Google Sheets y consulta los
-        resultados. En modo bootstrap, los productos Wooly ausentes de la hoja
-        se eliminan de CORE. Una hoja vacía deja el catálogo Wooly vacío.
+        Sincronización incremental de WOOLY - Catalogo Maestro.
+        Solo se crean o actualizan productos válidos; los productos ausentes
+        de Sheets se conservan en CORE.
       </p>
-      <p>Código · Código de barras · Código SUNAT. Para una fila nueva, completa código, nombre y categoría; los otros identificadores son opcionales.</p>
-      {workbookLink(input) ? (
+      <p>
+        Campos mínimos: Código, Nombre y Precio 1u.
+        Las imágenes son opcionales y la publicación se realiza desde Admin.
+      </p>      {workbookLink(input) ? (
         <p>
           <a href={workbookLink(input)} target="_blank" rel="noreferrer">
             Abrir WOOLY - Catalogo Maestro
@@ -123,10 +168,11 @@ export default function SheetsMasterPanel({
             setInput(e.target.value);
             setResult(null);
             setReceipt(false);
+            setConfirmed(false);
           }}
         />
       </label>
-      <div>
+      <div className="sheets-master-panel__actions">
         <button
           type="button"
           disabled={busy}
@@ -143,27 +189,51 @@ export default function SheetsMasterPanel({
             Preparar edición comercial temporal
           </button>
         ) : result ? (
-          <button
-            type="button"
-            disabled={busy || (receipt && !result.metadataWarning)}
-            onClick={() => void run("apply")}
-          >
-            {receipt
-              ? "Reintentar confirmación de metadata"
-              : "Sincronizar desde Google Sheets"}
-          </button>
+          <>
+            {!safeToApply ? (
+              <p role="alert">
+                Importación bloqueada: CORE debe devolver una vista previa incremental,
+                sin eliminaciones y con la preparación completada.
+              </p>
+            ) : null}
+            {!receipt && safeToApply ? (
+              <label>
+                <input
+                  type="checkbox"
+                  checked={confirmed}
+                  disabled={busy}
+                  onChange={(event) => setConfirmed(event.target.checked)}
+                />
+                Confirmo que revisé los cambios y deseo importar los productos válidos.
+              </label>
+            ) : null}
+            <button
+              type="button"
+              disabled={
+                busy ||
+                !safeToApply ||
+                (!receipt && !confirmed) ||
+                (receipt && !result.metadataWarning)
+              }
+              onClick={() => void run("apply")}
+            >
+              {receipt
+                ? "Reintentar confirmación de metadata"
+                : "Confirmar importación"}
+            </button>
+          </>
         ) : null}
       </div>
       {busy ? <p role="status">Procesando…</p> : null}
       {error ? <p role="alert">{error}</p> : null}
       {result ? (
-        <>
+        <div className="sheets-master-panel__results">
           <p role="status">
             {receipt ? "Resultado" : "Vista previa"}: Creados:{" "}
             {result.summary.created} · Actualizados: {result.summary.updated} ·
             Sin cambios: {result.summary.unchanged} · Errores:{" "}
             {result.summary.errors} · Pendientes: {result.summary.pending} ·{" "}
-            {receipt ? "Eliminados por ausencia" : "Eliminar por ausencia"}:{" "}
+            {receipt ? "Eliminaciones" : "Eliminaciones"}:{" "}
             {result.summary.deleted}
           </p>
           {result.summary.deleted > 0 ? (
@@ -189,7 +259,7 @@ export default function SheetsMasterPanel({
           {result.metadataWarning ? (
             <p role="alert">{result.metadataWarning}</p>
           ) : null}
-          <details>
+          <details className="sheets-master-panel__details">
             <summary>Revisar resultados por fila</summary>
             <ul>
               {result.rows.map((row) => (
@@ -200,7 +270,7 @@ export default function SheetsMasterPanel({
               ))}
             </ul>
           </details>
-        </>
+        </div>
       ) : null}
     </section>
   );

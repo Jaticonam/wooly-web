@@ -423,3 +423,29 @@
   display: block;
   flex: 0 0 auto;
 }
+
+/* Product Explorer: CORE refresh action */
+.products-admin-page__syncActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.products-admin-page__syncActions .products-admin-page__syncButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 720px) {
+  .products-admin-page__syncActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .products-admin-page__syncActions .products-admin-page__syncButton {
+    flex: 1;
+    min-width: 0;
+  }
+}

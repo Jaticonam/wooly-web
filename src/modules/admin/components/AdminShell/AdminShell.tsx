@@ -11,6 +11,7 @@ import {
   Files,
   LogOut,
   Settings2,
+  Workflow,
   ShieldCheck,
   Store,
 } from "lucide-react";
@@ -93,6 +94,17 @@ export default function AdminShell({
             </span>
 
             <span>Catálogos</span>
+          </NavLink>
+          <NavLink
+            to="/admin/integrations"
+            className={({ isActive }) =>
+              isActive ? "is-active" : ""
+            }
+          >
+            <span className="wooly-admin-shell__navIcon" aria-hidden="true">
+              <Workflow size={18} strokeWidth={2} />
+            </span>
+            <span>Integraciones</span>
           </NavLink>
           <NavLink
             to="/admin/configuracion/catalogo"

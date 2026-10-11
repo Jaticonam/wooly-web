@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { fireEvent, act, within, render, screen } from "@testing-library/react";
+import { fireEvent, act, within, render, screen, waitFor } from "@testing-library/react";
 
 import { MemoryRouter } from "react-router-dom";
 
@@ -10,7 +10,10 @@ import { useCatalogCampaigns } from "@/modules/catalog/hooks/useCatalogCampaigns
 import { useAdminProducts } from "@/modules/products-admin/hooks/useAdminProducts";
 
 import { useAdminAuth } from "@/modules/admin-auth/context/AdminAuthContext";
-import { publishAdminProduct } from "@/modules/admin-auth/services/AdminAuthClient";
+import {
+  loadAdminProductPublicationReadiness,
+  publishAdminProduct,
+} from "@/modules/admin-auth/services/AdminAuthClient";
 import type { Product } from "@/shared/types/product";
 
 import ProductsAdminPage from "./ProductsAdminPage";
@@ -20,7 +23,10 @@ vi.mock("@/modules/products-admin/hooks/useAdminProducts", () => ({
 }));
 
 vi.mock("@/modules/admin-auth/context/AdminAuthContext", () => ({ useAdminAuth: vi.fn() }));
-vi.mock("@/modules/admin-auth/services/AdminAuthClient", () => ({ publishAdminProduct: vi.fn() }));
+vi.mock("@/modules/admin-auth/services/AdminAuthClient", () => ({
+  loadAdminProductPublicationReadiness: vi.fn(),
+  publishAdminProduct: vi.fn(),
+}));
 
 vi.mock("@/modules/catalog/hooks/useCatalogCampaigns", () => ({
   useCatalogCampaigns: vi.fn(),
@@ -209,7 +215,7 @@ describe("ProductsAdminPage", () => {
   });
 });
 
-it("publishes only the clicked canonical ID, blocks repeats, waits for CORE and reloads", async () => {
+function renderPublicationProduct() {
   const product: Product = {
     id: "core-p",
     code: "SKU",
@@ -221,7 +227,9 @@ it("publishes only the clicked canonical ID, blocks repeats, waits for CORE and 
     img: "",
     status: "borrador",
   };
+
   const reload = vi.fn().mockResolvedValue(undefined);
+
   vi.mocked(useAdminProducts).mockReturnValue({
     data: [product],
     isLoading: false,
@@ -230,35 +238,168 @@ it("publishes only the clicked canonical ID, blocks repeats, waits for CORE and 
     categories: [],
     reload,
   });
-  let finish!: (value: Awaited<ReturnType<typeof publishAdminProduct>>) => void;
-  vi.mocked(publishAdminProduct).mockImplementationOnce(
-    () =>
-      new Promise((resolve) => {
-        finish = resolve;
-      }),
-  );
+
   render(
     <MemoryRouter>
       <ProductsAdminPage />
     </MemoryRouter>,
   );
+
+  return { product, reload };
+}
+
+it("reviews the canonical product before POST, confirms, then reloads", async () => {
+  const { product, reload } = renderPublicationProduct();
+
+  vi.mocked(loadAdminProductPublicationReadiness).mockResolvedValue({
+    success: true,
+    data: {
+      productId: "core-p",
+      ready: true,
+      reasons: [],
+      warnings: [],
+      blockers: [],
+      requiredConfirmations: [],
+    },
+  });
+
+  let finish!: (value: Awaited<ReturnType<typeof publishAdminProduct>>) => void;
+
+  vi.mocked(publishAdminProduct).mockImplementationOnce(
+    () => new Promise((resolve) => { finish = resolve; }),
+  );
+
   fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
-  fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
-  expect(publishAdminProduct).toHaveBeenCalledTimes(1);
-  expect(publishAdminProduct).toHaveBeenCalledWith("b", "core-p");
+
+  const dialog = await screen.findByRole("dialog", { name: "Revisar publicación" });
+
+  expect(loadAdminProductPublicationReadiness).toHaveBeenCalledWith("b", "core-p");
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+  expect(reload).not.toHaveBeenCalled();
+
+  fireEvent.click(within(dialog).getByRole("button", { name: "Confirmar publicación" }));
+
+  await waitFor(() => expect(publishAdminProduct).toHaveBeenCalledOnce());
+
+  expect(publishAdminProduct).toHaveBeenCalledWith("b", "core-p", {
+    useDefaultImage: false,
+    publishWithoutStock: false,
+  });
+
   expect(reload).not.toHaveBeenCalled();
   expect(product.status).toBe("borrador");
-  await act(async () =>
-    finish({ success: true, message: "OK", data: { id: "core-p", status: "PUBLISHED" } }),
-  );
-  expect(reload).toHaveBeenCalledOnce();
-  expect(product.status).toBe("borrador");
-  vi.mocked(publishAdminProduct).mockRejectedValueOnce(
-    new Error("Product is not ready for public catalog publication."),
-  );
+
+  await act(async () => {
+    finish({ success: true, message: "OK", data: { id: "core-p", status: "PUBLISHED" } });
+  });
+
+  await waitFor(() => expect(reload).toHaveBeenCalledOnce());
+  expect(screen.queryByRole("dialog", { name: "Revisar publicación" })).not.toBeInTheDocument();
+});
+
+it("cancels after GET without publishing", async () => {
+  renderPublicationProduct();
+
+  vi.mocked(loadAdminProductPublicationReadiness).mockResolvedValue({
+    success: true,
+    data: {
+      productId: "core-p",
+      ready: true,
+      reasons: [],
+      warnings: [],
+      blockers: [],
+      requiredConfirmations: [],
+    },
+  });
+
   fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent("not ready");
-  expect(reload).toHaveBeenCalledTimes(1);
+
+  const dialog = await screen.findByRole("dialog", { name: "Revisar publicación" });
+  fireEvent.click(within(dialog).getByRole("button", { name: "Cancelar" }));
+
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+});
+
+it("blocks invalid prices and never sends POST", async () => {
+  renderPublicationProduct();
+
+  vi.mocked(loadAdminProductPublicationReadiness).mockResolvedValue({
+    success: true,
+    data: {
+      productId: "core-p",
+      ready: false,
+      reasons: ["PRICING_INVALID"],
+      warnings: [],
+      blockers: ["PRICING_INVALID"],
+      requiredConfirmations: [],
+    },
+  });
+
+  fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
+
+  const dialog = await screen.findByRole("dialog", { name: "Revisar publicación" });
+
+  expect(within(dialog).getByText(/precio unitario debe ser mayor/)).toBeInTheDocument();
+  expect(within(dialog).getByRole("button", { name: "Confirmar publicación" })).toBeDisabled();
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+});
+
+it("requires separate image and stock confirmations before POST", async () => {
+  renderPublicationProduct();
+
+  vi.mocked(loadAdminProductPublicationReadiness).mockResolvedValue({
+    success: true,
+    data: {
+      productId: "core-p",
+      ready: false,
+      reasons: ["PUBLIC_MEDIA_MISSING", "INVENTORY_OUT_OF_STOCK"],
+      warnings: ["PUBLIC_MEDIA_MISSING", "INVENTORY_OUT_OF_STOCK"],
+      blockers: [],
+      requiredConfirmations: ["useDefaultImage", "publishWithoutStock"],
+    },
+  });
+
+  vi.mocked(publishAdminProduct).mockResolvedValue({
+    success: true,
+    message: "OK",
+    data: { id: "core-p", status: "PUBLISHED" },
+  });
+
+  fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
+
+  const dialog = await screen.findByRole("dialog", { name: "Revisar publicación" });
+  const confirm = within(dialog).getByRole("button", { name: "Confirmar publicación" });
+
+  expect(confirm).toBeDisabled();
+  fireEvent.click(within(dialog).getByLabelText("Publicar con imagen predeterminada"));
+  expect(confirm).toBeDisabled();
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+
+  fireEvent.click(within(dialog).getByLabelText(/Publicar aunque no exista stock/));
+  expect(confirm).toBeEnabled();
+
+  fireEvent.click(confirm);
+
+  await waitFor(() => expect(publishAdminProduct).toHaveBeenCalledWith(
+    "b",
+    "core-p",
+    { useDefaultImage: true, publishWithoutStock: true },
+  ));
+});
+
+it("does not publish when the readiness GET fails", async () => {
+  renderPublicationProduct();
+
+  vi.mocked(loadAdminProductPublicationReadiness).mockRejectedValue(
+    new Error("CORE no disponible"),
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
+
+  expect(await screen.findByRole("alert")).toHaveTextContent("CORE no disponible");
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
 it("does not offer publication to VIEWER", () => {
   const auth = useAdminAuth();

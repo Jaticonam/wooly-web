@@ -484,9 +484,46 @@ export function updateAdminCategoryAttributeOption(
   );
 }
 
-export function publishAdminProduct(brandId: string, productId: string) {
+export interface AdminPublicationConfirmations {
+  readonly useDefaultImage?: boolean;
+  readonly publishWithoutStock?: boolean;
+}
+
+export interface AdminPublicationReadiness {
+  readonly productId: string;
+  readonly ready: boolean;
+  readonly reasons: readonly string[];
+  readonly warnings: readonly string[];
+  readonly blockers: readonly string[];
+  readonly requiredConfirmations: readonly (
+    | "useDefaultImage"
+    | "publishWithoutStock"
+  )[];
+}
+
+export interface AdminPublicationReadinessEnvelope {
+  readonly success: boolean;
+  readonly data: AdminPublicationReadiness;
+}
+
+export function loadAdminProductPublicationReadiness(
+  brandId: string,
+  productId: string,
+): Promise<AdminPublicationReadinessEnvelope> {
+  return requestJson<AdminPublicationReadinessEnvelope>(
+    `/catalog-commercial/brands/${encodeURIComponent(brandId)}/products/${encodeURIComponent(productId)}/publication-readiness`,
+    "GET",
+  );
+}
+
+export function publishAdminProduct(
+  brandId: string,
+  productId: string,
+  confirmations?: AdminPublicationConfirmations,
+): Promise<AdminMutationEnvelope> {
   return requestJson<AdminMutationEnvelope>(
     `/catalog-commercial/brands/${encodeURIComponent(brandId)}/products/${encodeURIComponent(productId)}/publish`,
     "POST",
+    confirmations === undefined ? undefined : { confirmations },
   );
 }

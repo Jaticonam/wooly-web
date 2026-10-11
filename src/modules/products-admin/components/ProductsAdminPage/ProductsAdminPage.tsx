@@ -16,7 +16,13 @@ import { useNavigate } from "react-router-dom";
 import AdminShell from "@/modules/admin/components/AdminShell/AdminShell";
 
 import { useAdminAuth } from "@/modules/admin-auth/context/AdminAuthContext";
-import { publishAdminProduct } from "@/modules/admin-auth/services/AdminAuthClient";
+import {
+  loadAdminProductPublicationReadiness,
+  publishAdminProduct,
+  type AdminPublicationConfirmations,
+  type AdminPublicationReadiness,
+} from "@/modules/admin-auth/services/AdminAuthClient";
+import ProductPublicationDialog from "../ProductPublicationDialog/ProductPublicationDialog";
 import { getCampaignComputedStatus } from "@/modules/catalog/domain/CampaignRules";
 
 import { useAdminProducts } from "../../hooks/useAdminProducts";
@@ -135,19 +141,67 @@ export default function ProductsAdminPage() {
   const [publishingProductId, setPublishingProductId] = useState<string | null>(null);
   const publishing = useRef(false);
   const [publishError, setPublishError] = useState("");
+  const [publicationReview, setPublicationReview] = useState<{
+    product: Product;
+    readiness: AdminPublicationReadiness;
+  } | null>(null);
+  const [publicationSubmitting, setPublicationSubmitting] = useState(false);
+
+  const closePublicationReview = () => {
+    if (publicationSubmitting) return;
+    setPublicationReview(null);
+    setPublishingProductId(null);
+    publishing.current = false;
+  };
+
   const publishProduct = async (product: Product) => {
     if (!canPublish || !brandId || publishing.current || normalizedStatus(product) === "publicado")
       return;
+
     publishing.current = true;
     setPublishingProductId(product.id);
     setPublishError("");
+
     try {
-      const response = await publishAdminProduct(brandId, product.id);
-      if (!response.success) throw new Error(response.message);
-      await reload();
+      const response = await loadAdminProductPublicationReadiness(brandId, product.id);
+      if (!response.success || response.data.productId !== product.id) {
+        throw new Error("No se pudo verificar la publicación del producto.");
+      }
+
+      setPublicationReview({
+        product,
+        readiness: response.data,
+      });
     } catch (error) {
-      setPublishError(error instanceof Error ? error.message : "No se pudo publicar el producto.");
+      setPublishError(
+        error instanceof Error ? error.message : "No se pudo verificar la publicación.",
+      );
+      publishing.current = false;
+      setPublishingProductId(null);
+    }
+  };
+
+  const confirmPublication = async (confirmations: AdminPublicationConfirmations) => {
+    if (!publicationReview || !brandId || publicationSubmitting || !canPublish) return;
+
+    setPublicationSubmitting(true);
+    setPublishError("");
+
+    try {
+      const { product, readiness } = publicationReview;
+      if (readiness.blockers.length > 0) return;
+
+      const response = await publishAdminProduct(brandId, product.id, confirmations);
+      if (!response.success) throw new Error(response.message);
+
+      await reload();
+      setPublicationReview(null);
+    } catch (error) {
+      setPublishError(
+        error instanceof Error ? error.message : "No se pudo publicar el producto.",
+      );
     } finally {
+      setPublicationSubmitting(false);
       publishing.current = false;
       setPublishingProductId(null);
     }
@@ -414,6 +468,16 @@ export default function ProductsAdminPage() {
           onToggleProductSelection={toggleProductSelection}
         />
 
+        {publicationReview ? (
+          <ProductPublicationDialog
+            open
+            productName={publicationReview.product.title}
+            readiness={publicationReview.readiness}
+            submitting={publicationSubmitting}
+            onClose={closePublicationReview}
+            onConfirm={confirmPublication}
+          />
+        ) : null}
         <ProductDetailDrawer
           product={selectedProduct}
           campaigns={campaigns}

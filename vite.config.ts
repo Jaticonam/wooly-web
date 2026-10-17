@@ -26,8 +26,8 @@ export default defineConfig(({ mode }) => {
   return {
     server: {
       host: "::",
-      port: 8080,
-
+      port: 8000,
+      strictPort: true,
       /*
        * C2C.9A:
        * Wooly local consume CORE :3000 sin exponer

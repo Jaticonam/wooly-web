@@ -1,0 +1,534 @@
+/* LAB-02A — HEADER V3 */
+/* Diseño corporativo, métricas reales, acciones existentes. */
+
+.products-admin-page {
+  padding: 28px 30px 44px;
+  background: #f3f8fb;
+}
+
+.products-admin-page__hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin: 0 0 22px;
+  padding: 4px 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.products-admin-page__heroCopy {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
+.products-admin-page__eyebrow {
+  margin: 0 0 13px;
+  gap: 8px;
+}
+
+.products-admin-page__eyebrow > span {
+  color: #087fab;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .09em;
+}
+
+.products-admin-page__titleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 17px;
+}
+
+.products-admin-page__hero h1 {
+  margin: 0;
+  color: #10264a;
+  font-size: clamp(34px, 3vw, 46px);
+  line-height: 1.1;
+  font-weight: 780;
+  letter-spacing: -.045em;
+}
+
+.products-admin-page__coreBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 15px;
+  border: 1px solid #cfe7f8;
+  border-radius: 999px;
+  background: #e9f4ff;
+  color: #075fa9;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.products-admin-page__hero p {
+  max-width: 710px;
+  margin: 12px 0 0;
+  color: #71809a;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.products-admin-page__syncActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.products-admin-page__syncButton {
+  min-height: 45px;
+  padding: 0 22px;
+  border: 1px solid #0869b5;
+  border-radius: 11px;
+  background: #0869b5;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(8,105,181,.13);
+  transition: background .15s ease;
+}
+
+.products-admin-page__syncButton:hover:not(:disabled) {
+  color: #fff;
+  background: #075795;
+  border-color: #075795;
+}
+
+.products-admin-page__syncButton:focus-visible {
+  outline: 3px solid #9bd4f2;
+  outline-offset: 2px;
+}
+
+/* INDICADORES V3 */
+
+.products-admin-page__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 16px;
+  margin: 0 0 20px;
+}
+
+.products-admin-page__metric,
+.products-admin-page__metric.is-total {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+  min-width: 0;
+  min-height: 136px;
+  padding: 22px 20px;
+  border: 1px solid #dae5f0;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(23,56,91,.035);
+}
+
+.products-admin-page__metricIcon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  border-radius: 14px;
+  background: #e9f5fd;
+  color: #008ab2;
+}
+
+.products-admin-page__metricIcon.is-positive {
+  background: #e9f8f1;
+  color: #168b61;
+}
+
+.products-admin-page__metricIcon.is-warning {
+  background: #fff7e5;
+  color: #c08a00;
+}
+
+.products-admin-page__metricIcon.is-danger {
+  background: #fff0ef;
+  color: #c25b50;
+}
+
+.products-admin-page__metricIcon svg {
+  display: block;
+  width: 25px;
+  height: 25px;
+}
+
+.products-admin-page__metric > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 8px;
+}
+
+.products-admin-page__metric span {
+  color: #6b7993;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.products-admin-page__metric strong {
+  color: #10264a;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.products-admin-page__metricDetail {
+  color: #8795a9;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@media (max-width: 1250px) {
+  .products-admin-page__metrics {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .products-admin-page {
+    padding: 16px 13px 30px;
+  }
+
+  .products-admin-page__hero {
+    align-items: flex-start;
+    margin-bottom: 17px;
+  }
+
+  .products-admin-page__heroCopy {
+    flex-basis: 100%;
+  }
+
+  .products-admin-page__syncActions {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .products-admin-page__metric,
+  .products-admin-page__metric.is-total {
+    min-height: 115px;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .products-admin-page__metricIcon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .products-admin-page__metric strong {
+    font-size: 25px;
+  }
+
+  .products-admin-page__metric span {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 420px) {
+  .products-admin-page__metrics {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+
+/* BARRA DE EXPLORACION */
+/* LAB-02A V4 — Grid compacto con controles de Tabla */
+
+.products-admin-page .products-toolbar,
+.products-admin-page .products-toolbar.is-table-view {
+  position: relative;
+  display: grid;
+  align-items: end;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #dce6ef;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(19,45,75,.035);
+}
+
+/* Vista normal: Buscar, Estado, Categoria, Mas filtros y Vista */
+.products-admin-page .products-toolbar {
+  grid-template-columns:
+    minmax(240px, 1fr)
+    150px
+    170px
+    max-content
+    max-content;
+}
+
+/* Vista Tabla: Densidad y Columnas en la misma fila */
+.products-admin-page .products-toolbar.is-table-view {
+  grid-template-columns:
+    minmax(180px, 1fr)
+    130px
+    150px
+    max-content
+    max-content
+    120px
+    max-content;
+}
+
+.products-admin-page .products-toolbar__field {
+  min-width: 0;
+}
+
+.products-admin-page .products-toolbar__label {
+  display: block;
+  margin-bottom: 8px;
+  color: #405473;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.products-admin-page .products-toolbar input[type="search"],
+.products-admin-page .products-toolbar select {
+  width: 100%;
+  min-height: 43px;
+  border: 1px solid #d7e1ec;
+  border-radius: 9px;
+  background-color: #fff;
+  color: #30435f;
+  font-size: 12px;
+}
+
+.products-admin-page .products-toolbar input:focus,
+.products-admin-page .products-toolbar select:focus {
+  outline: 2px solid #a9d9ed;
+  outline-offset: 1px;
+  border-color: #56a9ca;
+}
+
+.products-admin-page .products-toolbar__view {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.products-admin-page .products-toolbar__view button {
+  min-height: 43px;
+  padding: 0 9px;
+  border-radius: 9px;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.products-admin-page .products-toolbar__view button.is-active {
+  background: #e8f5fc;
+  border-color: #93cce4;
+  color: #06759e;
+}
+
+.products-admin-page .products-toolbar__more {
+  position: relative;
+  grid-column: auto;
+  align-self: end;
+  width: max-content;
+  z-index: 20;
+}
+
+.products-admin-page .products-toolbar__more > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 43px;
+  padding: 0 13px;
+  border: 1px solid #d7e1ec;
+  border-radius: 9px;
+  background: #fff;
+  color: #08769c;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  list-style: none;
+}
+
+.products-admin-page .products-toolbar__more[open] > summary {
+  background: #e8f5fc;
+  border-color: #93cce4;
+}
+
+.products-admin-page .products-toolbar__morePanel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(155px, 1fr));
+  gap: 12px;
+  width: min(390px, 80vw);
+  margin: 0;
+  padding: 15px;
+  border: 1px solid #dce6ef;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 42px rgba(16,43,76,.16);
+}
+
+/* Ubicacion explicita de los controles para Tabla */
+.products-admin-page .products-toolbar.is-table-view
+.products-toolbar__search {
+  grid-column: 1;
+}
+
+.products-admin-page .products-toolbar.is-table-view
+.products-toolbar__viewField {
+  grid-column: 5;
+  grid-row: 1;
+}
+
+.products-admin-page .products-toolbar.is-table-view
+.products-toolbar__density {
+  grid-column: 6;
+  grid-row: 1;
+}
+
+.products-admin-page .products-toolbar.is-table-view
+.products-toolbar__columnsField {
+  grid-column: 7;
+  grid-row: 1;
+}
+
+/* Resumen conservado en la siguiente fila */
+.products-admin-page .products-toolbar__footer,
+.products-admin-page .products-toolbar.is-table-view
+.products-toolbar__footer {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  min-height: 25px;
+  padding-top: 5px;
+}
+
+.products-admin-page .products-toolbar__metrics {
+  display: flex;
+}
+
+/* ADAPTACION V4 */
+
+@media (max-width: 1600px) {
+  .products-admin-page .products-toolbar.is-table-view {
+    grid-template-columns:
+      minmax(160px, 1fr)
+      115px
+      130px
+      max-content
+      max-content
+      105px
+      max-content;
+    gap: 9px;
+  }
+
+  .products-admin-page .products-toolbar__view button {
+    padding: 0 7px;
+  }
+}
+
+@media (max-width: 1350px) {
+  .products-admin-page .products-toolbar,
+  .products-admin-page .products-toolbar.is-table-view {
+    grid-template-columns:
+      minmax(200px, 1fr)
+      minmax(115px, .6fr)
+      minmax(135px, .7fr)
+      max-content
+      max-content;
+  }
+
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__density,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__columnsField {
+    grid-row: 2;
+    grid-column: auto;
+  }
+
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__footer {
+    grid-row: 3;
+  }
+}
+
+@media (max-width: 950px) {
+  .products-admin-page .products-toolbar,
+  .products-admin-page .products-toolbar.is-table-view {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .products-admin-page .products-toolbar__search,
+  .products-admin-page .products-toolbar__viewField,
+  .products-admin-page .products-toolbar__footer {
+    grid-column: 1 / -1;
+  }
+
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__viewField,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__density,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__columnsField,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__footer {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .products-admin-page .products-toolbar__footer,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__footer {
+    grid-column: 1 / -1;
+  }
+
+  .products-admin-page .products-toolbar__morePanel {
+    left: auto;
+    right: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .products-admin-page .products-toolbar,
+  .products-admin-page .products-toolbar.is-table-view {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 15px;
+  }
+
+  .products-admin-page .products-toolbar__search,
+  .products-admin-page .products-toolbar__more,
+  .products-admin-page .products-toolbar__viewField,
+  .products-admin-page .products-toolbar__density,
+  .products-admin-page .products-toolbar__columnsField,
+  .products-admin-page .products-toolbar__footer,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__viewField,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__density,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__columnsField,
+  .products-admin-page .products-toolbar.is-table-view
+  .products-toolbar__footer {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .products-admin-page .products-toolbar__morePanel {
+    left: 0;
+    right: auto;
+    grid-template-columns: 1fr;
+    width: min(280px, calc(100vw - 55px));
+  }
+}

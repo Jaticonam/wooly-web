@@ -22,7 +22,9 @@ import {
   type AdminPublicationConfirmations,
   type AdminPublicationReadiness,
 } from "@/modules/admin-auth/services/AdminAuthClient";
+import { publicationErrorMessage } from "../../domain/PublicationFeedback";
 import ProductPublicationDialog from "../ProductPublicationDialog/ProductPublicationDialog";
+import BulkProductPublicationDialog from "../BulkProductPublicationDialog/BulkProductPublicationDialog";
 import { getCampaignComputedStatus } from "@/modules/catalog/domain/CampaignRules";
 
 import { useAdminProducts } from "../../hooks/useAdminProducts";
@@ -66,6 +68,7 @@ import { createCatalogWorkspaceHandoff } from "@/modules/catalog-tools/domain/Ca
 import CreateProductPanel from "../CreateProductPanel/CreateProductPanel";
 
 import "./ProductsAdminPage.css";
+import "./ProductExplorerVisualV2.css";
 
 function normalizedStatus(product: Product): string {
   return String(product.status ?? "")
@@ -139,8 +142,10 @@ export default function ProductsAdminPage() {
     [auth.configuration?.campaigns],
   );
   const [publishingProductId, setPublishingProductId] = useState<string | null>(null);
+  const [bulkPublishing, setBulkPublishing] = useState(false);
   const publishing = useRef(false);
   const [publishError, setPublishError] = useState("");
+  const [publishSuccess, setPublishSuccess] = useState("");
   const [publicationReview, setPublicationReview] = useState<{
     product: Product;
     readiness: AdminPublicationReadiness;
@@ -161,6 +166,7 @@ export default function ProductsAdminPage() {
     publishing.current = true;
     setPublishingProductId(product.id);
     setPublishError("");
+    setPublishSuccess("");
 
     try {
       const response = await loadAdminProductPublicationReadiness(brandId, product.id);
@@ -174,7 +180,7 @@ export default function ProductsAdminPage() {
       });
     } catch (error) {
       setPublishError(
-        error instanceof Error ? error.message : "No se pudo verificar la publicación.",
+        publicationErrorMessage(error),
       );
       publishing.current = false;
       setPublishingProductId(null);
@@ -193,12 +199,23 @@ export default function ProductsAdminPage() {
 
       const response = await publishAdminProduct(brandId, product.id, confirmations);
       if (!response.success) throw new Error(response.message);
+      const published = response.data;
+      if (!published || typeof published !== "object" ||
+          !("id" in published) || published.id !== product.id ||
+          !("status" in published) || published.status !== "PUBLISHED") {
+        throw new Error("CORE no confirmó el estado publicado. Actualiza el listado antes de reintentar.");
+      }
 
-      await reload();
+      setPublishSuccess(`${product.title}: publicación confirmada por JUNG CORE.`);
       setPublicationReview(null);
+      try {
+        await reload();
+      } catch {
+        setPublishError("CORE confirmó la publicación, pero no se pudo actualizar el listado. Pulsa CORE para volver a cargarlo.");
+      }
     } catch (error) {
       setPublishError(
-        error instanceof Error ? error.message : "No se pudo publicar el producto.",
+        publicationErrorMessage(error),
       );
     } finally {
       setPublicationSubmitting(false);
@@ -275,6 +292,11 @@ export default function ProductsAdminPage() {
     }));
   };
 
+  const publishSelectedProducts = () => {
+    if (!canPublish || !brandId || publishing.current || publicationReview) return;
+    if (selectedProductIds.size === 0) return;
+    setBulkPublishing(true);
+  };
   const prepareCatalog = () => {
     if (selectedProductIds.size === 0) {
       return;
@@ -292,10 +314,15 @@ export default function ProductsAdminPage() {
             <div className="products-admin-page__eyebrow">
               <span>PRODUCT EXPLORER</span>
 
-              <small>Productos desde JUNG CORE</small>
+
             </div>
 
-            <h1>Productos</h1>
+            <div className="products-admin-page__titleRow">
+              <h1>Productos</h1>
+              <small className="products-admin-page__coreBadge">
+                Productos desde JUNG CORE
+              </small>
+            </div>
 
             <p>
               Explora y selecciona productos para preparar catálogos y futuras salidas comerciales.
@@ -315,6 +342,9 @@ export default function ProductsAdminPage() {
                 setIsRefreshing(true);
                 try {
                   await reload();
+                  setPublishError("");
+                } catch {
+                  setPublishError("No se pudo actualizar el listado desde CORE. Inténtalo de nuevo.");
                 } finally {
                   refreshing.current = false;
                   setIsRefreshing(false);
@@ -340,6 +370,7 @@ export default function ProductsAdminPage() {
               <span>Total</span>
 
               <strong>{summary.total}</strong>
+              <small className="products-admin-page__metricDetail">Productos registrados</small>
             </div>
           </article>
 
@@ -352,6 +383,7 @@ export default function ProductsAdminPage() {
               <span>Publicados</span>
 
               <strong>{summary.published}</strong>
+              <small className="products-admin-page__metricDetail">{summary.total > 0 ? Math.round((summary.published / summary.total) * 100) : 0}% del total</small>
             </div>
           </article>
 
@@ -364,6 +396,7 @@ export default function ProductsAdminPage() {
               <span>En preparación</span>
 
               <strong>{summary.preparing}</strong>
+              <small className="products-admin-page__metricDetail">{summary.total > 0 ? Math.round((summary.preparing / summary.total) * 100) : 0}% del total</small>
             </div>
           </article>
 
@@ -376,6 +409,7 @@ export default function ProductsAdminPage() {
               <span>Sin stock</span>
 
               <strong>{summary.outOfStock}</strong>
+              <small className="products-admin-page__metricDetail">{summary.total > 0 ? Math.round((summary.outOfStock / summary.total) * 100) : 0}% del total</small>
             </div>
           </article>
         </section>
@@ -433,6 +467,16 @@ export default function ProductsAdminPage() {
               <FileStack size={14} strokeWidth={1.9} aria-hidden="true" />
               Preparar catálogo
             </button>
+            <button
+              className="is-primary"
+              type="button"
+              disabled={!canPublish || selectedProductIds.size === 0 ||
+                bulkPublishing || !!publishingProductId}
+              onClick={() => void publishSelectedProducts()}
+            >
+              <PackageCheck size={14} strokeWidth={1.9} aria-hidden="true" />
+              {bulkPublishing ? "Publicando…" : "Publicar seleccionados"}
+            </button>
 
             <button
               className="is-commercial"
@@ -453,7 +497,8 @@ export default function ProductsAdminPage() {
           </div>
         </section>
 
-        {publishError && <p role="alert">{publishError}</p>}
+        {publishSuccess && <p role="status">{publishSuccess}</p>}
+        {!publicationReview && publishError && <p role="alert">{publishError}</p>}
         <ProductAdminExplorer
           products={filteredProducts}
           campaigns={campaigns}
@@ -474,6 +519,7 @@ export default function ProductsAdminPage() {
             productName={publicationReview.product.title}
             readiness={publicationReview.readiness}
             submitting={publicationSubmitting}
+            error={publishError}
             onClose={closePublicationReview}
             onConfirm={confirmPublication}
           />
@@ -498,6 +544,23 @@ export default function ProductsAdminPage() {
           </p>
         ) : null}
       </main>
+        <BulkProductPublicationDialog
+          open={bulkPublishing}
+          brandId={brandId}
+          products={products.filter(
+            (product) =>
+              selectedProductIds.has(product.id) &&
+              !["publicado", "published"].includes(normalizedStatus(product))
+          )}
+          onClose={() => setBulkPublishing(false)}
+          onPublished={async (ids) => {
+            const done = new Set(ids);
+            setSelectedProductIds((current) =>
+              new Set([...current].filter((id) => !done.has(id)))
+            );
+            await reload();
+          }}
+        />
     </AdminShell>
   );
 }

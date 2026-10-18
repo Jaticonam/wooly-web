@@ -205,6 +205,84 @@ export default function ProductsToolbar({
         </select>
       </label>
 
+      <details className="products-toolbar__more">
+        <summary>
+          <ListFilter
+            size={13}
+            strokeWidth={1.9}
+            aria-hidden="true"
+          />
+          Más filtros
+        </summary>
+
+        <div className="products-toolbar__morePanel">
+          <label>
+            <span>Campaña</span>
+
+            <select
+              aria-label="Filtrar por campaña"
+              value={filters.campaignId}
+              onChange={(event) =>
+                update(
+                  "campaignId",
+                  event.target.value,
+                )
+              }
+            >
+              <option value="">
+                Todas las campañas
+              </option>
+
+              {campaigns.map(
+                (campaign) => (
+                  <option
+                    key={campaign.id}
+                    value={campaign.id}
+                  >
+                    {campaign.name}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+
+          <label>
+            <span>Stock</span>
+
+            <select
+              aria-label="Filtrar por stock"
+              value={filters.stock}
+              onChange={(event) =>
+                update(
+                  "stock",
+                  event.target.value as ProductAdminFilterState["stock"],
+                )
+              }
+            >
+              <option value="all">
+                Todo el stock
+              </option>
+
+              <option value="available">
+                Disponible
+              </option>
+
+              <option value="low">
+                Stock bajo
+              </option>
+
+              <option value="out">
+                Agotado
+              </option>
+
+              <option value="inconsistent">
+                Inconsistente
+              </option>
+            </select>
+          </label>
+        </div>
+      </details>
+
       <div className="products-toolbar__field products-toolbar__viewField">
         <span className="products-toolbar__label">
           Vista
@@ -352,83 +430,6 @@ export default function ProductsToolbar({
         </>
       ) : null}
 
-      <details className="products-toolbar__more">
-        <summary>
-          <ListFilter
-            size={13}
-            strokeWidth={1.9}
-            aria-hidden="true"
-          />
-          Más filtros
-        </summary>
-
-        <div className="products-toolbar__morePanel">
-          <label>
-            <span>Campaña</span>
-
-            <select
-              aria-label="Filtrar por campaña"
-              value={filters.campaignId}
-              onChange={(event) =>
-                update(
-                  "campaignId",
-                  event.target.value,
-                )
-              }
-            >
-              <option value="">
-                Todas las campañas
-              </option>
-
-              {campaigns.map(
-                (campaign) => (
-                  <option
-                    key={campaign.id}
-                    value={campaign.id}
-                  >
-                    {campaign.name}
-                  </option>
-                ),
-              )}
-            </select>
-          </label>
-
-          <label>
-            <span>Stock</span>
-
-            <select
-              aria-label="Filtrar por stock"
-              value={filters.stock}
-              onChange={(event) =>
-                update(
-                  "stock",
-                  event.target.value as ProductAdminFilterState["stock"],
-                )
-              }
-            >
-              <option value="all">
-                Todo el stock
-              </option>
-
-              <option value="available">
-                Disponible
-              </option>
-
-              <option value="low">
-                Stock bajo
-              </option>
-
-              <option value="out">
-                Agotado
-              </option>
-
-              <option value="inconsistent">
-                Inconsistente
-              </option>
-            </select>
-          </label>
-        </div>
-      </details>
 
       <footer className="products-toolbar__footer">
         <div

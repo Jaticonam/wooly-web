@@ -165,7 +165,7 @@ export type UpdateAdminBadgeInput = Partial<CreateAdminBadgeInput>;
 export class AdminAuthHttpError extends Error {
   readonly status: number;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, readonly reasons: readonly string[] = []) {
     super(message);
 
     this.name = "AdminAuthHttpError";
@@ -235,8 +235,12 @@ async function requestJson<T>(
 
   if (!response.ok) {
     let message = `JUNG CORE respondió HTTP ${response.status}`;
+    let reasons: string[] = [];
     try {
       const body: unknown = await response.json();
+      if (body && typeof body === "object" && "reasons" in body && Array.isArray(body.reasons)) {
+        reasons = body.reasons.filter((reason): reason is string => typeof reason === "string");
+      }
       if (body && typeof body === "object" && "message" in body) {
         if (typeof body.message === "string" && body.message.trim()) message = body.message;
         else if (
@@ -248,7 +252,7 @@ async function requestJson<T>(
     } catch {
       /* Keep the HTTP fallback for non-JSON errors. */
     }
-    throw new AdminAuthHttpError(response.status, message);
+    throw new AdminAuthHttpError(response.status, message, reasons);
   }
 
   return (await response.json()) as T;

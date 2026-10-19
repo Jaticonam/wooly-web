@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { publicationReasonLabel } from "../../domain/PublicationFeedback";
 import {
   Dialog,
   DialogContent,
@@ -17,31 +18,19 @@ interface ProductPublicationDialogProps {
   productName: string;
   readiness: AdminPublicationReadiness;
   submitting: boolean;
+  error?: string;
   onClose: () => void;
   onConfirm: (confirmations: AdminPublicationConfirmations) => void;
 }
 
-const LABELS: Record<string, string> = {
-  CATEGORY_MISSING: "Falta una categoría.",
-  CATEGORY_NOT_PUBLIC: "La categoría no está habilitada.",
-  PRICING_MISSING: "Falta el precio unitario.",
-  PRICING_INVALID: "El precio unitario debe ser mayor que cero.",
-  PRICING_SOURCE_UNAVAILABLE: "No se pudo verificar el precio.",
-  INVENTORY_MISSING: "No hay inventario registrado.",
-  INVENTORY_UNTRACKED: "El inventario no tiene seguimiento.",
-  INVENTORY_OUT_OF_STOCK: "No hay existencias disponibles.",
-  INVENTORY_SOURCE_UNAVAILABLE: "No se pudo consultar el inventario.",
-  PUBLIC_MEDIA_MISSING: "No existe una imagen pública válida.",
-  MERCHANDISING_MISSING: "Falta información comercial requerida.",
-  MERCHANDISING_SOURCE_UNAVAILABLE: "No se pudo verificar la información comercial.",
-  PREORDER_DESCRIPTION_MISSING: "Falta la descripción requerida.",
-};
+
 
 export default function ProductPublicationDialog({
   open,
   productName,
   readiness,
   submitting,
+  error,
   onClose,
   onConfirm,
 }: ProductPublicationDialogProps) {
@@ -65,38 +54,38 @@ export default function ProductPublicationDialog({
 
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next && !submitting) onClose(); }}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Revisar publicación</DialogTitle>
-          <DialogDescription>{productName}</DialogDescription>
+      <DialogContent className="max-h-[90vh] max-w-[520px] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 shadow-2xl">
+        <DialogHeader className="border-b border-slate-100 bg-slate-50 px-6 py-5 text-left">
+          <DialogTitle className="text-lg font-semibold text-slate-900">Revisar publicación</DialogTitle>
+          <DialogDescription className="mt-1 break-words text-sm text-slate-600">{productName}</DialogDescription>
         </DialogHeader>
 
-        {readiness.blockers.length > 0 ? (
-          <section aria-label="Problemas que impiden publicar">
+        <div className="space-y-4 px-6 py-5">{readiness.blockers.length > 0 ? (
+          <section aria-label="Problemas que impiden publicar" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
             <h3 className="mb-2 font-semibold">Debes corregir lo siguiente</h3>
             <ul className="list-disc pl-5">
               {readiness.blockers.map((reason) => (
-                <li key={reason}>{LABELS[reason] ?? reason}</li>
+                <li key={reason}>{publicationReasonLabel(reason)}</li>
               ))}
             </ul>
           </section>
         ) : (
-          <p>La información obligatoria está validada por JUNG CORE.</p>
+          <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-900">La información obligatoria está validada por JUNG CORE.</p>
         )}
 
         {readiness.warnings.length > 0 ? (
-          <section aria-label="Advertencias de publicación">
+          <section aria-label="Advertencias de publicación" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
             <h3 className="mb-2 font-semibold">Advertencias</h3>
             <ul className="list-disc pl-5">
               {readiness.warnings.map((reason) => (
-                <li key={reason}>{LABELS[reason] ?? reason}</li>
+                <li key={reason}>{publicationReasonLabel(reason)}</li>
               ))}
             </ul>
           </section>
         ) : null}
 
         {needImage ? (
-          <label className="flex items-start gap-2">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
             <input
               type="checkbox"
               checked={useDefaultImage}
@@ -108,7 +97,7 @@ export default function ProductPublicationDialog({
         ) : null}
 
         {needStock ? (
-          <label className="flex items-start gap-2">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
             <input
               type="checkbox"
               checked={publishWithoutStock}
@@ -119,12 +108,15 @@ export default function ProductPublicationDialog({
           </label>
         ) : null}
 
-        <DialogFooter>
-          <button type="button" disabled={submitting} onClick={onClose}>
+        {error ? <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
+
+        </div><DialogFooter className="border-t border-slate-100 bg-slate-50 px-6 py-4 sm:justify-end">
+          <button type="button" disabled={submitting} onClick={onClose} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 disabled:opacity-50">
             Cancelar
           </button>
           <button
             type="button"
+            className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
             disabled={!canConfirm}
             onClick={() => onConfirm({ useDefaultImage, publishWithoutStock })}
           >

@@ -23,7 +23,8 @@ vi.mock("@/modules/products-admin/hooks/useAdminProducts", () => ({
 }));
 
 vi.mock("@/modules/admin-auth/context/AdminAuthContext", () => ({ useAdminAuth: vi.fn() }));
-vi.mock("@/modules/admin-auth/services/AdminAuthClient", () => ({
+vi.mock("@/modules/admin-auth/services/AdminAuthClient", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/modules/admin-auth/services/AdminAuthClient")>(),
   loadAdminProductPublicationReadiness: vi.fn(),
   publishAdminProduct: vi.fn(),
 }));
@@ -295,6 +296,7 @@ it("reviews the canonical product before POST, confirms, then reloads", async ()
 
   await waitFor(() => expect(reload).toHaveBeenCalledOnce());
   expect(screen.queryByRole("dialog", { name: "Revisar publicación" })).not.toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("Draft: publicación confirmada por JUNG CORE.");
 });
 
 it("cancels after GET without publishing", async () => {
@@ -434,4 +436,50 @@ it("does not offer publication to VIEWER", () => {
     </MemoryRouter>,
   );
   expect(screen.queryByRole("button", { name: "Publicar p" })).not.toBeInTheDocument();
+});
+
+
+async function openPublicationConfirmation() {
+  vi.mocked(loadAdminProductPublicationReadiness).mockResolvedValue({
+    success: true,
+    data: { productId: "core-p", ready: true, reasons: [], warnings: [], blockers: [], requiredConfirmations: [] },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Publicar core-p" }));
+  const dialog = await screen.findByRole("dialog", { name: "Revisar publicación" });
+  fireEvent.click(within(dialog).getByRole("button", { name: "Confirmar publicación" }));
+  return dialog;
+}
+
+it.each([401, 403, 400])("keeps the product unchanged and shows HTTP %s rejection inside the dialog", async (status) => {
+  const { AdminAuthHttpError } = await import("@/modules/admin-auth/services/AdminAuthClient");
+  const { product, reload } = renderPublicationProduct();
+  vi.mocked(publishAdminProduct).mockRejectedValueOnce(new AdminAuthHttpError(
+    status, "Product requires publication corrections or confirmations.", ["PRICING_INVALID"],
+  ));
+  const dialog = await openPublicationConfirmation();
+  const alert = await within(dialog).findByRole("alert");
+  expect(alert).toHaveTextContent(status === 401 ? "sesión ha caducado" : status === 403 ? "No tienes permiso" : "precio unitario debe ser mayor que cero");
+  expect(product.status).toBe("borrador");
+  expect(reload).not.toHaveBeenCalled();
+  expect(screen.queryByText(/publicación confirmada por JUNG CORE/)).not.toBeInTheDocument();
+});
+
+it("distinguishes confirmed publication from a failed refresh without offering a second POST", async () => {
+  const { reload } = renderPublicationProduct();
+  reload.mockRejectedValueOnce(new Error("offline"));
+  vi.mocked(publishAdminProduct).mockResolvedValueOnce({ success: true, message: "OK", data: { id: "core-p", status: "PUBLISHED" } });
+  await openPublicationConfirmation();
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  expect(screen.getByRole("status")).toHaveTextContent("publicación confirmada por JUNG CORE");
+  expect(screen.getByRole("alert")).toHaveTextContent("no se pudo actualizar el listado");
+  expect(publishAdminProduct).toHaveBeenCalledOnce();
+});
+
+it.each([{ id: "other", status: "PUBLISHED" }, { id: "core-p", status: "DRAFT" }])("does not claim success for an inconsistent response %j", async (data) => {
+  const { reload } = renderPublicationProduct();
+  vi.mocked(publishAdminProduct).mockResolvedValueOnce({ success: true, message: "OK", data });
+  const dialog = await openPublicationConfirmation();
+  expect(await within(dialog).findByRole("alert")).toHaveTextContent("CORE no confirmó el estado publicado");
+  expect(reload).not.toHaveBeenCalled();
+  expect(screen.queryByText(/publicación confirmada por JUNG CORE/)).not.toBeInTheDocument();
 });

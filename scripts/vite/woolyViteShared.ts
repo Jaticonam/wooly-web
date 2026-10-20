@@ -122,4 +122,9 @@ export function jungCoreDevProxy(mode: string): Record<string, ProxyOptions> {
   };
 }
 
-export const WOOLY_ADMIN_DEV_PORT = 8001;
+/*
+ * W12-03A: puerto reservado para la futura operación independiente
+ * de Wooly Admin. NO se usa en desarrollo (Admin se monta en :8000/admin).
+ * El puerto 8001 pertenece a Gleemour y ningún proceso Wooly debe usarlo.
+ */
+export const WOOLY_ADMIN_RESERVED_PORT = 8500;

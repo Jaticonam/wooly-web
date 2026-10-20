@@ -51,7 +51,7 @@ La asignación se derivó del grafo real de importaciones (777 archivos, ~1.800 
 - Admin conserva sus rutas absolutas históricas (`/admin`, `/admin/login`, `/admin/catalogos`, `/admin/configuracion/catalogo`, `/admin/commercial`, `/admin/integrations/*`) con `base: "/admin/"`.
 - `/ventas/catalogos` (Público) redirige con recarga completa a `/admin/catalogos`.
 - `.htaccess` (workflow Hostinger): `^admin(/.*)?$ → admin/index.html` antes del fallback público.
-- Desarrollo: `npm run dev` (8000) + `npm run dev:admin` (8001); `localhost:8000/admin` se enruta por proxy a Admin. El proxy `/jung-core` es único y compartido (`scripts/vite/woolyViteShared.ts`).
+- Desarrollo: **actualizado en W12-03A** — `npm run dev` levanta un único servidor en 8000 que sirve Público en `/` y Admin en `/admin` (sin proceso en 8001). El proxy `/jung-core` es único y compartido (`scripts/vite/woolyViteShared.ts`).
 
 ## Estilos globales
 

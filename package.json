@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite --config ui/vite.config.ts",
     "dev:ui": "vite --config ui/vite.config.ts",
-    "dev:admin": "vite --config admin/ui/vite.config.ts",
     "build": "npm run typecheck && npm run build:ui && npm run build:admin",
     "build:ui": "vite build --config ui/vite.config.ts",
     "build:admin": "vite build --config admin/ui/vite.config.ts",

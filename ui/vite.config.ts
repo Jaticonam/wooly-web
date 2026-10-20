@@ -7,16 +7,20 @@ import { componentTagger } from "lovable-tagger";
 
 import {
   REPO_ROOT,
-  WOOLY_ADMIN_DEV_PORT,
   WOOLY_DEDUPE,
   jungCoreDevProxy,
   woolyAliases,
   woolyPostcss,
 } from "../scripts/vite/woolyViteShared";
+import { woolyAdminDevMount } from "../scripts/vite/woolyAdminDevMount";
 
 /*
  * W12-02 · Wooly Público (ui/)
  * Se publica en la raíz del dominio: dist/
+ *
+ * W12-03A · En desarrollo, este servidor (puerto 8000) es el único
+ * punto de acceso: también sirve Wooly Admin en /admin mediante
+ * woolyAdminDevMount (misma instancia HTTP, sin puertos adicionales).
  */
 export default defineConfig(({ mode }) => ({
   root: __dirname,
@@ -26,19 +30,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8000,
     strictPort: true,
-    proxy: {
-      ...jungCoreDevProxy(mode),
-
-      /*
-       * Desarrollo integrado: Wooly Admin (npm run dev:admin)
-       * queda accesible en http://localhost:8000/admin
-       * igual que antes de la separación.
-       */
-      "/admin": {
-        target: `http://127.0.0.1:${WOOLY_ADMIN_DEV_PORT}`,
-        ws: true,
-      },
-    },
+    proxy: jungCoreDevProxy(mode),
 
     hmr: {
       overlay: false,
@@ -49,6 +41,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" &&
       componentTagger(),
+    woolyAdminDevMount(),
   ].filter(Boolean),
 
   css: {

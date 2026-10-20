@@ -14,6 +14,30 @@ import {
   useAdminAuth,
 } from "../context/AdminAuthContext";
 
+import AdminLoginPage from "../pages/AdminLoginPage";
+
+/*
+ * W12-03B · Entrada administrativa única.
+ *
+ * /admin es el único punto de acceso: decide entre login y panel según
+ * la sesión validada por JUNG CORE. Las rutas internas protegidas sin
+ * una sesión validada vuelven a /admin conservando el destino original.
+ */
+const ADMIN_ENTRY_PATH = "/admin";
+
+interface AdminEntryLocationState {
+  readonly from?: string;
+}
+
+function isAdminEntry(
+  pathname: string,
+): boolean {
+  return (
+    pathname === ADMIN_ENTRY_PATH ||
+    pathname === `${ADMIN_ENTRY_PATH}/`
+  );
+}
+
 export default function AdminProtectedRoute() {
   const auth =
     useAdminAuth();
@@ -23,11 +47,45 @@ export default function AdminProtectedRoute() {
 
   if (
     auth.status ===
+      "authenticated"
+  ) {
+    return <Outlet />;
+  }
+
+  /*
+   * Sin autorización validada (comprobando, sin sesión, CORE no
+   * disponible o sin permisos) nunca se muestra contenido protegido.
+   * Las rutas internas regresan a la entrada única /admin.
+   */
+  if (
+    !isAdminEntry(
+      location.pathname,
+    )
+  ) {
+    const state: AdminEntryLocationState = {
+      from:
+        `${location.pathname}${location.search}${location.hash}`,
+    };
+
+    return (
+      <Navigate
+        to={ADMIN_ENTRY_PATH}
+        replace
+        state={state}
+      />
+    );
+  }
+
+  if (
+    auth.status ===
       "checking"
   ) {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-50 px-6">
-        <div className="text-center text-slate-600">
+        <div
+          role="status"
+          className="text-center text-slate-600"
+        >
           <LoaderCircle
             className="mx-auto mb-3 animate-spin"
             size={28}
@@ -47,25 +105,7 @@ export default function AdminProtectedRoute() {
 
   if (
     auth.status ===
-      "anonymous"
-  ) {
-    return (
-      <Navigate
-        to="/admin/login"
-        replace
-        state={{
-          from:
-            `${location.pathname}${location.search}${location.hash}`,
-        }}
-      />
-    );
-  }
-
-  if (
-    auth.status ===
-      "forbidden" ||
-    auth.status ===
-      "error"
+      "forbidden"
   ) {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-50 px-6">
@@ -77,7 +117,7 @@ export default function AdminProtectedRoute() {
           </div>
 
           <h1 className="mt-5 text-xl font-black text-slate-900">
-            No se pudo abrir Wooly Admin
+            Acceso administrativo denegado
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-slate-500">
@@ -114,5 +154,6 @@ export default function AdminProtectedRoute() {
     );
   }
 
-  return <Outlet />;
+  /* anonymous | unavailable → login (con aviso de servicio si corresponde). */
+  return <AdminLoginPage />;
 }

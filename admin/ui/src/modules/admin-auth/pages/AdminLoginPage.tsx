@@ -9,12 +9,12 @@ import {
   EyeOff,
   LoaderCircle,
   LockKeyhole,
+  RefreshCw,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 
 import {
-  Navigate,
   useLocation,
   useNavigate,
 } from "react-router-dom";
@@ -29,6 +29,30 @@ import {
 
 interface LoginLocationState {
   readonly from?: string;
+}
+
+/*
+ * W12-03B: destino posterior al login. Solo se aceptan rutas internas
+ * de Wooly Admin distintas de la propia entrada (evita bucles y saltos
+ * fuera de la aplicación).
+ */
+function resolvePostLoginDestination(
+  state: unknown,
+  currentPathname: string,
+): string | null {
+  const from =
+    (state as LoginLocationState | null)?.from;
+
+  if (
+    typeof from !== "string" ||
+    !/^\/admin\/[^/]/.test(from) ||
+    from.startsWith("/admin/login") ||
+    from === currentPathname
+  ) {
+    return null;
+  }
+
+  return from;
 }
 
 export default function AdminLoginPage() {
@@ -69,24 +93,14 @@ export default function AdminLoginPage() {
   );
 
   const destination =
-    (
-      location.state as
-        | LoginLocationState
-        | null
-    )?.from ??
-    "/admin";
-
-  if (
-    auth.status ===
-      "authenticated"
-  ) {
-    return (
-      <Navigate
-        to={destination}
-        replace
-      />
+    resolvePostLoginDestination(
+      location.state,
+      location.pathname,
     );
-  }
+
+  const serviceUnavailable =
+    auth.status ===
+      "unavailable";
 
   const submit =
     async (
@@ -132,13 +146,16 @@ export default function AdminLoginPage() {
           password,
         });
 
-        navigate(
-          destination,
-          {
-            replace:
-              true,
-          },
-        );
+        /* /admin ya muestra el panel al validar la sesión. */
+        if (destination) {
+          navigate(
+            destination,
+            {
+              replace:
+                true,
+            },
+          );
+        }
       } catch (
         error
       ) {
@@ -161,8 +178,12 @@ export default function AdminLoginPage() {
             "Tu cuenta no tiene acceso administrativo a Wooly.",
           );
         } else {
+          /*
+           * CORE inaccesible o con error de servidor: el aviso de
+           * servicio del formulario (estado "unavailable") lo comunica.
+           */
           setSubmitError(
-            "No se pudo conectar con JUNG CORE. Verifica que el servicio esté disponible.",
+            null,
           );
         }
       } finally {
@@ -355,6 +376,45 @@ export default function AdminLoginPage() {
                   </button>
                 </div>
               </label>
+
+              {serviceUnavailable ? (
+                <div
+                  role="status"
+                  className="flex items-start justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium leading-5 text-amber-800"
+                >
+                  <span>
+                    {auth.error ??
+                      "JUNG CORE no está disponible en este momento."}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={
+                      auth.refreshing ||
+                      submitting
+                    }
+                    onClick={() =>
+                      void auth.refresh({
+                        background:
+                          true,
+                      })
+                    }
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-amber-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-amber-800 transition hover:bg-amber-100 disabled:cursor-wait disabled:opacity-60"
+                  >
+                    <RefreshCw
+                      className={
+                        auth.refreshing
+                          ? "animate-spin"
+                          : undefined
+                      }
+                      size={13}
+                    />
+                    {auth.refreshing
+                      ? "Comprobando…"
+                      : "Reintentar"}
+                  </button>
+                </div>
+              ) : null}
 
               {submitError ? (
                 <div

@@ -7,9 +7,11 @@ import {
 
 import {
   BrowserRouter,
+  Navigate,
   Outlet,
   Route,
   Routes,
+  useLocation,
 } from "react-router-dom";
 
 import {
@@ -45,10 +47,6 @@ import AdminProtectedRoute from "@/modules/admin-auth/components/AdminProtectedR
  * para que enlaces, navegación y redirecciones existentes
  * sigan siendo válidos sin reescritura.
  */
-
-const AdminLoginPage = lazy(
-  () => import("@/modules/admin-auth/pages/AdminLoginPage"),
-);
 
 const ProductsAdminPage = lazy(
   () => import("@/pages/ProductsAdminPage"),
@@ -89,6 +87,23 @@ function RouteLoadingFallback() {
   );
 }
 
+/*
+ * W12-03B: /admin es la entrada administrativa única.
+ * /admin/login se conserva solo por compatibilidad con enlaces antiguos.
+ */
+function LegacyAdminLoginRedirect() {
+  const location =
+    useLocation();
+
+  return (
+    <Navigate
+      to={`/admin${location.search}${location.hash}`}
+      replace
+      state={location.state}
+    />
+  );
+}
+
 function CatalogCampaignScope() {
   return (
     <CatalogCampaignRegistryProvider>
@@ -122,14 +137,15 @@ export default function App() {
                 }
               >
                 <Routes>
+                  {/* COMPATIBILIDAD: /admin/login → /admin */}
                   <Route
                     path="/admin/login"
                     element={
-                      <AdminLoginPage />
+                      <LegacyAdminLoginRedirect />
                     }
                   />
 
-                  {/* PANEL ADMINISTRATIVO PROTEGIDO */}
+                  {/* ENTRADA ÚNICA /admin + PANEL ADMINISTRATIVO PROTEGIDO */}
                   <Route
                     element={
                       <AdminProtectedRoute />

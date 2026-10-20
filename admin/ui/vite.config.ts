@@ -25,6 +25,7 @@ import {
  */
 export default defineConfig(({ mode }) => ({
   root: __dirname,
+  cacheDir: path.resolve(__dirname, "node_modules/.vite"),
   base: "/admin/",
   envDir: REPO_ROOT,
 

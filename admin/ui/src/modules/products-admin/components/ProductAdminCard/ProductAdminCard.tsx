@@ -1,6 +1,8 @@
 import {
   Check,
-  ImageOff,
+  Eye,
+  Package,
+  Upload,
 } from "lucide-react";
 import {
   useEffect,
@@ -15,12 +17,17 @@ import {
   resolveProductAdminPresentation,
 } from "@/modules/products-admin/presentation/ProductAdminPresentation";
 
+import ProductCategoryPlaceholder from "../ProductCategoryPlaceholder";
+
 import "./ProductAdminCard.css";
 
 interface ProductAdminCardProps {
   product: Product;
   campaignsById: ReadonlyMap<string, Campaign>;
   onSelect: () => void;
+  onPublish?: (() => void) | undefined;
+  publishing?: boolean;
+  publishDisabled?: boolean;
   isSelected?: boolean;
   onToggleSelection?: (() => void) | undefined;
 }
@@ -29,6 +36,9 @@ export default function ProductAdminCard({
   product,
   campaignsById,
   onSelect,
+  onPublish,
+  publishing = false,
+  publishDisabled = false,
   isSelected = false,
   onToggleSelection,
 }: ProductAdminCardProps) {
@@ -85,7 +95,7 @@ export default function ProductAdminCard({
       ) : null}
 
       <div className="product-admin-card__media">
-        {product.img && !hasImageError ? (
+        {product.img.trim() && !hasImageError ? (
           <img
             src={product.img}
             alt={product.title}
@@ -98,31 +108,36 @@ export default function ProductAdminCard({
             role="img"
             aria-label={`Imagen no disponible para ${product.title}`}
           >
-            <ImageOff
-              size={21}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-            <strong>Sin imagen</strong>
+            <ProductCategoryPlaceholder category={product.category} />
           </div>
         )}
       </div>
 
       <div className="product-admin-card__content">
-        <span className="product-admin-card__category">
-          {product.category}
+        <div className="product-admin-card__identity">
+          <code>{product.code?.trim() || "Sin código"}</code>
+          <span className="product-admin-card__category">
+            {product.category}
+          </span>
+        </div>
+        <h2 title={product.title}>{product.title}</h2>
+        <span className={
+          "product-admin-card__status " +
+          (presentation.policy.status === "publicado" ? "is-published" : "is-pending")
+        }>
+          <i aria-hidden="true" />{presentation.statusLabel}
         </span>
 
-        <h2>{product.title}</h2>
-
         <div className="product-admin-card__pricing">
-          <strong>
-            {presentation.unitPriceLabel}
-          </strong>
-
-          <small>
-            {presentation.volumePriceLabel}
-          </small>
+          <span className="product-admin-card__priceCaption">
+            {presentation.offerPriceLabel ? "Oferta" : "Precio unitario"}
+          </span>
+          <strong>{presentation.offerPriceLabel ?? presentation.unitPriceLabel}</strong>
+          {presentation.offerPriceLabel && (
+            <span className="product-admin-card__previousPrice">
+              Precio normal <del>{presentation.unitPriceLabel}</del>
+            </span>
+          )}
         </div>
 
         <span
@@ -130,12 +145,22 @@ export default function ProductAdminCard({
             `product-admin-card__stock is-${presentation.stockTone}`
           }
         >
+          <Package size={13} aria-hidden="true" />
           {presentation.stockLabel}
         </span>
 
+        <section className="product-admin-card__volume" aria-label="Precios por volumen">
+          <div className="product-admin-card__volumeGrid">
+            {presentation.volumeTiers.map((tier) => (
+              <div key={tier.quantity} className="product-admin-card__volumeTier">
+                <span>{tier.quantity === 3 ? "Mayor (3u)" : "Docena (12u)"}</span>
+                <strong>{tier.priceLabel}</strong>
+              </div>
+            ))}
+          </div>
+          <small>{presentation.volumePriceLabel}</small>
+        </section>
         <div className="product-admin-card__meta">
-          <code>{product.code ?? "Sin código"}</code>
-
           {visibleCampaigns.length > 0 ? (
             <div className="product-admin-card__campaigns">
               {visibleCampaigns.map((campaign) => (
@@ -152,6 +177,19 @@ export default function ProductAdminCard({
             </div>
           ) : null}
         </div>
+      </div>
+      <div className="product-admin-card__actions">
+        <button type="button" onClick={onSelect}>
+          <Eye size={15} aria-hidden="true" />Ver detalle
+        </button>
+        {onPublish && presentation.policy.status !== "publicado" && (
+          <button type="button" className="product-admin-card__publish"
+            aria-label={"Publicar " + product.title}
+            disabled={publishDisabled || publishing} onClick={onPublish}>
+            <Upload size={15} aria-hidden="true" />
+            {publishing ? "Publicando…" : "Publicar"}
+          </button>
+        )}
       </div>
     </article>
   );

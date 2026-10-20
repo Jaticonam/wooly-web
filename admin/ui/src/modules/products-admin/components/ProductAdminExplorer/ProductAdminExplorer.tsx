@@ -91,6 +91,9 @@ export default function ProductAdminExplorer({
             key={product.id}
             product={product}
             campaignsById={campaignsById}
+            onPublish={onPublishProduct ? () => onPublishProduct(product) : undefined}
+            publishing={publishingProductId === product.id}
+            publishDisabled={!!publishingProductId}
             isSelected={selectedProductIds.has(product.id)}
             onSelect={() => onSelectProduct(product)}
             onToggleSelection={

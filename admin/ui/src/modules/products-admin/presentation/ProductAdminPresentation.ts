@@ -35,6 +35,14 @@ export function resolveProductAdminPresentation(
     ? Math.min(...volumePrices)
     : null;
   return {
+    offerPriceLabel: isPositivePrice(product.price_offer) &&
+      isPositivePrice(product.price_1) && product.price_offer < product.price_1
+      ? formatMoney(product.price_offer) : null,
+    volumeTiers: [
+      { quantity: 3, price: product.price_3 },
+      { quantity: 12, price: product.price_12 },
+    ].flatMap(({ quantity, price }) => isPositivePrice(price)
+      ? [{ quantity, priceLabel: formatMoney(price) }] : []),
     policy,
     statusLabel: operationalState.statusLabel,
     observations: operationalState.observations,

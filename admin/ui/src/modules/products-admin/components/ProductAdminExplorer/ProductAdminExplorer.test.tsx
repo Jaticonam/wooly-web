@@ -133,3 +133,22 @@ it.each(["list", "table"] as const)(
     expect(screen.getByRole("button", {name: "Publicar " + product.title})).toBeDisabled();
   },
 );
+
+it("wires grid publication and disables every card while a publication is pending", () => {
+  const publish=vi.fn(), select=vi.fn();
+  const draft={...product,status:"borrador"};
+  const other={...draft,id:"other",title:"Otro producto"};
+  const props={products:[draft,other], campaigns:[],viewMode:"grid" as const,isReady:true,onSelectProduct:select,onPublishProduct:publish};
+  const {rerender}=render(<ProductAdminExplorer {...props} />);
+  fireEvent.click(screen.getByRole("button",{name:"Publicar " + draft.title}));
+  expect(publish).toHaveBeenCalledExactlyOnceWith(draft);
+  expect(select).not.toHaveBeenCalled();
+  rerender(<ProductAdminExplorer {...props} publishingProductId={draft.id} />);
+  expect(screen.getByText("Publicando…")).toBeDisabled();
+  const otherButton=screen.getByRole("button",{name:"Publicar " + other.title});
+  expect(otherButton).toBeDisabled();
+  fireEvent.click(otherButton);
+  expect(publish).toHaveBeenCalledTimes(1);
+  rerender(<ProductAdminExplorer {...props} onPublishProduct={undefined} />);
+  expect(screen.queryByRole("button",{name:/Publicar/})).not.toBeInTheDocument();
+});

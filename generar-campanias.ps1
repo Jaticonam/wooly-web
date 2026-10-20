@@ -1,6 +1,6 @@
 $root = (Get-Location).Path
-$campaignDir = Join-Path $root "public\campanias"
-$ogDir = Join-Path $root "public\og\campanias"
+$campaignDir = Join-Path $root "ui\public\campanias"
+$ogDir = Join-Path $root "ui\public\og\campanias"
 
 New-Item -ItemType Directory -Force -Path $campaignDir | Out-Null
 New-Item -ItemType Directory -Force -Path $ogDir | Out-Null

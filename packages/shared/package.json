@@ -1,0 +1,7 @@
+{
+  "name": "@wooly/shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Núcleo de catálogo compartido por Wooly Público y Wooly Admin (proveedores, integraciones, componentes de producto y estilos base)."
+}

@@ -3,11 +3,15 @@ import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
+  /*
+   * W12-02: preset de diseño compartido.
+   * Cada aplicación (ui/, admin/ui/) declara su propio `content`
+   * en su tailwind.config.ts y extiende este preset.
+   */
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./ui/src/**/*.{ts,tsx}",
+    "./admin/ui/src/**/*.{ts,tsx}",
+    "./packages/*/src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {

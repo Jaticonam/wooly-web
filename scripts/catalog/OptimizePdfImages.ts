@@ -4,8 +4,8 @@ import path from "node:path";
 
 import sharp from "sharp";
 
-import { fetchSheetRows } from "../../src/modules/catalog/integrations/googleSheets/fetchSheets";
-import { PRODUCT_SHEETS_CONFIG } from "../../src/modules/catalog/integrations/googleSheets/sheetsConfig";
+import { fetchSheetRows } from "../../packages/shared/src/catalog/integrations/googleSheets/fetchSheets";
+import { PRODUCT_SHEETS_CONFIG } from "../../packages/shared/src/catalog/integrations/googleSheets/sheetsConfig";
 
 type ScriptOptions = {
   category?: string;
@@ -37,10 +37,10 @@ type PdfImageReport = Record<string, PdfImageReportEntry>;
 
 const REQUIRED_HEADERS = ["id", "img", "status"] as const;
 
-const OUTPUT_DIR = path.resolve("public/catalog/pdf-images");
+const OUTPUT_DIR = path.resolve("ui/public/catalog/pdf-images");
 
 const MANIFEST_PATH = path.resolve(
-  "src/modules/catalog-export/data/PdfImageManifest.ts",
+  "packages/shared/src/catalog-export/data/PdfImageManifest.ts",
 );
 
 const REPORT_PATH = path.resolve(

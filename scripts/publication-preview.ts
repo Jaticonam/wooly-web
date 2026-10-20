@@ -1,14 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { loadAllProducts } from "../src/modules/catalog/services/fetchProducts";
-import { PublicationEngine } from "../src/modules/integrations/publication";
-import type { PublicationPlan } from "../src/modules/integrations/publication";
-import { QualityEngine } from "../src/modules/integrations/quality";
+import { loadAllProducts } from "../packages/shared/src/catalog/services/fetchProducts";
+import { PublicationEngine } from "../admin/ui/src/modules/integrations/publication";
+import type { PublicationPlan } from "../admin/ui/src/modules/integrations/publication";
+import { QualityEngine } from "../admin/ui/src/modules/integrations/quality";
 import { getCliArg } from "./utils/cli";
 
-const PLANS_FILE = path.resolve(process.cwd(), "public/config/publication-plans.json");
-const OUT_DIR = path.resolve(process.cwd(), "public/api/previews");
+const PLANS_FILE = path.resolve(process.cwd(), "ui/public/config/publication-plans.json");
+const OUT_DIR = path.resolve(process.cwd(), "ui/public/api/previews");
 const OUT_FILE = path.join(OUT_DIR, "publication-preview.json");
 
 async function loadPlan(planId: string): Promise<PublicationPlan> {

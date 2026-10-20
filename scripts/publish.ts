@@ -1,5 +1,5 @@
-import { workflowEngine } from "../src/modules/integrations/workflow";
-import type { Workflow, WorkflowContext } from "../src/modules/integrations/workflow";
+import { workflowEngine } from "../admin/ui/src/modules/integrations/workflow";
+import type { Workflow, WorkflowContext } from "../admin/ui/src/modules/integrations/workflow";
 import { getCliArg } from "./utils/cli";
 
 const plan = getCliArg("plan", "meta-all");

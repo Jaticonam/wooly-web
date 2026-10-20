@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { loadAllProducts } from "../src/modules/catalog/services/fetchProducts";
-import { QualityEngine } from "../src/modules/integrations/quality";
+import { loadAllProducts } from "../packages/shared/src/catalog/services/fetchProducts";
+import { QualityEngine } from "../admin/ui/src/modules/integrations/quality";
 
-const OUT_DIR = path.resolve(process.cwd(), "public/api/reports");
+const OUT_DIR = path.resolve(process.cwd(), "ui/public/api/reports");
 const OUT_FILE = path.join(OUT_DIR, "catalog-quality.json");
 
 async function main() {

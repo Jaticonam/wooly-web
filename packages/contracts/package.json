@@ -1,0 +1,7 @@
+{
+  "name": "@wooly/contracts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Contratos neutrales compartidos por Wooly Público y Wooly Admin (tipos, modelos y reglas puras)."
+}

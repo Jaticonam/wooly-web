@@ -28,6 +28,7 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      # W12-02: dist/ = Wooly Público, dist/admin/ = Wooly Admin
       - name: Prepare Hostinger SPA fallback
         run: |
           cat > dist/.htaccess <<'EOF'
@@ -38,9 +39,11 @@ jobs:
           RewriteCond %{REQUEST_FILENAME} -f [OR]
           RewriteCond %{REQUEST_FILENAME} -d
           RewriteRule ^ - [L]
+          RewriteRule ^admin(?:/.*)?$ admin/index.html [L]
           RewriteRule ^ index.html [L]
           EOF
           test -f dist/index.html
+          test -f dist/admin/index.html
           test -f dist/jung-core/index.php
           test -f dist/.htaccess
 

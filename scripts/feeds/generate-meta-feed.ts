@@ -1,15 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { loadAllProducts } from "../../src/modules/catalog/services/fetchProducts";
-import { IntegrationEngine } from "../../src/modules/integrations/engine/IntegrationEngine";
-import { MetaConnector } from "../../src/modules/integrations/connectors/meta/connector";
-import { PublicationEngine, savePublicationHistory } from "../../src/modules/integrations/publication";
-import type { PublicationPlan, PublicationExecution, PublicationSnapshot } from "../../src/modules/integrations/publication";
-import { QualityEngine } from "../../src/modules/integrations/quality";
+import { loadAllProducts } from "../../packages/shared/src/catalog/services/fetchProducts";
+import { IntegrationEngine } from "../../admin/ui/src/modules/integrations/engine/IntegrationEngine";
+import { MetaConnector } from "../../admin/ui/src/modules/integrations/connectors/meta/connector";
+import { PublicationEngine, savePublicationHistory } from "../../admin/ui/src/modules/integrations/publication";
+import type { PublicationPlan, PublicationExecution, PublicationSnapshot } from "../../admin/ui/src/modules/integrations/publication";
+import { QualityEngine } from "../../admin/ui/src/modules/integrations/quality";
 import { getCliArg } from "../utils/cli";
 
-const PLANS_FILE = path.resolve(process.cwd(), "public/config/publication-plans.json");
+const PLANS_FILE = path.resolve(process.cwd(), "ui/public/config/publication-plans.json");
 
 const stamp = () => new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "").replace("T", "-");
 

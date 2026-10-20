@@ -8,6 +8,7 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
+      ".migration-backup",
     ],
   },
   {
@@ -39,7 +40,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/shared/components/ui/**/*.{ts,tsx}"],
+    files: [
+      "ui/src/components/ui/**/*.{ts,tsx}",
+      "admin/ui/src/components/ui/**/*.{ts,tsx}",
+      "packages/shared/src/components/ui/**/*.{ts,tsx}",
+    ],
     rules: {
       // Componentes base de shadcn exportan variantes junto al componente.
       "react-refresh/only-export-components": "off",

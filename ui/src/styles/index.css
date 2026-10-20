@@ -1,0 +1,65 @@
+/* ===== INDEX.CSS ===== */
+/* Punto único de carga global */
+
+/* Fuentes */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
+
+/* Core */
+@import "@wooly/shared/styles/base.css";
+@import "@wooly/shared/styles/utilities.css";
+@import "@wooly/shared/styles/animations.css";
+
+/* Componentes globales */
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/glass.css";
+@import "./components/forms.css";
+@import "./components/modals.css";
+@import "./components/floating-buttons.css";
+@import "./components/recent-activity.css";
+@import "@wooly/shared/styles/components/badges.css";
+@import "./components/countdown-timer.css";
+@import "./components/social-brand.css";
+@import "./components/explore.css";
+@import "./components/explore-mobile.css";
+
+/* Catálogo */
+@import "@wooly/shared/styles/catalog/product-card.css";
+@import "./catalog/category-filter.css";
+@import "./catalog/category-filter-mobile.css";
+@import "./catalog/header-category-filter.css";
+@import "./catalog/search.css";
+@import "./catalog/notifications.css";
+
+/* Carrito */
+@import "./cart/cart-panel.css";
+@import "./cart/cart-sidebar.css";
+@import "./cart/cart-item.css";
+@import "./cart/cart-footer.css";
+
+/* HOME */
+@import "./home/hero.css";
+@import "./home/categories.css";
+@import "./home/shipping.css";
+@import "./home/stats.css";
+@import "./home/vip.css";
+@import "./home/featured-products.css";
+@import "./home/how-to-buy.css";
+@import "./home/benefits.css";
+@import "./home/testimonials.css";
+@import "./home/brand-story.css";
+@import "./home/social.css";
+@import "./home/tiktok.css";
+@import "./home/final-cta.css";
+@import "./home/footer.css";
+@import "./home/growth-center.css";
+
+/* Skeletons */
+@import "./skeletons/catalog-skeleton.css";
+@import "./skeletons/category-skeleton.css";
+@import "./skeletons/product-skeleton.css";
+
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

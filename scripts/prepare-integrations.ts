@@ -1,5 +1,5 @@
-import { IntegrationEngine } from "../src/modules/integrations/engine/IntegrationEngine";
-import { SourceRegistry } from "../src/modules/integrations/registry/SourceRegistry";
+import { IntegrationEngine } from "../admin/ui/src/modules/integrations/engine/IntegrationEngine";
+import { SourceRegistry } from "../admin/ui/src/modules/integrations/registry/SourceRegistry";
 
 async function main() {
   console.log("🌐 Preparando integraciones registradas...");

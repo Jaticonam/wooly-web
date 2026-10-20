@@ -2,7 +2,7 @@ import {
 dashboardEngine
 }
 from
-"../src/modules/integrations/dashboard";
+"../admin/ui/src/modules/integrations/dashboard";
 
 dashboardEngine
 .build()

@@ -30,6 +30,7 @@ import {
 } from "@wooly/contracts/catalog/domain/CatalogPublicPublication";
 
 import {
+  prepareCatalogPublicationIdentity,
   createDefaultCatalogPublicationIdentity,
 } from "@wooly/contracts/catalog/domain/CatalogPublicationIdentity";
 
@@ -196,10 +197,27 @@ function createProvider(
   };
 }
 
+let requestSequence =
+  0;
+
+const nextRequestId =
+  (): string => {
+    requestSequence += 1;
+
+    return `checkout-request-${String(
+      requestSequence,
+    ).padStart(
+      4,
+      "0",
+    )}`;
+  };
+
 function renderCheckout({
   composition,
   resolution,
   provider,
+  brandId =
+    "b-wooly",
 }: {
   composition:
     CatalogComposition;
@@ -207,6 +225,8 @@ function renderCheckout({
     CatalogCompositionResolution;
   provider:
     CatalogPublicationProvider | null;
+  brandId?:
+    string | null;
 }) {
   return render(
     <CatalogPublishCheckout
@@ -224,6 +244,12 @@ function renderCheckout({
       campaignSummary="Campañas"
       publicationProvider={
         provider
+      }
+      brandId={
+        brandId
+      }
+      createRequestId={
+        nextRequestId
       }
     />,
   );
@@ -376,8 +402,18 @@ describe(
           publish,
         ).toHaveBeenCalledWith(
           expect.objectContaining({
+            brandId:
+              "b-wooly",
+            requestId:
+              expect.stringMatching(
+                /^checkout-request-\d{4}$/,
+              ),
             composition,
-            publicationIdentity,
+            publicationIdentity:
+              prepareCatalogPublicationIdentity(
+                publicationIdentity,
+                "Catálogo Mayorista",
+              ),
             resolvedProductIds: [
               "CAT-ONLY",
               "CAMPAIGN-ONLY",
@@ -570,6 +606,187 @@ describe(
         ).toHaveBeenCalledTimes(
           2,
         );
+
+        // El reintento reutiliza la misma clave de idempotencia.
+        expect(
+          publish.mock.calls[1]?.[0]
+            .requestId,
+        ).toBe(
+          publish.mock.calls[0]?.[0]
+            .requestId,
+        );
+      },
+    );
+
+    it(
+      "usa otra clave de idempotencia cuando cambia el contenido",
+      async () => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >(
+            async (
+              input,
+            ) =>
+              createPublication(
+                input,
+                `PUB-${input.resolvedProductIds.join("-")}`,
+              ),
+          );
+
+        const provider =
+          createProvider(
+            publish,
+          );
+
+        const composition =
+          createComposition({
+            categoryIds: [
+              "flores",
+            ],
+            campaignIds: [
+              "cyber-wooly",
+            ],
+          });
+
+        const view =
+          renderCheckout({
+            composition,
+            resolution:
+              createResolution([
+                "P-1",
+              ]),
+            provider,
+          });
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await screen.findByText(
+          /\/catalogo\/pdf\?id=PUB-P-1/,
+        );
+
+        view.rerender(
+          <CatalogPublishCheckout
+            composition={
+              composition
+            }
+            resolution={
+              createResolution([
+                "P-1",
+                "P-2",
+              ])
+            }
+            publicationIdentity={
+              publicationIdentity
+            }
+            modeLabel="Selección"
+            categorySummary="Categorías"
+            campaignSummary="Campañas"
+            publicationProvider={
+              provider
+            }
+            brandId="b-wooly"
+            createRequestId={
+              nextRequestId
+            }
+          />,
+        );
+
+        fireEvent.click(
+          await screen.findByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await waitFor(
+          () => {
+            expect(
+              publish,
+            ).toHaveBeenCalledTimes(
+              2,
+            );
+          },
+        );
+
+        expect(
+          publish.mock.calls[1]?.[0]
+            .requestId,
+        ).not.toBe(
+          publish.mock.calls[0]?.[0]
+            .requestId,
+        );
+      },
+    );
+
+    it(
+      "no llama al provider sin marca de sesión Admin",
+      async () => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >();
+
+        renderCheckout({
+          composition:
+            createComposition({
+              categoryIds: [
+                "flores",
+              ],
+              campaignIds: [
+                "cyber-wooly",
+              ],
+            }),
+          resolution:
+            createResolution([
+              "P-1",
+            ]),
+          provider:
+            createProvider(
+              publish,
+            ),
+          brandId:
+            null,
+        });
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await waitFor(
+          () => {
+            expect(
+              screen.queryByRole(
+                "button",
+                {
+                  name:
+                    "Generar enlace público",
+                },
+              ),
+            ).not.toBeInTheDocument();
+          },
+        );
+
+        expect(
+          publish,
+        ).not.toHaveBeenCalled();
       },
     );
   },

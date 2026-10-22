@@ -22,6 +22,14 @@ export const catalogPublicationRuntimeComposition =
     getApplicationConfig(),
     runtimeMode,
     {
+      publishBaseUrl:
+        String(
+          import.meta.env
+            .VITE_JUNG_CORE_ADMIN_BASE_URL ??
+            "",
+        ).trim() ||
+        "/jung-core",
+
       createHttpCatalogPublicationProvider:
         (
           options,

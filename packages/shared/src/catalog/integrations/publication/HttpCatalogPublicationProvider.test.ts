@@ -20,8 +20,21 @@ import {
   HttpCatalogPublicationProviderError,
 } from "./HttpCatalogPublicationProvider";
 
+import type {
+  PublishCatalogInput,
+} from "../../providers/CatalogPublicationProvider";
+
 const HTTPS_URL =
   "https://api.example.com/catalog-publications/";
+
+const PUBLISH_BASE =
+  "/jung-core";
+
+const BRAND_ID =
+  "brand wooly/1";
+
+const REQUEST_ID =
+  "3f6c1e2a-9b4d-4c7e-8a1f-2d3e4f5a6b7c";
 
 const FIXED_PUBLICATION = {
   publicId:
@@ -58,6 +71,39 @@ const FIXED_PUBLICATION = {
   version:
     1,
 } as const;
+
+function coreEnvelope(
+  publication:
+    unknown = FIXED_PUBLICATION,
+): string {
+  return JSON.stringify({
+    success:
+      true,
+
+    message:
+      "Catálogo publicado.",
+
+    data: {
+      publicId:
+        (publication as { publicId: string })
+          .publicId,
+
+      status:
+        "active",
+
+      replayed:
+        false,
+
+      publication,
+
+      revokedAt:
+        null,
+
+      notices:
+        [],
+    },
+  });
+}
 
 function jsonResponse(
   body:
@@ -117,6 +163,31 @@ function abortableFetch() {
         },
       ),
   );
+}
+
+function publishInput(
+  overrides:
+    Partial<PublishCatalogInput> = {},
+): PublishCatalogInput {
+  return {
+    brandId:
+      BRAND_ID,
+
+    requestId:
+      REQUEST_ID,
+
+    composition:
+      FIXED_PUBLICATION.composition,
+
+    publicationIdentity:
+      FIXED_PUBLICATION.publicationIdentity,
+
+    resolvedProductIds: [
+      "P-1",
+    ],
+
+    ...overrides,
+  };
 }
 
 async function captureProviderError(
@@ -184,14 +255,13 @@ describe(
     });
 
     it(
-      "publica por POST JSON sin enviar identidad remota",
+      "publica por POST en la ruta de marca de JUNG CORE con el contrato v1",
       async () => {
         vi.mocked(fetch)
           .mockResolvedValue(
             jsonResponse(
-              JSON.stringify(
-                FIXED_PUBLICATION,
-              ),
+              coreEnvelope(),
+              201,
             ),
           );
 
@@ -199,10 +269,22 @@ describe(
           new HttpCatalogPublicationProvider({
             baseUrl:
               HTTPS_URL,
+
+            publishBaseUrl:
+              `${PUBLISH_BASE}/`,
           });
 
         await expect(
           provider.publish({
+            brandId:
+              ` ${BRAND_ID} `,
+
+            requestId:
+              REQUEST_ID,
+
+            sourceReference:
+              " CAT-2026-3F6C1E2A ",
+
             composition:
               FIXED_PUBLICATION.composition,
 
@@ -237,7 +319,7 @@ describe(
         expect(
           url,
         ).toBe(
-          "https://api.example.com/catalog-publications",
+          "/jung-core/catalog-commercial/brands/brand%20wooly%2F1/catalog-publications",
         );
 
         expect(
@@ -253,6 +335,12 @@ describe(
             "application/json",
         });
 
+        expect(
+          init,
+        ).not.toHaveProperty(
+          "credentials",
+        );
+
         const body =
           JSON.parse(
             String(
@@ -263,6 +351,18 @@ describe(
         expect(
           body,
         ).toEqual({
+          contractVersion:
+            "jung.catalog-publication.v1",
+
+          appId:
+            "wooly-web",
+
+          requestId:
+            REQUEST_ID,
+
+          compositionSchema:
+            "catalog-composition.v1",
+
           composition:
             FIXED_PUBLICATION.composition,
 
@@ -275,73 +375,86 @@ describe(
 
           validityDays:
             7,
+
+          sourceReference:
+            "CAT-2026-3F6C1E2A",
         });
 
-        expect(
-          body,
-        ).not.toHaveProperty(
-          "publicId",
-        );
+        for (
+          const forbidden
+          of [
+            "brandId",
+            "publicId",
+            "publishedAt",
+            "validUntil",
+            "strategy",
+            "version",
+            "createdById",
+          ]
+        ) {
+          expect(
+            body,
+          ).not.toHaveProperty(
+            forbidden,
+          );
+        }
+      },
+    );
 
-        expect(
-          body,
-        ).not.toHaveProperty(
-          "publishedAt",
-        );
+    it(
+      "acepta la repetición idempotente (200) de JUNG CORE",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            jsonResponse(
+              coreEnvelope(),
+              200,
+            ),
+          );
 
-        expect(
-          body,
-        ).not.toHaveProperty(
-          "validUntil",
-        );
+        await expect(
+          new HttpCatalogPublicationProvider({
+            baseUrl:
+              HTTPS_URL,
 
-        expect(
-          body,
-        ).not.toHaveProperty(
-          "version",
+            publishBaseUrl:
+              PUBLISH_BASE,
+          }).publish(
+            publishInput(),
+          ),
+        ).resolves.toEqual(
+          FIXED_PUBLICATION,
         );
       },
     );
 
     it(
-      "omite validityDays cuando no fue especificado",
+      "omite validityDays y sourceReference cuando no se especifican",
       async () => {
         vi.mocked(fetch)
           .mockResolvedValue(
             jsonResponse(
-              JSON.stringify(
-                FIXED_PUBLICATION,
-              ),
+              coreEnvelope(),
             ),
           );
 
-        const provider =
-          new HttpCatalogPublicationProvider({
-            baseUrl:
-              HTTPS_URL,
-          });
+        await new HttpCatalogPublicationProvider({
+          baseUrl:
+            HTTPS_URL,
 
-        await provider.publish({
-          composition:
-            FIXED_PUBLICATION.composition,
-
-          publicationIdentity:
-            FIXED_PUBLICATION.publicationIdentity,
-
-          resolvedProductIds: [
-            "P-1",
-          ],
-        });
-
-        const init =
-          vi.mocked(fetch)
-            .mock
-            .calls[0]?.[1];
+          publishBaseUrl:
+            PUBLISH_BASE,
+        }).publish(
+          publishInput(),
+        );
 
         const body =
           JSON.parse(
             String(
-              init?.body,
+              vi.mocked(fetch)
+                .mock
+                .calls[0]?.[1]
+                ?.body,
             ),
           ) as Record<string, unknown>;
 
@@ -349,6 +462,199 @@ describe(
           body,
         ).not.toHaveProperty(
           "validityDays",
+        );
+
+        expect(
+          body,
+        ).not.toHaveProperty(
+          "sourceReference",
+        );
+      },
+    );
+
+    it.each([
+      [
+        "recurso directo sin sobre",
+        () => JSON.stringify(FIXED_PUBLICATION),
+      ],
+      [
+        "sobre sin éxito",
+        () =>
+          JSON.stringify({
+            success: false,
+            data: { publicId: FIXED_PUBLICATION.publicId, publication: FIXED_PUBLICATION },
+          }),
+      ],
+      [
+        "publicación inválida en el sobre",
+        () =>
+          coreEnvelope({
+            ...FIXED_PUBLICATION,
+            version: 2,
+          }),
+      ],
+    ])(
+      "rechaza respuesta de publicación inválida: %s",
+      async (
+        _label,
+        body,
+      ) => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            jsonResponse(
+              body(),
+            ),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              new HttpCatalogPublicationProvider({
+                baseUrl:
+                  HTTPS_URL,
+
+                publishBaseUrl:
+                  PUBLISH_BASE,
+              }).publish(
+                publishInput(),
+              ),
+          );
+
+        expect(
+          error.code,
+        ).toBe(
+          "INVALID_PUBLICATION_RESPONSE",
+        );
+      },
+    );
+
+    it(
+      "rechaza un sobre cuyo publicId no coincide con el recurso",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            jsonResponse(
+              JSON.stringify({
+                success:
+                  true,
+
+                data: {
+                  publicId:
+                    "OTRO",
+
+                  publication:
+                    FIXED_PUBLICATION,
+                },
+              }),
+            ),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              new HttpCatalogPublicationProvider({
+                baseUrl:
+                  HTTPS_URL,
+
+                publishBaseUrl:
+                  PUBLISH_BASE,
+              }).publish(
+                publishInput(),
+              ),
+          );
+
+        expect(
+          error.code,
+        ).toBe(
+          "PUBLIC_ID_MISMATCH",
+        );
+      },
+    );
+
+    it.each([
+      [
+        "sin base Admin",
+        {},
+        publishInput(),
+      ],
+      [
+        "sin marca",
+        {
+          publishBaseUrl:
+            PUBLISH_BASE,
+        },
+        publishInput({
+          brandId:
+            "  ",
+        }),
+      ],
+      [
+        "requestId inválido",
+        {
+          publishBaseUrl:
+            PUBLISH_BASE,
+        },
+        publishInput({
+          requestId:
+            "corto",
+        }),
+      ],
+    ] as const)(
+      "no envía la solicitud %s",
+      async (
+        _label,
+        options,
+        input,
+      ) => {
+        const error =
+          await captureProviderError(
+            () =>
+              new HttpCatalogPublicationProvider({
+                baseUrl:
+                  HTTPS_URL,
+
+                ...options,
+              }).publish(
+                input,
+              ),
+          );
+
+        expect(
+          error.code,
+        ).toBe(
+          "CONFIGURATION_ERROR",
+        );
+
+        expect(
+          fetch,
+        ).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each([
+      "//evil.example/jung-core",
+      "/jung-core?x=1",
+      "http://core.example",
+    ])(
+      "rechaza la base Admin insegura %s",
+      (
+        publishBaseUrl,
+      ) => {
+        const error =
+          captureConfigurationError(
+            () =>
+              new HttpCatalogPublicationProvider({
+                baseUrl:
+                  HTTPS_URL,
+
+                publishBaseUrl,
+              }),
+          );
+
+        expect(
+          error.code,
+        ).toBe(
+          "CONFIGURATION_ERROR",
         );
       },
     );
@@ -453,17 +759,12 @@ describe(
               new HttpCatalogPublicationProvider({
                 baseUrl:
                   HTTPS_URL,
-              }).publish({
-                composition:
-                  FIXED_PUBLICATION.composition,
 
-                publicationIdentity:
-                  FIXED_PUBLICATION.publicationIdentity,
-
-                resolvedProductIds: [
-                  "P-1",
-                ],
-              }),
+                publishBaseUrl:
+                  PUBLISH_BASE,
+              }).publish(
+                publishInput(),
+              ),
           );
 
         expect(
@@ -482,9 +783,12 @@ describe(
     );
 
     it.each([
+      [400, "HTTP_400", false],
       [401, "HTTP_401", false],
       [403, "HTTP_403", false],
       [409, "HTTP_409", false],
+      [410, "HTTP_410", false],
+      [413, "HTTP_413", false],
       [422, "HTTP_422", false],
       [429, "HTTP_429", true],
       [500, "HTTP_5XX", true],
@@ -511,17 +815,12 @@ describe(
               new HttpCatalogPublicationProvider({
                 baseUrl:
                   HTTPS_URL,
-              }).publish({
-                composition:
-                  FIXED_PUBLICATION.composition,
 
-                publicationIdentity:
-                  FIXED_PUBLICATION.publicationIdentity,
-
-                resolvedProductIds: [
-                  "P-1",
-                ],
-              }),
+                publishBaseUrl:
+                  PUBLISH_BASE,
+              }).publish(
+                publishInput(),
+              ),
           );
 
         expect(

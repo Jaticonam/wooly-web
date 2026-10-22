@@ -18,6 +18,24 @@ import type {
  * publishedAt, validUntil y versión del recurso.
  */
 export interface PublishCatalogInput {
+  /**
+   * Marca de la sesión Admin (`AdminAuthContext`), nunca de
+   * configuración. JUNG CORE la recibe en la ruta.
+   */
+  brandId:
+    string;
+
+  /**
+   * Clave de idempotencia (16–80 caracteres `[A-Za-z0-9_-]`).
+   * Se reutiliza al reintentar la misma publicación.
+   */
+  requestId:
+    string;
+
+  /** Referencia opcional al borrador local; nunca es pública. */
+  sourceReference?:
+    string | null;
+
   composition:
     CatalogComposition;
 

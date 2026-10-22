@@ -25,6 +25,10 @@ import {
 } from "@wooly/shared/catalog/providers/DefaultCatalogPublicationProvider";
 
 import {
+  useOptionalAdminAuth,
+} from "@/modules/admin-auth/context/AdminAuthContext";
+
+import {
   createWoolyCatalogCompositionId,
   createWoolyCatalogDocumentRequest,
   prepareWoolyCatalogDocument,
@@ -76,7 +80,22 @@ interface CatalogPublishCheckoutProps {
 
   publicationProvider?:
     CatalogPublicationProvider | null;
+
+  /**
+   * Marca para JUNG CORE. Por defecto, la de la sesión Admin
+   * (`AdminAuthContext.configuration.brandId`).
+   */
+  brandId?:
+    string | null;
+
+  /** Generador de claves de idempotencia (inyectable en pruebas). */
+  createRequestId?:
+    () => string;
 }
+
+const createDefaultRequestId =
+  (): string =>
+    globalThis.crypto.randomUUID();
 
 const copyToClipboard =
   async (
@@ -186,7 +205,35 @@ export default function CatalogPublishCheckout({
   campaignSummary,
   publicationProvider =
     catalogPublicationProvider,
+  brandId:
+    brandIdOverride,
+  createRequestId =
+    createDefaultRequestId,
 }: CatalogPublishCheckoutProps) {
+  const adminAuth =
+    useOptionalAdminAuth();
+
+  const brandId =
+    brandIdOverride !==
+      undefined
+      ? brandIdOverride
+      : adminAuth
+          ?.configuration
+          ?.brandId ??
+        null;
+
+  /*
+   * Una clave por publicationKey: los reintentos de la misma
+   * publicación reutilizan el requestId (JUNG CORE responde 200
+   * con la existente); cualquier cambio de contenido genera otro.
+   */
+  const requestIdRef =
+    useRef<{
+      key: string;
+      requestId: string;
+    } | null>(
+      null,
+    );
   const [
     copyStatus,
     setCopyStatus,
@@ -447,11 +494,30 @@ export default function CatalogPublishCheckout({
         "",
       );
 
+      if (
+        requestIdRef.current
+          ?.key !==
+        requestKey
+      ) {
+        requestIdRef.current = {
+          key:
+            requestKey,
+          requestId:
+            createRequestId(),
+        };
+      }
+
       try {
         const result =
           await publishResolvedCatalog({
             provider:
               publicationProvider,
+
+            brandId,
+
+            requestId:
+              requestIdRef.current
+                .requestId,
 
             composition,
             publicationIdentity,

@@ -22,6 +22,7 @@ import {
 } from "@wooly/contracts/catalog/domain/CatalogPublicPublication";
 
 import {
+  prepareCatalogPublicationIdentity,
   createDefaultCatalogPublicationIdentity,
 } from "@wooly/contracts/catalog/domain/CatalogPublicationIdentity";
 
@@ -176,9 +177,143 @@ const product = ({
     0,
 });
 
+const BRAND_ID =
+  "b-wooly";
+
+const REQUEST_ID =
+  "3f6c1e2a-9b4d-4c7e-8a1f-2d3e4f5a6b7c";
+
 describe(
   "PublishResolvedCatalog",
   () => {
+    it.each([
+      [
+        "",
+        "Catálogo Mayorista",
+      ],
+      [
+        "   ",
+        "Catálogo Mayorista",
+      ],
+      [
+        "  Catálogo octubre  ",
+        "Catálogo octubre",
+      ],
+    ])(
+      "envía un título válido para JUNG CORE (%p → %p)",
+      async (
+        title,
+        expected,
+      ) => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >(
+            async (
+              input,
+            ) =>
+              createPublication(
+                input,
+                "PUB-TITLE",
+              ),
+          );
+
+        const publicationIdentity = {
+          ...createDefaultCatalogPublicationIdentity(),
+          title,
+          description:
+            "  Mayorista  ",
+        };
+
+        const result =
+          await publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
+            provider:
+              createProvider(
+                publish,
+              ),
+            composition:
+              createEmptyCatalogComposition(
+                "hybrid",
+              ),
+            publicationIdentity,
+            resolution:
+              createResolution({
+                productIds: [
+                  "P-1",
+                ],
+                automaticProductIds: [
+                  "P-1",
+                ],
+              }),
+          });
+
+        expect(
+          publish.mock.calls[0]?.[0]
+            .publicationIdentity,
+        ).toMatchObject({
+          title:
+            expected,
+          description:
+            "Mayorista",
+        });
+
+        // El estado de la UI conserva la identidad tal como la editó la persona.
+        expect(
+          result.publicationIdentity,
+        ).toBe(
+          publicationIdentity,
+        );
+      },
+    );
+
+    it.each([
+      null,
+      "",
+      "   ",
+    ])(
+      "no publica sin marca de sesión Admin (%p)",
+      async (
+        brandId,
+      ) => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >();
+
+        await expect(
+          publishResolvedCatalog({
+            brandId,
+            requestId:
+              REQUEST_ID,
+            provider:
+              createProvider(
+                publish,
+              ),
+            composition:
+              createEmptyCatalogComposition(
+                "hybrid",
+              ),
+            publicationIdentity:
+              createDefaultCatalogPublicationIdentity(),
+            resolution:
+              createResolution(),
+          }),
+        ).resolves.toMatchObject({
+          status:
+            "unavailable",
+        });
+
+        expect(
+          publish,
+        ).not.toHaveBeenCalled();
+      },
+    );
+
+
     it(
       "falla cerrado cuando no existe provider",
       async () => {
@@ -192,6 +327,10 @@ describe(
 
         await expect(
           publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
             provider:
               null,
             composition,
@@ -218,6 +357,10 @@ describe(
 
         const result =
           await publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
             provider:
               createProvider(
                 publish,
@@ -262,6 +405,10 @@ describe(
 
         const result =
           await publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
             provider:
               createProvider(
                 publish,
@@ -347,6 +494,10 @@ describe(
 
         const result =
           await publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
             provider:
               createProvider(
                 publish,
@@ -367,8 +518,16 @@ describe(
         expect(
           publish,
         ).toHaveBeenCalledWith({
+          brandId:
+            BRAND_ID,
+          requestId:
+            REQUEST_ID,
           composition,
-          publicationIdentity,
+          publicationIdentity:
+            prepareCatalogPublicationIdentity(
+              publicationIdentity,
+              "Catálogo Mayorista",
+            ),
           resolvedProductIds: [
             "CAT-ONLY",
             "CAMPAIGN-ONLY",
@@ -482,6 +641,10 @@ describe(
           );
 
         await publishResolvedCatalog({
+          brandId:
+            BRAND_ID,
+          requestId:
+            REQUEST_ID,
           provider:
             createProvider(
               publish,
@@ -549,6 +712,10 @@ describe(
           );
 
         await publishResolvedCatalog({
+          brandId:
+            BRAND_ID,
+          requestId:
+            REQUEST_ID,
           provider:
             createProvider(
               publish,
@@ -609,6 +776,10 @@ describe(
 
         const result =
           await publishResolvedCatalog({
+            brandId:
+              BRAND_ID,
+            requestId:
+              REQUEST_ID,
             provider:
               createProvider(
                 publish,

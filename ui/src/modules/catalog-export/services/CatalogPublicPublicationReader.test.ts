@@ -294,6 +294,44 @@ describe(
     );
 
     it(
+      "declara revoked cuando JUNG CORE responde 410",
+      async () => {
+        const result =
+          await readCatalogPublicPublication({
+            publicId:
+              "PUB-AbC123",
+
+            provider:
+              createProvider(
+                async () => {
+                  throw Object.assign(
+                    new Error(
+                      "HTTP 410",
+                    ),
+                    {
+                      code:
+                        "HTTP_410",
+                      status:
+                        410,
+                    },
+                  );
+                },
+              ),
+          });
+
+        expect(
+          result,
+        ).toEqual({
+          status:
+            "revoked",
+
+          publication:
+            null,
+        });
+      },
+    );
+
+    it(
       "declara expired cuando validUntil ya venció",
       async () => {
         const result =

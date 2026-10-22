@@ -10,6 +10,9 @@ import type {
 } from "./CatalogPublicationProvider";
 
 type ExpectedPublishInputKeys =
+  | "brandId"
+  | "requestId"
+  | "sourceReference"
   | "composition"
   | "publicationIdentity"
   | "resolvedProductIds"
@@ -102,6 +105,9 @@ describe(
         const allowedKeys:
           readonly (keyof PublishCatalogInput)[] =
         [
+          "brandId",
+          "requestId",
+          "sourceReference",
           "composition",
           "publicationIdentity",
           "resolvedProductIds",

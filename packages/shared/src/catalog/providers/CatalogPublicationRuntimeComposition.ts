@@ -11,6 +11,9 @@ export interface HttpCatalogPublicationProviderFactoryOptions {
   readonly baseUrl:
     string;
 
+  readonly publishBaseUrl?:
+    string;
+
   readonly allowInsecureHttp:
     boolean;
 }
@@ -24,6 +27,13 @@ export type HttpCatalogPublicationProviderFactory =
 export interface CatalogPublicationRuntimeCompositionDependencies {
   readonly createHttpCatalogPublicationProvider?:
     HttpCatalogPublicationProviderFactory;
+
+  /**
+   * Base Admin de JUNG CORE del mismo origen (proxy `/jung-core`).
+   * Solo la usa el panel para publicar; el sitio público solo lee.
+   */
+  readonly publishBaseUrl?:
+    string;
 }
 
 export interface CatalogPublicationRuntimeComposition {
@@ -99,6 +109,15 @@ export function createCatalogPublicationRuntimeComposition(
       createHttpProvider({
         baseUrl:
           apiBaseUrl,
+
+        ...(
+          dependencies.publishBaseUrl
+            ? {
+                publishBaseUrl:
+                  dependencies.publishBaseUrl,
+              }
+            : {}
+        ),
 
         allowInsecureHttp,
       }),

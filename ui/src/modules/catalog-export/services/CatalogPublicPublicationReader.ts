@@ -18,6 +18,7 @@ export type CatalogPublicPublicationReaderStatus =
   | "ready"
   | "not-found"
   | "expired"
+  | "revoked"
   | "error";
 
 export interface CatalogPublicPublicationReaderResult {
@@ -154,7 +155,21 @@ export async function readCatalogPublicPublication(
       "ready",
       publication,
     );
-  } catch {
+  } catch (error: unknown) {
+    // JUNG CORE responde 410 cuando la publicación fue revocada (P2).
+    if (
+      error !== null &&
+      typeof error ===
+        "object" &&
+      (error as { code?: unknown })
+        .code ===
+        "HTTP_410"
+    ) {
+      return createResult(
+        "revoked",
+      );
+    }
+
     return createResult(
       "error",
     );

@@ -17,10 +17,13 @@ export type HttpCatalogPublicationProviderErrorCode =
   | "CONFIGURATION_ERROR"
   | "HTTP_TIMEOUT"
   | "HTTP_NETWORK_ERROR"
+  | "HTTP_400"
   | "HTTP_401"
   | "HTTP_403"
   | "HTTP_404"
   | "HTTP_409"
+  | "HTTP_410"
+  | "HTTP_413"
   | "HTTP_422"
   | "HTTP_429"
   | "HTTP_5XX"
@@ -78,7 +81,19 @@ export class HttpCatalogPublicationProviderError
 }
 
 export interface HttpCatalogPublicationProviderOptions {
+  /**
+   * Colección pública de lectura de JUNG CORE, por ejemplo
+   * `https://core.example/public/catalog/publications`.
+   */
   readonly baseUrl:
+    string;
+
+  /**
+   * Base Admin de JUNG CORE en el mismo origen que el panel
+   * (por defecto `/jung-core`). Solo se usa al publicar; sin
+   * ella el provider es de solo lectura.
+   */
+  readonly publishBaseUrl?:
     string;
 
   readonly timeoutMs?:
@@ -235,6 +250,9 @@ function mapHttpStatus(
     undefined,
 ): HttpCatalogPublicationProviderErrorCode {
   switch (status) {
+    case 400:
+      return "HTTP_400";
+
     case 401:
       return "HTTP_401";
 
@@ -246,6 +264,12 @@ function mapHttpStatus(
 
     case 409:
       return "HTTP_409";
+
+    case 410:
+      return "HTTP_410";
+
+    case 413:
+      return "HTTP_413";
 
     case 422:
       return "HTTP_422";
@@ -339,6 +363,106 @@ function sanitizeRemotePublication(
   return publication;
 }
 
+/** Contrato acordado con JUNG CORE (W12-04B.4). */
+export const CATALOG_PUBLICATION_CONTRACT_VERSION =
+  "jung.catalog-publication.v1";
+
+export const CATALOG_PUBLICATION_COMPOSITION_SCHEMA =
+  "catalog-composition.v1";
+
+export const CATALOG_PUBLICATION_APP_ID =
+  "wooly-web";
+
+const REQUEST_ID_PATTERN =
+  /^[A-Za-z0-9_-]{16,80}$/;
+
+function normalizePublishBaseUrl(
+  value:
+    string |
+    undefined,
+
+  allowInsecureHttp:
+    boolean,
+): string | null {
+  const normalized =
+    String(value ?? "").trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  // Ruta del mismo origen (proxy del panel), p. ej. "/jung-core".
+  if (
+    normalized.startsWith("/") &&
+    !normalized.startsWith("//")
+  ) {
+    if (
+      /[?#\\]/.test(
+        normalized,
+      )
+    ) {
+      throw configurationError(
+        "La ruta base de publicación no es válida.",
+      );
+    }
+
+    return normalized.replace(
+      /\/+$/,
+      "",
+    );
+  }
+
+  return normalizeBaseUrl(
+    normalized,
+    allowInsecureHttp,
+  );
+}
+
+function readEnvelopePublication(
+  value:
+    unknown,
+): CatalogPublicPublication {
+  const data =
+    value !== null &&
+    typeof value ===
+      "object" &&
+    !Array.isArray(value) &&
+    (value as { success?: unknown })
+      .success ===
+      true
+      ? (value as { data?: unknown })
+          .data
+      : undefined;
+
+  const publication =
+    sanitizeRemotePublication(
+      data !== null &&
+        typeof data ===
+          "object"
+        ? (data as { publication?: unknown })
+            .publication
+        : undefined,
+    );
+
+  if (
+    (data as { publicId?: unknown })
+      .publicId !==
+    publication.publicId
+  ) {
+    throw new HttpCatalogPublicationProviderError(
+      "PUBLIC_ID_MISMATCH",
+      "JUNG CORE devolvió un Public ID inconsistente.",
+
+      {
+        retryable:
+          false,
+      },
+    );
+  }
+
+  return publication;
+}
+
 export class HttpCatalogPublicationProvider
   implements CatalogPublicationProvider {
   readonly source =
@@ -346,6 +470,9 @@ export class HttpCatalogPublicationProvider
 
   private readonly baseUrl:
     string;
+
+  private readonly publishBaseUrl:
+    string | null;
 
   private readonly timeoutMs?:
     number;
@@ -364,6 +491,13 @@ export class HttpCatalogPublicationProvider
           true,
       );
 
+    this.publishBaseUrl =
+      normalizePublishBaseUrl(
+        options.publishBaseUrl,
+        options.allowInsecureHttp ===
+          true,
+      );
+
     this.timeoutMs =
       normalizeTimeout(
         options.timeoutMs,
@@ -377,9 +511,42 @@ export class HttpCatalogPublicationProvider
     input:
       PublishCatalogInput,
   ): Promise<CatalogPublicPublication> {
+    if (!this.publishBaseUrl) {
+      throw configurationError(
+        "La publicación requiere la base Admin de JUNG CORE.",
+      );
+    }
+
+    const brandId =
+      String(input.brandId ?? "").trim();
+
+    if (!brandId) {
+      throw configurationError(
+        "La publicación requiere la marca de la sesión Admin.",
+      );
+    }
+
+    if (
+      !REQUEST_ID_PATTERN.test(
+        input.requestId,
+      )
+    ) {
+      throw configurationError(
+        "La clave de idempotencia de la publicación no es válida.",
+      );
+    }
+
+    const url =
+      `${this.publishBaseUrl}/catalog-commercial/brands/${encodeURIComponent(
+        brandId,
+      )}/catalog-publications`;
+
+    const sourceReference =
+      String(input.sourceReference ?? "").trim();
+
     const result =
       await requestJson<unknown>(
-        this.baseUrl,
+        url,
 
         {
           source:
@@ -395,6 +562,18 @@ export class HttpCatalogPublicationProvider
 
           body:
             JSON.stringify({
+              contractVersion:
+                CATALOG_PUBLICATION_CONTRACT_VERSION,
+
+              appId:
+                CATALOG_PUBLICATION_APP_ID,
+
+              requestId:
+                input.requestId,
+
+              compositionSchema:
+                CATALOG_PUBLICATION_COMPOSITION_SCHEMA,
+
               composition:
                 input.composition,
 
@@ -410,6 +589,14 @@ export class HttpCatalogPublicationProvider
                   ? {
                       validityDays:
                         input.validityDays,
+                    }
+                  : {}
+              ),
+
+              ...(
+                sourceReference
+                  ? {
+                      sourceReference,
                     }
                   : {}
               ),
@@ -442,7 +629,7 @@ export class HttpCatalogPublicationProvider
       );
     }
 
-    return sanitizeRemotePublication(
+    return readEnvelopePublication(
       result.data,
     );
   }

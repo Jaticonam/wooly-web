@@ -10,8 +10,9 @@ import type {
   CatalogPublicPublication,
 } from "@wooly/contracts/catalog/domain/CatalogPublicPublication";
 
-import type {
-  CatalogPublicationIdentity,
+import {
+  prepareCatalogPublicationIdentity,
+  type CatalogPublicationIdentity,
 } from "@wooly/contracts/catalog/domain/CatalogPublicationIdentity";
 
 import type {
@@ -72,6 +73,17 @@ export interface PublishResolvedCatalogInput {
   provider:
     CatalogPublicationProvider | null;
 
+  /** Marca de la sesión Admin; sin ella la publicación no está disponible. */
+  brandId:
+    string | null;
+
+  /** Clave de idempotencia reutilizada en reintentos de la misma publicación. */
+  requestId:
+    string;
+
+  sourceReference?:
+    string | null;
+
   composition:
     CatalogComposition;
 
@@ -84,6 +96,14 @@ export interface PublishResolvedCatalogInput {
   validityDays?:
     number;
 }
+
+/**
+ * JUNG CORE exige un título de 1–120 caracteres y WOOLY permite dejarlo
+ * vacío. Se usa el mismo título general que muestra el PDF
+ * (`buildCatalogPdfCopy`) para que la publicación sea válida y legible.
+ */
+export const CATALOG_PUBLICATION_FALLBACK_TITLE =
+  "Catálogo Mayorista";
 
 const hasIncompleteResolution = (
   resolution:
@@ -110,6 +130,9 @@ const hasIncompleteResolution = (
  */
 export async function publishResolvedCatalog({
   provider,
+  brandId,
+  requestId,
+  sourceReference,
   composition,
   publicationIdentity,
   resolution,
@@ -121,7 +144,10 @@ export async function publishResolvedCatalog({
       publicationIdentity,
     };
 
-  if (!provider) {
+  if (
+    !provider ||
+    !String(brandId ?? "").trim()
+  ) {
     return {
       ...context,
       status:
@@ -160,8 +186,22 @@ export async function publishResolvedCatalog({
   try {
     const publication =
       await provider.publish({
+        brandId:
+          String(brandId).trim(),
+        requestId,
+        ...(
+          sourceReference
+            ? {
+                sourceReference,
+              }
+            : {}
+        ),
         composition,
-        publicationIdentity,
+        publicationIdentity:
+          prepareCatalogPublicationIdentity(
+            publicationIdentity,
+            CATALOG_PUBLICATION_FALLBACK_TITLE,
+          ),
         resolvedProductIds: [
           ...resolution
             .productIds,

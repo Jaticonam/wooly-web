@@ -143,6 +143,44 @@ describe(
     );
 
     it(
+      "propaga la base Admin de publicación cuando se configura",
+      () => {
+        const factory =
+          vi.fn(
+            () =>
+              createProvider(),
+          );
+
+        createCatalogPublicationRuntimeComposition(
+          createConfig(
+            "https://core.example/public/catalog/publications",
+          ),
+          "production",
+          {
+            publishBaseUrl:
+              "/jung-core",
+
+            createHttpCatalogPublicationProvider:
+              factory,
+          },
+        );
+
+        expect(
+          factory,
+        ).toHaveBeenCalledWith({
+          baseUrl:
+            "https://core.example/public/catalog/publications",
+
+          publishBaseUrl:
+            "/jung-core",
+
+          allowInsecureHttp:
+            false,
+        });
+      },
+    );
+
+    it(
       "habilita HTTP inseguro solo para runtime no productivo",
       () => {
         const factory =

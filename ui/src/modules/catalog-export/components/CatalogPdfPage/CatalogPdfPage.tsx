@@ -48,6 +48,14 @@ const PUBLIC_PUBLICATION_STATE_COPY = {
       "El enlace no corresponde a una publicación disponible.",
   },
 
+  revoked: {
+    title:
+      "Este catálogo ya no está disponible",
+
+    description:
+      "La publicación fue retirada. Solicita un enlace actualizado.",
+  },
+
   expired: {
     title:
       "Este catálogo ha vencido",

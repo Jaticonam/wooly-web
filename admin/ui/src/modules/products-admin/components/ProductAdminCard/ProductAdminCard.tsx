@@ -115,9 +115,13 @@ export default function ProductAdminCard({
 
       <div className="product-admin-card__content">
         <div className="product-admin-card__identity">
-          <code>{product.code?.trim() || "Sin código"}</code>
-          <span className="product-admin-card__category">
-            {product.category}
+          <div className="product-admin-card__identifiers">
+            <code>{product.code?.trim() || "Sin código"}</code>
+            <span className="product-admin-card__category">{product.category}</span>
+          </div>
+          <span className={`product-admin-card__stock is-${presentation.stockTone}`}>
+            <Package size={12} aria-hidden="true" />
+            {presentation.stockLabel}
           </span>
         </div>
         <h2 title={product.title}>{product.title}</h2>
@@ -146,10 +150,6 @@ export default function ProductAdminCard({
             </div>
           ))}
         </div>
-        <span className={`product-admin-card__stock is-${presentation.stockTone}`}>
-          <Package size={12} aria-hidden="true" />
-          {presentation.stockLabel}
-        </span>
         <div className="product-admin-card__meta">
           {visibleCampaigns.length > 0 ? (
             <div className="product-admin-card__campaigns">

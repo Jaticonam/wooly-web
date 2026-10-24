@@ -122,3 +122,14 @@ it("omits missing price tiers rather than inventing volume prices", () => {
   expect(screen.queryByText("Docena (12u)")).not.toBeInTheDocument();
   expect(screen.queryByText(/por volumen/i)).not.toBeInTheDocument();
 });
+
+it("places the inventory chip alongside code and category", () => {
+  const { container } = render(
+    <ProductAdminCard product={product} campaignsById={campaigns} onSelect={() => undefined} />,
+  );
+  const identity = container.querySelector(".product-admin-card__identity");
+  expect(identity).toContainElement(screen.getByText("CT-554"));
+  expect(identity).toContainElement(screen.getByText("flores"));
+  expect(identity).toContainElement(screen.getByText("Disponible · 20"));
+  expect(container.querySelector(".product-admin-card__pricing .product-admin-card__stock")).toBeNull();
+});

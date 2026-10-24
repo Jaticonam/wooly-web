@@ -213,10 +213,15 @@
   gap: 23px;
   padding-top: 20px;
 }
-/* Detail is a photo viewer, not a cropped catalog card. */
+/* Product detail preserves the source image's intrinsic proportions.
+   Catalog cards have their own cropped media rules and are unaffected. */
+.product-detail-drawer__gallery {
+  align-items: start;
+}
 .product-detail-drawer__media {
+  display: block;
   width: 100%;
-  height: clamp(280px, 52vh, 480px);
+  height: auto;
   min-height: 0;
   aspect-ratio: auto;
   background: #ffffff;
@@ -225,12 +230,16 @@
   aspect-ratio: auto;
 }
 .product-detail-drawer__media > img {
-  width: auto;
+  display: block;
+  width: 100%;
   height: auto;
   max-width: 100%;
-  max-height: 100%;
+  max-height: none;
   object-fit: contain;
   object-position: center;
+}
+.product-detail-drawer__media > div[role="img"] {
+  min-height: 260px;
 }
 .product-detail-drawer__summary > div {
   gap: 7px 9px;

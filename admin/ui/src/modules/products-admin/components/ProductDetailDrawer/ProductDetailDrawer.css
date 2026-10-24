@@ -31,7 +31,18 @@
 .product-detail-drawer__status { background: #fff3e8; color: #9a3412; white-space: nowrap; }
 .product-detail-drawer__status.is-published { background: #dcfce7; color: #166534; }
 .product-detail-drawer__status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.product-detail-drawer__body { display: grid; gap: 16px; padding: 16px 22px 24px; }
+.product-detail-drawer__body {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px 20px;
+  padding: 16px 22px 24px;
+}
+.product-detail-drawer__overview,
+.product-detail-drawer__prices,
+.product-detail-drawer__section:has(> .product-detail-drawer__additional),
+.product-detail-drawer__section:has(> .product-detail-drawer__twoColumns),
+.product-detail-drawer__twoColumns { grid-column: 1 / -1; }
+.product-detail-drawer__body > .product-detail-drawer__section:last-child { grid-column: 1 / -1; }
 .product-detail-drawer__overview {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 116px;

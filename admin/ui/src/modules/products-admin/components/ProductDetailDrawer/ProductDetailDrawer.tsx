@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Images, Package, Tag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Images, Package, Tag, Send } from "lucide-react";
 
 import {
   Sheet,
@@ -19,6 +19,8 @@ interface ProductDetailDrawerProps {
   campaigns: readonly Campaign[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onPublish?: (product: Product) => void;
+  publishing?: boolean;
 }
 
 const PRICE_TIERS = [
@@ -48,6 +50,8 @@ export default function ProductDetailDrawer({
   campaigns,
   open,
   onOpenChange,
+  onPublish,
+  publishing = false,
 }: ProductDetailDrawerProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [hasImageError, setHasImageError] = useState(false);
@@ -62,6 +66,7 @@ export default function ProductDetailDrawer({
   const images = getImages(product);
   const selectedIndex = Math.min(activeImageIndex, Math.max(0, images.length - 1));
   const activeImage = images[selectedIndex];
+  const canPublish = Boolean(onPublish) && !["publicado", "published"].includes(String(product.status ?? "").toLowerCase());
   const presentation = resolveProductAdminPresentation(product);
   const operationalState = resolveProductAdminOperationalState(product, {
     imageLoadFailed: hasImageError,
@@ -88,79 +93,72 @@ export default function ProductDetailDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="product-detail-drawer !w-[min(95vw,760px)] !max-w-[760px]">
         <SheetHeader className="product-detail-drawer__header">
-          <span className="product-detail-drawer__heading">Detalle del producto</span>
-          <div className="product-detail-drawer__eyebrow">
-            <code>Código: {product.code?.trim() || "Sin código"}</code>
-            <span className="product-detail-drawer__identifier">Código de barras: {product.barcode ?? "Sin asignar"}</span>
-            <span className="product-detail-drawer__identifier">Código SUNAT: {product.sunatCode ?? "Sin asignar"}</span>
-          </div>
-          <div className="product-detail-drawer__classification">
-            <span className="product-detail-drawer__category">{product.category}</span>
+          <div className="product-detail-drawer__topline">
+            <span className="product-detail-drawer__heading">Detalle del producto</span>
             <span className={`product-detail-drawer__status ${presentation.policy.status === "publicado" ? "is-published" : "is-pending"}`}>
               <i aria-hidden="true" />{presentation.statusLabel}
             </span>
           </div>
           <SheetTitle>{product.title}</SheetTitle>
-          <SheetDescription>Detalle comercial del producto</SheetDescription>
+          <SheetDescription className="sr-only">Información y operaciones administrativas del producto</SheetDescription>
+          <div className="product-detail-drawer__eyebrow">
+            <code>Código: {product.code?.trim() || "Sin código"}</code>
+            <span className="product-detail-drawer__category">{product.category}</span>
+            <span className="product-detail-drawer__identifier">Código de barras: {product.barcode ?? "Sin asignar"}</span>
+            <span className="product-detail-drawer__identifier">SUNAT: {product.sunatCode ?? "Sin asignar"}</span>
+          </div>
         </SheetHeader>
-
         <div className="product-detail-drawer__body">
-          <section className="product-detail-drawer__gallery" aria-label="Imágenes del producto">
-            <div className="product-detail-drawer__media">
-              {activeImage && !hasImageError ? (
-                <img
-                  src={activeImage}
-                  alt={product.title}
-                  onError={() => setHasImageError(true)}
-                />
-              ) : (
-                <div role="img" aria-label={`Imagen no disponible para ${product.title}`}>
-                  <Images size={25} aria-hidden="true" />
-                  <strong>Sin imagen principal</strong>
+          <section className="product-detail-drawer__overview" aria-label="Resumen operativo">
+            <div className="product-detail-drawer__overviewData">
+              <div className="product-detail-drawer__summary">
+                <div className={presentation.offerPriceLabel ? "is-offer" : undefined}>
+                  <Tag size={17} aria-hidden="true" />
+                  <span>{presentation.offerPriceLabel ? "Precio oferta" : "Precio unitario"}</span>
+                  <strong>{presentation.offerPriceLabel ?? presentation.unitPriceLabel}</strong>
                 </div>
-              )}
+                <div>
+                  <Package size={17} aria-hidden="true" />
+                  <span>Inventario</span>
+                  <strong className={`is-${presentation.stockTone}`}>{presentation.stockLabel}</strong>
+                </div>
+              </div>
+              <div className="product-detail-drawer__operations">
+                <strong>Operaciones</strong>
+                {canPublish ? (
+                  <button type="button" disabled={publishing} onClick={() => onPublish?.(product)}>
+                    <Send size={15} aria-hidden="true" />
+                    {publishing ? "Preparando publicación…" : "Publicar producto"}
+                  </button>
+                ) : (
+                  <span>{presentation.policy.status === "publicado" ? "Producto publicado" : "Sin acciones disponibles"}</span>
+                )}
+              </div>
+            </div>
+            <div className="product-detail-drawer__gallery" role="group" aria-label="Referencia visual del producto">
+              <div className="product-detail-drawer__media">
+                {activeImage && !hasImageError ? (
+                  <img src={activeImage} alt={product.title} onError={() => setHasImageError(true)} />
+                ) : (
+                  <div role="img" aria-label={`Imagen no disponible para ${product.title}`}>
+                    <Images size={22} aria-hidden="true" />
+                    <strong>Imagen no disponible</strong>
+                  </div>
+                )}
+              </div>
               {images.length > 1 && (
                 <div className="product-detail-drawer__galleryNav">
                   <button type="button" aria-label="Imagen anterior" onClick={() => moveImage(-1)}>
-                    <ChevronLeft size={18} aria-hidden="true" />
+                    <ChevronLeft size={16} aria-hidden="true" />
                   </button>
+                  <span>{selectedIndex + 1} / {images.length}</span>
                   <button type="button" aria-label="Imagen siguiente" onClick={() => moveImage(1)}>
-                    <ChevronRight size={18} aria-hidden="true" />
+                    <ChevronRight size={16} aria-hidden="true" />
                   </button>
                 </div>
               )}
             </div>
-            {images.length > 1 && (
-              <div className="product-detail-drawer__thumbnails" aria-label="Miniaturas de imágenes">
-                {images.map((src, index) => (
-                  <button
-                    type="button"
-                    key={src}
-                    className={index === selectedIndex ? "is-active" : undefined}
-                    aria-label={index === 0 ? "Ver imagen principal" : `Ver imagen ${index + 1}`}
-                    aria-pressed={index === selectedIndex}
-                    onClick={() => selectImage(index)}
-                  >
-                    <img src={src} alt="" loading="lazy" />
-                  </button>
-                ))}
-              </div>
-            )}
           </section>
-
-          <section className="product-detail-drawer__summary" aria-label="Resumen comercial">
-            <div className={presentation.offerPriceLabel ? "is-offer" : undefined}>
-              <Tag size={18} aria-hidden="true" />
-              <span>{presentation.offerPriceLabel ? "Precio oferta" : "Precio unitario"}</span>
-              <strong>{presentation.offerPriceLabel ?? presentation.unitPriceLabel}</strong>
-            </div>
-            <div>
-              <Package size={18} aria-hidden="true" />
-              <span>Inventario</span>
-              <strong className={`is-${presentation.stockTone}`}>{presentation.stockLabel}</strong>
-            </div>
-          </section>
-
           <section className="product-detail-drawer__section product-detail-drawer__prices">
             <h3>Listado de precios</h3>
             {priceTiers.length > 0 ? (
@@ -180,10 +178,8 @@ export default function ProductDetailDrawer({
           <section className="product-detail-drawer__section">
             <h3>Información adicional</h3>
             <div className="product-detail-drawer__additional">
-              <div><span>Categoría</span><strong>{product.category}</strong></div>
-              <div><span>Estado</span><strong>{presentation.statusLabel}</strong></div>
               <div><span>Prioridad</span><strong>{product.priority ?? "No especificada"}</strong></div>
-              <div><span>Galería</span><strong>{images.length > 1 ? `${images.length} imágenes` : "Sin galería adicional"}</strong></div>
+              <div><span>Imágenes</span><strong>{images.length}</strong></div>
             </div>
           </section>
 

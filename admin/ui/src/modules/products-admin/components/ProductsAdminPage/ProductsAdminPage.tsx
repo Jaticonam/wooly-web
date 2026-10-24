@@ -533,6 +533,8 @@ export default function ProductsAdminPage() {
               setSelectedProduct(null);
             }
           }}
+          onPublish={canPublish ? publishProduct : undefined}
+          publishing={selectedProduct?.id === publishingProductId}
         />
 
         {error ? <p role="alert">{error.message}</p> : null}

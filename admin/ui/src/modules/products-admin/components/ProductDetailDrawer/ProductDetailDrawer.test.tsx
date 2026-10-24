@@ -52,6 +52,7 @@ describe("ProductDetailDrawer", () => {
     expect(screen.queryByRole("button", { name: /editar/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/por volumen/i)).not.toBeInTheDocument();
     expect(screen.getByText("S/ 4.10")).toBeInTheDocument();
+    expect(screen.getByText("Operaciones")).toBeInTheDocument();
   });
 
   it("presenta oferta por separado, sin reemplazar ni tachar precios de la BD", () => {
@@ -67,13 +68,21 @@ describe("ProductDetailDrawer", () => {
     expect(container.querySelector("del")).toBeNull();
   });
 
-  it("muestra galería real, permite miniaturas y navegación", () => {
+  it("navega imágenes con flechas compactas", () => {
     renderDrawer();
-    expect(screen.getByRole("button", { name: "Ver imagen principal" })).toHaveAttribute("aria-pressed", "true");
-    fireEvent.click(screen.getByRole("button", { name: "Ver imagen 3" }));
+    expect(screen.queryByRole("button", { name: "Ver imagen principal" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Imagen siguiente" }));
+    fireEvent.click(screen.getByRole("button", { name: "Imagen siguiente" }));
     expect(screen.getByRole("img", { name: product.title })).toHaveAttribute("src", "https://example.com/gallery-03.jpg");
     fireEvent.click(screen.getByRole("button", { name: "Imagen anterior" }));
     expect(screen.getByRole("img", { name: product.title })).toHaveAttribute("src", "https://example.com/gallery.jpg");
+  });
+
+  it("ejecuta el flujo existente de publicación al recibir su callback", () => {
+    const onPublish = vi.fn();
+    render(<ProductDetailDrawer product={{ ...product, status: "borrador" }} campaigns={campaigns} open onOpenChange={vi.fn()} onPublish={onPublish} />);
+    fireEvent.click(screen.getByRole("button", { name: "Publicar producto" }));
+    expect(onPublish).toHaveBeenCalledWith(expect.objectContaining({ id: product.id }));
   });
 
   it("solicita el cierre desde el botón de Sheet", () => {

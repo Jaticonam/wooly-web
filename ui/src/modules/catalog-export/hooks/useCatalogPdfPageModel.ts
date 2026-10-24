@@ -552,6 +552,15 @@ export const useCatalogPdfPageModel = (
     publicPublication:
       publicPublication.publication,
 
+    publicPublicationRetryAfterSeconds:
+      publicPublication.retryAfterSeconds,
+
+    canRetryPublicPublication:
+      publicPublication.canRetry,
+
+    retryPublicPublication:
+      publicPublication.retry,
+
     showCategorySections:
       isPublicId
         ? (

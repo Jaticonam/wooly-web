@@ -8,6 +8,8 @@ import {
 } from "vitest";
 
 import {
+  MAX_RETRY_AFTER_SECONDS,
+  parseRetryAfterSeconds,
   requestJson,
   requestText,
 } from "./HttpClient";
@@ -611,3 +613,219 @@ describe("HttpClient write options", () => {
     },
   );
 });
+
+describe(
+  "HttpClient — Retry-After en HTTP 429 (P4-SEC-03)",
+  () => {
+    beforeEach(() => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(),
+      );
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    function rateLimited(
+      retryAfter?: string,
+      status = 429,
+    ): Response {
+      const headers: Record<string, string> = {
+        "content-type":
+          "application/json",
+      };
+
+      if (retryAfter !== undefined) {
+        headers["retry-after"] =
+          retryAfter;
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: false,
+          errorCode:
+            "CATALOG_PUBLICATION_RATE_LIMITED",
+        }),
+        {
+          status,
+          headers,
+        },
+      );
+    }
+
+    it(
+      "conserva status 429, retryable y expone retryAfterSeconds válido",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimited("42"),
+          );
+
+        const result =
+          await requestJson(
+            "https://api.example.com/resource",
+            {
+              source: SOURCE,
+            },
+          );
+
+        expect(result).toEqual({
+          ok: false,
+          error: {
+            code: "HTTP_ERROR",
+            source: SOURCE,
+            message:
+              `El servicio "${SOURCE}" respondió HTTP 429.`,
+            retryable: true,
+            status: 429,
+            retryAfterSeconds: 42,
+          },
+        });
+      },
+    );
+
+    it(
+      "omite retryAfterSeconds cuando la cabecera no existe",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimited(),
+          );
+
+        const result =
+          await requestText(
+            "https://api.example.com/resource",
+            {
+              source: SOURCE,
+            },
+          );
+
+        expect(result.ok).toBe(false);
+
+        if (result.ok === false) {
+          expect(result.error.status).toBe(429);
+          expect(result.error.retryable).toBe(true);
+          expect(
+            "retryAfterSeconds" in result.error,
+          ).toBe(false);
+        }
+      },
+    );
+
+    it.each([
+      ["0"],
+      ["-5"],
+      ["1.5"],
+      ["abc"],
+      ["12abc"],
+      ["+10"],
+      ["3601"],
+      ["999999999"],
+      ["Wed, 21 Oct 2026 07:28:00 GMT"],
+      [""],
+    ])(
+      "descarta Retry-After no confiable %j",
+      async (header) => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimited(header),
+          );
+
+        const result =
+          await requestText(
+            "https://api.example.com/resource",
+            {
+              source: SOURCE,
+            },
+          );
+
+        expect(result.ok).toBe(false);
+
+        if (result.ok === false) {
+          expect(result.error.status).toBe(429);
+          expect(result.error.retryAfterSeconds).toBeUndefined();
+        }
+      },
+    );
+
+    it(
+      "no interpreta Retry-After fuera de HTTP 429",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimited("30", 503),
+          );
+
+        const result =
+          await requestText(
+            "https://api.example.com/resource",
+            {
+              source: SOURCE,
+            },
+          );
+
+        expect(result.ok).toBe(false);
+
+        if (result.ok === false) {
+          expect(result.error.status).toBe(503);
+          expect(result.error.retryAfterSeconds).toBeUndefined();
+        }
+      },
+    );
+
+    it(
+      "no espera ni reintenta automáticamente ante HTTP 429",
+      async () => {
+        vi.useFakeTimers();
+
+        try {
+          vi.mocked(fetch)
+            .mockResolvedValue(
+              rateLimited("5"),
+            );
+
+          const result =
+            await requestJson(
+              "https://api.example.com/resource",
+              {
+                source: SOURCE,
+              },
+            );
+
+          await vi.advanceTimersByTimeAsync(
+            10_000,
+          );
+
+          expect(result.ok).toBe(false);
+          expect(fetch).toHaveBeenCalledTimes(1);
+        } finally {
+          vi.useRealTimers();
+        }
+      },
+    );
+
+    it(
+      "parseRetryAfterSeconds acota a 1..MAX_RETRY_AFTER_SECONDS",
+      () => {
+        expect(parseRetryAfterSeconds("1")).toBe(1);
+        expect(parseRetryAfterSeconds(" 60 ")).toBe(60);
+        expect(parseRetryAfterSeconds("0600")).toBe(600);
+        expect(
+          parseRetryAfterSeconds(
+            String(MAX_RETRY_AFTER_SECONDS),
+          ),
+        ).toBe(MAX_RETRY_AFTER_SECONDS);
+        expect(
+          parseRetryAfterSeconds(
+            String(MAX_RETRY_AFTER_SECONDS + 1),
+          ),
+        ).toBeUndefined();
+        expect(parseRetryAfterSeconds(null)).toBeUndefined();
+        expect(parseRetryAfterSeconds(undefined)).toBeUndefined();
+        expect(parseRetryAfterSeconds("1\r\nX-Evil: 1")).toBeUndefined();
+      },
+    );
+  },
+);

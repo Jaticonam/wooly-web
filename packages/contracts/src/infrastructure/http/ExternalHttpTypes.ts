@@ -13,6 +13,14 @@ export interface ExternalHttpError {
   message: string;
   retryable: boolean;
   status?: number;
+  /**
+   * Espera sugerida por el servidor (cabecera `Retry-After`) para HTTP 429.
+   *
+   * Solo se informa cuando el valor es un entero decimal de segundos dentro
+   * de 1..3600 (ver `parseRetryAfterSeconds` en el cliente HTTP compartido).
+   * Es informativo: el cliente nunca espera ni reintenta automáticamente.
+   */
+  retryAfterSeconds?: number;
   cause?: unknown;
 }
 
@@ -58,6 +66,9 @@ export class ExternalHttpRequestError
   readonly status?:
     number;
 
+  readonly retryAfterSeconds?:
+    number;
+
   readonly cause?:
     unknown;
 
@@ -80,6 +91,9 @@ export class ExternalHttpRequestError
 
     this.status =
       error.status;
+
+    this.retryAfterSeconds =
+      error.retryAfterSeconds;
 
     this.cause =
       error.cause;

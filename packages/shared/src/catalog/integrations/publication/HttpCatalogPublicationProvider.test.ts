@@ -18,6 +18,7 @@ import {
 import {
   HttpCatalogPublicationProvider,
   HttpCatalogPublicationProviderError,
+  translateCatalogPublicationHttpError,
 } from "./HttpCatalogPublicationProvider";
 
 import type {
@@ -1181,6 +1182,223 @@ describe(
         ).toBeInstanceOf(
           AbortSignal,
         );
+      },
+    );
+  },
+);
+
+describe(
+  "HttpCatalogPublicationProvider — HTTP 429 y Retry-After (P4-SEC-03)",
+  () => {
+    beforeEach(() => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(),
+      );
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    function rateLimitedResponse(
+      retryAfter?: string,
+    ): Response {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          errorCode:
+            "CATALOG_PUBLICATION_RATE_LIMITED",
+          message:
+            "Demasiadas solicitudes. Intente más tarde.",
+          statusCode: 429,
+        }),
+        {
+          status: 429,
+          headers: {
+            "content-type":
+              "application/json",
+            ...(
+              retryAfter !== undefined
+                ? {
+                    "retry-after":
+                      retryAfter,
+                  }
+                : {}
+            ),
+          },
+        },
+      );
+    }
+
+    function createProvider() {
+      return new HttpCatalogPublicationProvider({
+        baseUrl:
+          HTTPS_URL,
+
+        publishBaseUrl:
+          PUBLISH_BASE,
+      });
+    }
+
+    it(
+      "propaga retryAfterSeconds al publicar y conserva HTTP_429",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimitedResponse("120"),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              createProvider().publish(
+                publishInput(),
+              ),
+          );
+
+        expect(error).toMatchObject({
+          code: "HTTP_429",
+          status: 429,
+          retryable: true,
+          retryAfterSeconds: 120,
+        });
+      },
+    );
+
+    it(
+      "propaga retryAfterSeconds en la lectura pública",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimitedResponse("30"),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              createProvider().getByPublicId(
+                "PUB-AbC123",
+              ),
+          );
+
+        expect(error).toMatchObject({
+          code: "HTTP_429",
+          status: 429,
+          retryAfterSeconds: 30,
+        });
+      },
+    );
+
+    it(
+      "omite retryAfterSeconds cuando CORE no envía un valor válido",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimitedResponse("-1"),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              createProvider().publish(
+                publishInput(),
+              ),
+          );
+
+        expect(error.code).toBe("HTTP_429");
+        expect(error.retryAfterSeconds).toBeUndefined();
+      },
+    );
+
+    it(
+      "no adjunta retryAfterSeconds a errores distintos de 429",
+      () => {
+        const error =
+          translateCatalogPublicationHttpError({
+            code: "HTTP_ERROR",
+            source: "test",
+            message: "HTTP 503",
+            retryable: true,
+            status: 503,
+            retryAfterSeconds: 10,
+          });
+
+        expect(error.code).toBe("HTTP_5XX");
+        expect(error.retryAfterSeconds).toBeUndefined();
+      },
+    );
+
+    it(
+      "no reintenta automáticamente y conserva requestId y cuerpo",
+      async () => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            rateLimitedResponse("5"),
+          );
+
+        await captureProviderError(
+          () =>
+            createProvider().publish(
+              publishInput(),
+            ),
+        );
+
+        expect(fetch).toHaveBeenCalledTimes(1);
+
+        const body =
+          JSON.parse(
+            String(
+              vi.mocked(fetch)
+                .mock
+                .calls[0]?.[1]
+                ?.body,
+            ),
+          ) as Record<string, unknown>;
+
+        expect(body.requestId).toBe(REQUEST_ID);
+        expect(body.resolvedProductIds).toEqual(["P-1"]);
+      },
+    );
+
+    it.each([
+      [404, "HTTP_404"],
+      [410, "HTTP_410"],
+      [413, "HTTP_413"],
+      [503, "HTTP_5XX"],
+    ] as const)(
+      "preserva HTTP %i como %s sin retryAfterSeconds",
+      async (
+        status,
+        code,
+      ) => {
+        vi.mocked(fetch)
+          .mockResolvedValue(
+            new Response(
+              "{}",
+              {
+                status,
+                headers: {
+                  "content-type":
+                    "application/json",
+                  "retry-after":
+                    "10",
+                },
+              },
+            ),
+          );
+
+        const error =
+          await captureProviderError(
+            () =>
+              createProvider().publish(
+                publishInput(),
+              ),
+          );
+
+        expect(error.code).toBe(code);
+        expect(error.status).toBe(status);
+        expect(error.retryAfterSeconds).toBeUndefined();
       },
     );
   },

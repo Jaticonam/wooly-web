@@ -1,4 +1,6 @@
 export {
+  MAX_RETRY_AFTER_SECONDS,
+  parseRetryAfterSeconds,
   requestJson,
   requestText,
 } from "./HttpClient";

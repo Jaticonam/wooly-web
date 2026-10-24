@@ -39,6 +39,10 @@ import type {
   PublishCatalogInput,
 } from "@wooly/shared/catalog/providers/CatalogPublicationProvider";
 
+import {
+  HttpCatalogPublicationProviderError,
+} from "@wooly/shared/catalog/integrations/publication/HttpCatalogPublicationProvider";
+
 import CatalogPublishCheckout from "./CatalogPublishCheckout";
 
 vi.mock(
@@ -787,6 +791,328 @@ describe(
         expect(
           publish,
         ).not.toHaveBeenCalled();
+      },
+    );
+  },
+);
+
+describe(
+  "CatalogPublishCheckout — HTTP 429 (P4-SEC-03)",
+  () => {
+    const rateLimited = (
+      retryAfterSeconds?: number,
+    ) =>
+      new HttpCatalogPublicationProviderError(
+        "HTTP_429",
+        "El servicio respondió HTTP 429.",
+        {
+          status: 429,
+          retryable: true,
+          ...(
+            retryAfterSeconds !== undefined
+              ? {
+                  retryAfterSeconds,
+                }
+              : {}
+          ),
+        },
+      );
+
+    const composition =
+      createComposition({
+        categoryIds: [
+          "flores",
+        ],
+        campaignIds: [
+          "cyber-wooly",
+        ],
+      });
+
+    it(
+      "muestra la espera, bloquea el reintento y lo habilita sin solicitudes automáticas",
+      async () => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >()
+            .mockRejectedValueOnce(
+              rateLimited(1),
+            )
+            .mockImplementationOnce(
+              async (
+                input,
+              ) =>
+                createPublication(
+                  input,
+                  "PUB-AFTER-429",
+                ),
+            );
+
+        renderCheckout({
+          composition,
+          resolution:
+            createResolution([
+              "P-1",
+            ]),
+          provider:
+            createProvider(
+              publish,
+            ),
+        });
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await screen.findByText(
+          "JUNG CORE recibió demasiadas solicitudes",
+        );
+
+        expect(
+          screen.getByText(
+            "Espera 1 segundo antes de reintentar.",
+          ),
+        ).toBeInTheDocument();
+
+        const retry =
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Reintentar publicación",
+            },
+          );
+
+        expect(retry).toBeDisabled();
+
+        // Un clic durante la espera no envía nada.
+        fireEvent.click(retry);
+
+        expect(publish).toHaveBeenCalledTimes(1);
+
+        await waitFor(
+          () =>
+            expect(
+              screen.getByRole(
+                "button",
+                {
+                  name:
+                    "Reintentar publicación",
+                },
+              ),
+            ).toBeEnabled(),
+          {
+            timeout: 3000,
+          },
+        );
+
+        expect(
+          screen.getByText(
+            "Ya puedes reintentar la publicación.",
+          ),
+        ).toBeInTheDocument();
+
+        // Vencida la espera, sigue sin reintento automático.
+        await new Promise(
+          (resolve) =>
+            setTimeout(
+              resolve,
+              300,
+            ),
+        );
+
+        expect(publish).toHaveBeenCalledTimes(1);
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Reintentar publicación",
+            },
+          ),
+        );
+
+        await screen.findByText(
+          /\/catalogo\/pdf\?id=PUB-AFTER-429/,
+        );
+
+        expect(publish).toHaveBeenCalledTimes(2);
+
+        // HTTP 429 no genera un requestId nuevo.
+        expect(
+          publish.mock.calls[1]?.[0].requestId,
+        ).toBe(
+          publish.mock.calls[0]?.[0].requestId,
+        );
+
+        // Composición, identidad y selección comercial intactas.
+        expect(
+          publish.mock.calls[1]?.[0].composition,
+        ).toEqual(
+          publish.mock.calls[0]?.[0].composition,
+        );
+
+        expect(
+          publish.mock.calls[1]?.[0].publicationIdentity,
+        ).toEqual(
+          publish.mock.calls[0]?.[0].publicationIdentity,
+        );
+
+        expect(
+          publish.mock.calls[1]?.[0].resolvedProductIds,
+        ).toEqual([
+          "P-1",
+        ]);
+      },
+    );
+
+    it(
+      "sin Retry-After permite reintento manual inmediato y evita duplicados en curso",
+      async () => {
+        let resolveRetry:
+          (() => void) | undefined;
+
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >()
+            .mockRejectedValueOnce(
+              rateLimited(),
+            )
+            .mockImplementationOnce(
+              (input) =>
+                new Promise(
+                  (resolve) => {
+                    resolveRetry =
+                      () =>
+                        resolve(
+                          createPublication(
+                            input,
+                            "PUB-MANUAL",
+                          ),
+                        );
+                  },
+                ),
+            );
+
+        renderCheckout({
+          composition,
+          resolution:
+            createResolution([
+              "P-1",
+            ]),
+          provider:
+            createProvider(
+              publish,
+            ),
+        });
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await screen.findByText(
+          "Espera unos instantes antes de reintentar.",
+        );
+
+        const retry =
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Reintentar publicación",
+            },
+          );
+
+        expect(retry).toBeEnabled();
+
+        fireEvent.click(retry);
+        fireEvent.click(retry);
+
+        await screen.findAllByText(
+          "Publicando catálogo...",
+        );
+
+        expect(publish).toHaveBeenCalledTimes(2);
+
+        resolveRetry?.();
+
+        await screen.findByText(
+          /\/catalogo\/pdf\?id=PUB-MANUAL/,
+        );
+
+        expect(publish).toHaveBeenCalledTimes(2);
+
+        expect(
+          publish.mock.calls[1]?.[0].requestId,
+        ).toBe(
+          publish.mock.calls[0]?.[0].requestId,
+        );
+      },
+    );
+
+    it(
+      "otros errores mantienen el mensaje genérico existente",
+      async () => {
+        const publish =
+          vi.fn<
+            CatalogPublicationProvider["publish"]
+          >()
+            .mockRejectedValueOnce(
+              new HttpCatalogPublicationProviderError(
+                "HTTP_5XX",
+                "HTTP 503",
+                {
+                  status: 503,
+                  retryable: true,
+                },
+              ),
+            );
+
+        renderCheckout({
+          composition,
+          resolution:
+            createResolution([
+              "P-1",
+            ]),
+          provider:
+            createProvider(
+              publish,
+            ),
+        });
+
+        fireEvent.click(
+          screen.getByRole(
+            "button",
+            {
+              name:
+                "Generar enlace público",
+            },
+          ),
+        );
+
+        await screen.findByText(
+          "No se pudo generar el enlace público",
+        );
+
+        expect(
+          screen.queryByText(
+            "JUNG CORE recibió demasiadas solicitudes",
+          ),
+        ).not.toBeInTheDocument();
       },
     );
   },

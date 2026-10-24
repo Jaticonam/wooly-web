@@ -72,8 +72,35 @@ const PUBLIC_PUBLICATION_STATE_COPY = {
       "Ocurrió un problema al verificar la publicación. Intenta nuevamente.",
   },
 
+  "rate-limited": {
+    title:
+      "Catálogo temporalmente no disponible",
+
+    description:
+      "Recibimos muchas consultas en poco tiempo. Tu enlace sigue siendo válido.",
+  },
+
 
 } as const;
+
+const formatRetryWait = (
+  seconds: number,
+): string => {
+  if (seconds < 60) {
+    return seconds === 1
+      ? "1 segundo"
+      : `${seconds} segundos`;
+  }
+
+  const minutes =
+    Math.ceil(
+      seconds / 60,
+    );
+
+  return minutes === 1
+    ? "1 minuto"
+    : `${minutes} minutos`;
+};
 
 export default function CatalogPdfPage() {
   const autoPrintStarted = useRef(false);
@@ -91,6 +118,9 @@ export default function CatalogPdfPage() {
     showEmptyState,
     isPublicId,
     publicPublicationStatus,
+    publicPublicationRetryAfterSeconds,
+    canRetryPublicPublication,
+    retryPublicPublication,
   } = useCatalogPdfPageModel(
     applicationConfig.commerce.pdfValidityDays,
     catalogPublicationProvider,
@@ -238,6 +268,31 @@ export default function CatalogPdfPage() {
             <p>
               {publicPublicationState.description}
             </p>
+
+            {publicPublicationStatus ===
+            "rate-limited" ? (
+              <>
+                <p>
+                  {publicPublicationRetryAfterSeconds ===
+                  undefined
+                    ? "Espera unos instantes antes de intentarlo nuevamente."
+                    : canRetryPublicPublication
+                      ? "Ya puedes intentarlo nuevamente."
+                      : `Espera ${formatRetryWait(
+                          publicPublicationRetryAfterSeconds,
+                        )} antes de intentarlo nuevamente.`}
+                </p>
+
+                <button
+                  className="catalog-pdf-toolbar__button"
+                  type="button"
+                  onClick={retryPublicPublication}
+                  disabled={!canRetryPublicPublication}
+                >
+                  Reintentar
+                </button>
+              </>
+            ) : null}
           </section>
         ) : null}
 

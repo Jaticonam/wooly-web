@@ -40,6 +40,10 @@ import type {
 } from "@wooly/contracts/types/product";
 
 import {
+  HttpCatalogPublicationProviderError,
+} from "@wooly/shared/catalog/integrations/publication/HttpCatalogPublicationProvider";
+
+import {
   publishResolvedCatalog,
 } from "./PublishResolvedCatalog";
 
@@ -799,6 +803,166 @@ describe(
           publicationIdentity,
           error,
         });
+      },
+    );
+  },
+);
+
+describe(
+  "publishResolvedCatalog — HTTP 429 (P4-SEC-03)",
+  () => {
+    const rateLimitError = (
+      retryAfterSeconds?: number,
+    ) =>
+      new HttpCatalogPublicationProviderError(
+        "HTTP_429",
+        "El servicio respondió HTTP 429.",
+        {
+          status: 429,
+          retryable: true,
+          ...(
+            retryAfterSeconds !== undefined
+              ? {
+                  retryAfterSeconds,
+                }
+              : {}
+          ),
+        },
+      );
+
+    const publishWith = async (
+      error: unknown,
+    ) => {
+      const publish =
+        vi.fn<
+          CatalogPublicationProvider["publish"]
+        >(
+          async () => {
+            throw error;
+          },
+        );
+
+      const composition =
+        createEmptyCatalogComposition(
+          "hybrid",
+        );
+
+      const publicationIdentity =
+        createDefaultCatalogPublicationIdentity();
+
+      const result =
+        await publishResolvedCatalog({
+          brandId:
+            BRAND_ID,
+          requestId:
+            REQUEST_ID,
+          provider:
+            createProvider(
+              publish,
+            ),
+          composition,
+          publicationIdentity,
+          resolution:
+            createResolution(),
+        });
+
+      return {
+        publish,
+        result,
+        composition,
+        publicationIdentity,
+      };
+    };
+
+    it(
+      "identifica HTTP 429 como rate-limited con retryAfterSeconds",
+      async () => {
+        const error =
+          rateLimitError(45);
+
+        const {
+          publish,
+          result,
+          composition,
+          publicationIdentity,
+        } =
+          await publishWith(error);
+
+        expect(result).toMatchObject({
+          status: "rate-limited",
+          retryAfterSeconds: 45,
+          error,
+          composition,
+          publicationIdentity,
+        });
+
+        // Sin reintentos automáticos y con la misma clave de idempotencia.
+        expect(publish).toHaveBeenCalledTimes(1);
+        expect(
+          publish.mock.calls[0]?.[0].requestId,
+        ).toBe(REQUEST_ID);
+      },
+    );
+
+    it(
+      "omite retryAfterSeconds ausente o no confiable",
+      async () => {
+        for (const error of [
+          rateLimitError(),
+          {
+            code: "HTTP_429",
+            retryAfterSeconds: -3,
+          },
+          {
+            code: "HTTP_429",
+            retryAfterSeconds: 999_999,
+          },
+          {
+            code: "HTTP_429",
+            retryAfterSeconds: "30",
+          },
+        ]) {
+          const {
+            result,
+          } =
+            await publishWith(error);
+
+          expect(result.status).toBe("rate-limited");
+          expect(
+            (result as { retryAfterSeconds?: number })
+              .retryAfterSeconds,
+          ).toBeUndefined();
+        }
+      },
+    );
+
+    it.each([
+      ["HTTP_413", 413],
+      ["HTTP_410", 410],
+      ["HTTP_404", 404],
+      ["HTTP_5XX", 503],
+    ] as const)(
+      "mantiene %s como error",
+      async (
+        code,
+        status,
+      ) => {
+        const {
+          result,
+        } =
+          await publishWith(
+            new HttpCatalogPublicationProviderError(
+              code,
+              `HTTP ${status}`,
+              {
+                status,
+                retryable:
+                  status >= 500,
+              },
+            ),
+          );
+
+        expect(result.status).toBe("error");
       },
     );
   },

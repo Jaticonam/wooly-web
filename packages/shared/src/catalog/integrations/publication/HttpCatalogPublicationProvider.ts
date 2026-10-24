@@ -9,6 +9,7 @@ import type {
 } from "../../providers/CatalogPublicationProvider";
 
 import {
+  MAX_RETRY_AFTER_SECONDS,
   requestJson,
   type ExternalHttpError,
 } from "../../../infrastructure/http";
@@ -34,6 +35,8 @@ export type HttpCatalogPublicationProviderErrorCode =
 export interface HttpCatalogPublicationProviderErrorOptions {
   readonly status?: number;
   readonly retryable: boolean;
+  /** Espera sugerida por JUNG CORE en HTTP 429 (segundos, 1..3600). */
+  readonly retryAfterSeconds?: number;
   readonly providerCause?: unknown;
 }
 
@@ -47,6 +50,9 @@ export class HttpCatalogPublicationProviderError
 
   readonly retryable:
     boolean;
+
+  readonly retryAfterSeconds?:
+    number;
 
   readonly providerCause?:
     unknown;
@@ -74,6 +80,9 @@ export class HttpCatalogPublicationProviderError
 
     this.retryable =
       options.retryable;
+
+    this.retryAfterSeconds =
+      options.retryAfterSeconds;
 
     this.providerCause =
       options.providerCause;
@@ -319,10 +328,13 @@ export function translateCatalogPublicationHttpError(
   error:
     ExternalHttpError,
 ): HttpCatalogPublicationProviderError {
-  return new HttpCatalogPublicationProviderError(
+  const code =
     mapExternalErrorCode(
       error,
-    ),
+    );
+
+  return new HttpCatalogPublicationProviderError(
+    code,
 
     error.message,
 
@@ -333,10 +345,66 @@ export function translateCatalogPublicationHttpError(
       retryable:
         error.retryable,
 
+      // Solo HTTP 429 transporta la espera sugerida por JUNG CORE.
+      ...(
+        code ===
+          "HTTP_429" &&
+        error.retryAfterSeconds !==
+          undefined
+          ? {
+              retryAfterSeconds:
+                error.retryAfterSeconds,
+            }
+          : {}
+      ),
+
       providerCause:
         error,
     },
   );
+}
+
+export interface CatalogPublicationRateLimit {
+  /** Espera sugerida por JUNG CORE; ausente si CORE no envió un valor válido. */
+  readonly retryAfterSeconds?:
+    number;
+}
+
+/**
+ * Identifica un límite transitorio de solicitudes (HTTP 429) de JUNG CORE
+ * a partir de cualquier error lanzado por un CatalogPublicationProvider.
+ * Devuelve null para cualquier otro error. Revalida `retryAfterSeconds`
+ * (entero 1..MAX_RETRY_AFTER_SECONDS) para no confiar en providers ajenos.
+ */
+export function readCatalogPublicationRateLimit(
+  error:
+    unknown,
+): CatalogPublicationRateLimit | null {
+  if (
+    error === null ||
+    typeof error !==
+      "object" ||
+    (error as { code?: unknown })
+      .code !==
+      "HTTP_429"
+  ) {
+    return null;
+  }
+
+  const seconds =
+    (error as { retryAfterSeconds?: unknown })
+      .retryAfterSeconds;
+
+  return typeof seconds ===
+      "number" &&
+    Number.isSafeInteger(seconds) &&
+    seconds >= 1 &&
+    seconds <= MAX_RETRY_AFTER_SECONDS
+    ? {
+        retryAfterSeconds:
+          seconds,
+      }
+    : {};
 }
 
 function sanitizeRemotePublication(

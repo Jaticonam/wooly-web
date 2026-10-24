@@ -23,6 +23,10 @@ import type {
 } from "@wooly/shared/catalog/providers/CatalogPublicationProvider";
 
 import {
+  HttpCatalogPublicationProviderError,
+} from "@wooly/shared/catalog/integrations/publication/HttpCatalogPublicationProvider";
+
+import {
   createCatalogPublicPublicationReaderInitialState,
   readCatalogPublicPublication,
 } from "./CatalogPublicPublicationReader";
@@ -444,6 +448,148 @@ describe(
         ).toBe(
           "PUB-AbC123",
         );
+      },
+    );
+  },
+);
+
+describe(
+  "CatalogPublicPublicationReader — HTTP 429 (P4-SEC-03)",
+  () => {
+    const providerError = (
+      code: string,
+      status: number,
+      retryAfterSeconds?: number,
+    ) =>
+      new HttpCatalogPublicationProviderError(
+        code as ConstructorParameters<
+          typeof HttpCatalogPublicationProviderError
+        >[0],
+        `HTTP ${status}`,
+        {
+          status,
+          retryable:
+            status === 429 ||
+            status >= 500,
+          ...(
+            retryAfterSeconds !== undefined
+              ? {
+                  retryAfterSeconds,
+                }
+              : {}
+          ),
+        },
+      );
+
+    const readWithError = (
+      error: unknown,
+    ) =>
+      readCatalogPublicPublication({
+        publicId:
+          "PUB-AbC123",
+        provider:
+          createProvider(
+            vi.fn(
+              async () => {
+                throw error;
+              },
+            ),
+          ),
+      });
+
+    it(
+      "distingue HTTP 429 como rate-limited con la espera sugerida",
+      async () => {
+        await expect(
+          readWithError(
+            providerError("HTTP_429", 429, 30),
+          ),
+        ).resolves.toEqual({
+          status: "rate-limited",
+          publication: null,
+          retryAfterSeconds: 30,
+        });
+      },
+    );
+
+    it(
+      "HTTP 429 sin Retry-After válido sigue siendo rate-limited",
+      async () => {
+        await expect(
+          readWithError(
+            providerError("HTTP_429", 429),
+          ),
+        ).resolves.toEqual({
+          status: "rate-limited",
+          publication: null,
+        });
+      },
+    );
+
+    it.each([
+      ["HTTP_410", 410, "revoked"],
+      ["HTTP_5XX", 503, "error"],
+      ["HTTP_TIMEOUT", 0, "error"],
+    ] as const)(
+      "mantiene %s → %s",
+      async (
+        code,
+        status,
+        expected,
+      ) => {
+        const result =
+          await readWithError(
+            providerError(code, status),
+          );
+
+        expect(result.status).toBe(expected);
+        expect(result.retryAfterSeconds).toBeUndefined();
+      },
+    );
+
+    it(
+      "mantiene HTTP 404 (provider null) como not-found",
+      async () => {
+        await expect(
+          readCatalogPublicPublication({
+            publicId:
+              "PUB-AbC123",
+            provider:
+              createProvider(
+                vi.fn(
+                  async () =>
+                    null,
+                ),
+              ),
+          }),
+        ).resolves.toEqual({
+          status: "not-found",
+          publication: null,
+        });
+      },
+    );
+
+    it(
+      "mantiene publicaciones vencidas como expired",
+      async () => {
+        const result =
+          await readCatalogPublicPublication({
+            publicId:
+              "PUB-AbC123",
+            provider:
+              createProvider(
+                vi.fn(
+                  async () =>
+                    createValidPublication(),
+                ),
+              ),
+            now:
+              new Date(
+                "2026-09-01T00:00:00.000Z",
+              ),
+          });
+
+        expect(result.status).toBe("expired");
       },
     );
   },

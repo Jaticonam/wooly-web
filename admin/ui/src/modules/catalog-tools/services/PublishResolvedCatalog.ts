@@ -19,6 +19,10 @@ import type {
   CatalogPublicationProvider,
 } from "@wooly/shared/catalog/providers/CatalogPublicationProvider";
 
+import {
+  readCatalogPublicationRateLimit,
+} from "@wooly/shared/catalog/integrations/publication/HttpCatalogPublicationProvider";
+
 export type PublishResolvedCatalogBlockedReason =
   | "EMPTY_RESOLUTION"
   | "INCOMPLETE_RESOLUTION";
@@ -57,6 +61,23 @@ export type PublishResolvedCatalogResult =
 
         reason:
           PublishResolvedCatalogBlockedReason;
+      }
+    )
+  | (
+      PublishResolvedCatalogContext & {
+        /**
+         * HTTP 429 de JUNG CORE: límite transitorio. No se reintenta
+         * automáticamente; el reintento manual debe reutilizar el mismo
+         * requestId mientras la publicación no cambie.
+         */
+        status:
+          "rate-limited";
+
+        error:
+          unknown;
+
+        retryAfterSeconds?:
+          number;
       }
     )
   | (
@@ -226,6 +247,21 @@ export async function publishResolvedCatalog({
       publication,
     };
   } catch (error: unknown) {
+    const rateLimit =
+      readCatalogPublicationRateLimit(
+        error,
+      );
+
+    if (rateLimit) {
+      return {
+        ...context,
+        status:
+          "rate-limited",
+        error,
+        ...rateLimit,
+      };
+    }
+
     return {
       ...context,
       status:

@@ -18,6 +18,67 @@ const RETRYABLE_HTTP_STATUSES =
     504,
   ]);
 
+/**
+ * Política de normalización de `Retry-After` (P4-SEC-03):
+ *
+ * - Solo se interpreta en respuestas HTTP 429.
+ * - Solo se acepta la forma delta-seconds: dígitos decimales, sin signo,
+ *   sin decimales y sin texto adicional (se toleran espacios alrededor).
+ *   JUNG CORE emite siempre un entero ≥ 1 (`Math.ceil`).
+ * - El valor debe estar en 1..MAX_RETRY_AFTER_SECONDS. Cero, negativos,
+ *   valores no numéricos, fechas HTTP o valores superiores al máximo se
+ *   descartan (`undefined`): no se confía en ellos ni se recortan.
+ * - El dato es informativo: requestText/requestJson nunca esperan ni
+ *   reintentan automáticamente.
+ */
+export const MAX_RETRY_AFTER_SECONDS =
+  3_600;
+
+const RETRY_AFTER_PATTERN =
+  /^[0-9]{1,6}$/;
+
+export function parseRetryAfterSeconds(
+  value: string | null | undefined,
+): number | undefined {
+  const normalized =
+    String(value ?? "").trim();
+
+  if (
+    !RETRY_AFTER_PATTERN.test(
+      normalized,
+    )
+  ) {
+    return undefined;
+  }
+
+  const seconds =
+    Number(normalized);
+
+  if (
+    !Number.isSafeInteger(seconds) ||
+    seconds < 1 ||
+    seconds > MAX_RETRY_AFTER_SECONDS
+  ) {
+    return undefined;
+  }
+
+  return seconds;
+}
+
+function readRetryAfterSeconds(
+  response: Response,
+): number | undefined {
+  if (response.status !== 429) {
+    return undefined;
+  }
+
+  return parseRetryAfterSeconds(
+    response.headers.get(
+      "retry-after",
+    ),
+  );
+}
+
 const JSON_CONTENT_TYPES = [
   "application/json",
   "application/*+json",
@@ -240,6 +301,11 @@ export async function requestText(
       );
 
     if (!response.ok) {
+      const retryAfterSeconds =
+        readRetryAfterSeconds(
+          response,
+        );
+
       return failure({
         code:
           "HTTP_ERROR",
@@ -254,6 +320,15 @@ export async function requestText(
             ),
         status:
           response.status,
+
+        ...(
+          retryAfterSeconds !==
+            undefined
+            ? {
+                retryAfterSeconds,
+              }
+            : {}
+        ),
       });
     }
 

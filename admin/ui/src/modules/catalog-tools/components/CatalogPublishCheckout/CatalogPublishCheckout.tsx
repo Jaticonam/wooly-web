@@ -57,6 +57,7 @@ type PublicIdPublicationStatus =
   | "ready"
   | "unavailable"
   | "blocked"
+  | "rate-limited"
   | "error";
 
 interface CatalogPublishCheckoutProps {
@@ -96,6 +97,52 @@ interface CatalogPublishCheckoutProps {
 const createDefaultRequestId =
   (): string =>
     globalThis.crypto.randomUUID();
+
+const clearRetryWaitTimer =
+  (
+    timerRef: {
+      current: number | null;
+    },
+    activeRef: {
+      current: boolean;
+    },
+  ) => {
+    if (
+      timerRef.current !==
+      null
+    ) {
+      window.clearTimeout(
+        timerRef.current,
+      );
+
+      timerRef.current =
+        null;
+    }
+
+    activeRef.current =
+      false;
+  };
+
+const formatRetryWait =
+  (
+    seconds:
+      number,
+  ): string => {
+    if (seconds < 60) {
+      return seconds === 1
+        ? "1 segundo"
+        : `${seconds} segundos`;
+    }
+
+    const minutes =
+      Math.ceil(
+        seconds / 60,
+      );
+
+    return minutes === 1
+      ? "1 minuto"
+      : `${minutes} minutos`;
+  };
 
 const copyToClipboard =
   async (
@@ -272,6 +319,44 @@ export default function CatalogPublishCheckout({
       "",
     );
 
+  /*
+   * HTTP 429: espera sugerida por JUNG CORE. El reintento es solo
+   * manual y queda deshabilitado hasta que vence la espera; nunca se
+   * programa una solicitud automática.
+   */
+  const [
+    retryAfterSeconds,
+    setRetryAfterSeconds,
+  ] =
+    useState<number | null>(
+      null,
+    );
+
+  const [
+    isRetryWaiting,
+    setIsRetryWaiting,
+  ] =
+    useState(
+      false,
+    );
+
+  const retryWaitTimerRef =
+    useRef<number | null>(
+      null,
+    );
+
+  const retryWaitActiveRef =
+    useRef(
+      false,
+    );
+
+  const clearRetryWait =
+    () =>
+      clearRetryWaitTimer(
+        retryWaitTimerRef,
+        retryWaitActiveRef,
+      );
+
   const eligibility =
     resolveCatalogPublicationEligibility({
       composition,
@@ -347,6 +432,19 @@ export default function CatalogPublishCheckout({
       publishInFlight.current =
         false;
 
+      clearRetryWaitTimer(
+        retryWaitTimerRef,
+        retryWaitActiveRef,
+      );
+
+      setIsRetryWaiting(
+        false,
+      );
+
+      setRetryAfterSeconds(
+        null,
+      );
+
       setPublicIdStatus(
         "idle",
       );
@@ -358,6 +456,16 @@ export default function CatalogPublishCheckout({
     [
       publicationKey,
     ],
+  );
+
+  useEffect(
+    () =>
+      () =>
+        clearRetryWaitTimer(
+          retryWaitTimerRef,
+          retryWaitActiveRef,
+        ),
+    [],
   );
 
   const hasResolutionBlockers =
@@ -475,7 +583,8 @@ export default function CatalogPublishCheckout({
       if (
         eligibility.status !==
           "requires-public-id" ||
-        publishInFlight.current
+        publishInFlight.current ||
+        retryWaitActiveRef.current
       ) {
         return;
       }
@@ -544,6 +653,51 @@ export default function CatalogPublishCheckout({
           );
 
           return;
+        }
+
+        if (
+          result.status ===
+          "rate-limited"
+        ) {
+          const waitSeconds =
+            result.retryAfterSeconds ??
+            null;
+
+          setRetryAfterSeconds(
+            waitSeconds,
+          );
+
+          if (
+            waitSeconds !==
+            null
+          ) {
+            clearRetryWait();
+
+            retryWaitActiveRef.current =
+              true;
+
+            setIsRetryWaiting(
+              true,
+            );
+
+            // Solo rehabilita el botón; no dispara ninguna solicitud.
+            retryWaitTimerRef.current =
+              window.setTimeout(
+                () => {
+                  retryWaitTimerRef.current =
+                    null;
+
+                  retryWaitActiveRef.current =
+                    false;
+
+                  setIsRetryWaiting(
+                    false,
+                  );
+                },
+                waitSeconds *
+                  1000,
+              );
+          }
         }
 
         setPublicIdStatus(
@@ -864,6 +1018,50 @@ export default function CatalogPublishCheckout({
                 disabled
               >
                 Publicando catálogo...
+              </button>
+            </div>
+          </div>
+        ) : eligibility.status ===
+            "requires-public-id" &&
+          publicIdStatus ===
+            "rate-limited" ? (
+          <div
+            className="catalog-publish-checkout__status is-blocked"
+            role="status"
+          >
+            <strong>
+              JUNG CORE recibió demasiadas solicitudes
+            </strong>
+
+            <p>
+              La publicación se pausó de forma temporal. La composición y la
+              selección comercial se conservan intactas, y el reintento usará
+              la misma publicación.
+            </p>
+
+            <p>
+              {retryAfterSeconds !==
+              null
+                ? isRetryWaiting
+                  ? `Espera ${formatRetryWait(
+                      retryAfterSeconds,
+                    )} antes de reintentar.`
+                  : "Ya puedes reintentar la publicación."
+                : "Espera unos instantes antes de reintentar."}
+            </p>
+
+            <div className="catalog-publish-checkout__actions">
+              <button
+                type="button"
+                className="is-primary"
+                disabled={
+                  isRetryWaiting
+                }
+                onClick={
+                  handlePublishPublicId
+                }
+              >
+                Reintentar publicación
               </button>
             </div>
           </div>

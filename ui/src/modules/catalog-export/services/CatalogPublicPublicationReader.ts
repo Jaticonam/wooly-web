@@ -11,6 +11,10 @@ import type {
   CatalogPublicationProvider,
 } from "@wooly/shared/catalog/providers/CatalogPublicationProvider";
 
+import {
+  readCatalogPublicationRateLimit,
+} from "@wooly/shared/catalog/integrations/publication/HttpCatalogPublicationProvider";
+
 export type CatalogPublicPublicationReaderStatus =
   | "idle"
   | "unavailable"
@@ -19,6 +23,8 @@ export type CatalogPublicPublicationReaderStatus =
   | "not-found"
   | "expired"
   | "revoked"
+  /** HTTP 429: límite transitorio; el enlace sigue siendo válido. */
+  | "rate-limited"
   | "error";
 
 export interface CatalogPublicPublicationReaderResult {
@@ -27,6 +33,10 @@ export interface CatalogPublicPublicationReaderResult {
 
   publication:
     CatalogPublicPublication | null;
+
+  /** Solo en "rate-limited", cuando JUNG CORE envió un Retry-After válido. */
+  retryAfterSeconds?:
+    number;
 }
 
 export interface ReadCatalogPublicPublicationInput {
@@ -168,6 +178,21 @@ export async function readCatalogPublicPublication(
       return createResult(
         "revoked",
       );
+    }
+
+    // JUNG CORE responde 429 ante límite de lecturas: estado transitorio.
+    const rateLimit =
+      readCatalogPublicationRateLimit(
+        error,
+      );
+
+    if (rateLimit) {
+      return {
+        ...createResult(
+          "rate-limited",
+        ),
+        ...rateLimit,
+      };
     }
 
     return createResult(

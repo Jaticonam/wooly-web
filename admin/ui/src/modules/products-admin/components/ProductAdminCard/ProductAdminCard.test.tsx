@@ -50,8 +50,9 @@ describe("ProductAdminCard", () => {
     expect(screen.queryByText("technical-uuid")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ramo premium" }))
       .toBeInTheDocument();
-    expect(screen.getByText(/Desde.*7\.00.*por volumen/))
-      .toBeInTheDocument();
+    expect(screen.getByText("Mayor (3u)")).toBeInTheDocument();
+    expect(screen.getByText("Docena (12u)")).toBeInTheDocument();
+    expect(screen.queryByText(/por volumen/i)).not.toBeInTheDocument();
     expect(screen.getByText("Disponible · 20"))
       .toBeInTheDocument();
     expect(screen.getByText("+1"))
@@ -113,4 +114,11 @@ it("keeps detail and multiselection independent and requires an authorized callb
 it.each([["agotado",0,"Agotado"],["publicado",0,"Stock inconsistente"],["publicado",3,"Stock bajo · 3"]] as const)("preserves stock policy for %s/%s", (status,stock,label) => {
   const {container}=render(<ProductAdminCard product={{...product,status,stock}} campaignsById={campaigns} onSelect={() => undefined} />);
   expect(container.querySelector('.product-admin-card__stock')).toHaveTextContent(label);
+});
+
+it("omits missing price tiers rather than inventing volume prices", () => {
+  render(<ProductAdminCard product={{...product,price_3:0,price_12:0}} campaignsById={campaigns} onSelect={() => undefined} />);
+  expect(screen.queryByText("Mayor (3u)")).not.toBeInTheDocument();
+  expect(screen.queryByText("Docena (12u)")).not.toBeInTheDocument();
+  expect(screen.queryByText(/por volumen/i)).not.toBeInTheDocument();
 });

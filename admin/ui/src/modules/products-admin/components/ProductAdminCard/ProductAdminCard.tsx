@@ -128,38 +128,28 @@ export default function ProductAdminCard({
           <i aria-hidden="true" />{presentation.statusLabel}
         </span>
 
-        <div className="product-admin-card__pricing">
-          <span className="product-admin-card__priceCaption">
-            {presentation.offerPriceLabel ? "Oferta" : "Precio unitario"}
-          </span>
-          <strong>{presentation.offerPriceLabel ?? presentation.unitPriceLabel}</strong>
-          {presentation.offerPriceLabel && (
-            <span className="product-admin-card__previousPrice">
-              Precio normal <del>{presentation.unitPriceLabel}</del>
-            </span>
-          )}
+        <div className="product-admin-card__pricing" aria-label="Precios del producto">
+          <div className="product-admin-card__priceRow is-primary">
+            <span>{presentation.offerPriceLabel ? "Oferta" : "Precio unitario"}</span>
+            <strong>{presentation.offerPriceLabel ?? presentation.unitPriceLabel}</strong>
+          </div>
+          {presentation.offerPriceLabel ? (
+            <div className="product-admin-card__priceRow is-previous">
+              <span>Normal</span>
+              <del>{presentation.unitPriceLabel}</del>
+            </div>
+          ) : null}
+          {presentation.volumeTiers.map((tier) => (
+            <div key={tier.quantity} className="product-admin-card__priceRow">
+              <span>{tier.quantity === 3 ? "Mayor (3u)" : "Docena (12u)"}</span>
+              <strong>{tier.priceLabel}</strong>
+            </div>
+          ))}
         </div>
-
-        <span
-          className={
-            `product-admin-card__stock is-${presentation.stockTone}`
-          }
-        >
-          <Package size={13} aria-hidden="true" />
+        <span className={`product-admin-card__stock is-${presentation.stockTone}`}>
+          <Package size={12} aria-hidden="true" />
           {presentation.stockLabel}
         </span>
-
-        <section className="product-admin-card__volume" aria-label="Precios por volumen">
-          <div className="product-admin-card__volumeGrid">
-            {presentation.volumeTiers.map((tier) => (
-              <div key={tier.quantity} className="product-admin-card__volumeTier">
-                <span>{tier.quantity === 3 ? "Mayor (3u)" : "Docena (12u)"}</span>
-                <strong>{tier.priceLabel}</strong>
-              </div>
-            ))}
-          </div>
-          <small>{presentation.volumePriceLabel}</small>
-        </section>
         <div className="product-admin-card__meta">
           {visibleCampaigns.length > 0 ? (
             <div className="product-admin-card__campaigns">

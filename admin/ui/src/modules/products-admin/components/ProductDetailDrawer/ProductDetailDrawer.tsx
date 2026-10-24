@@ -86,7 +86,7 @@ export default function ProductDetailDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="product-detail-drawer">
+      <SheetContent className="product-detail-drawer !w-[min(95vw,760px)] !max-w-[760px]">
         <SheetHeader className="product-detail-drawer__header">
           <span className="product-detail-drawer__heading">Detalle del producto</span>
           <div className="product-detail-drawer__eyebrow">

@@ -126,7 +126,7 @@ export default function ProductDetailDrawer({
               <div className="product-detail-drawer__operations">
                 <strong>Operaciones</strong>
                 {canPublish ? (
-                  <button type="button" disabled={publishing} onClick={() => onPublish?.(product)}>
+                  <button type="button" disabled={publishing} onClick={() => { onOpenChange(false); onPublish?.(product); }}>
                     <Send size={15} aria-hidden="true" />
                     {publishing ? "Preparando publicación…" : "Publicar producto"}
                   </button>

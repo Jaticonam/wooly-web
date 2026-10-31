@@ -43,7 +43,9 @@ describe("CatalogWorkflowHeader", () => {
     fireEvent.click(screen.getByRole("button", { name: /Generar/ }));
     fireEvent.click(screen.getByRole("button", { name: "Mis catálogos" }));
     fireEvent.click(screen.getByRole("button", { name: "Google Sheets" }));
-    fireEvent.click(screen.getByRole("button", { name: "Nuevo catálogo" }));
+    const resetButton = screen.getByRole("button", { name: "Nuevo catálogo" });
+    expect(resetButton).toHaveClass("jam-button");
+    fireEvent.click(resetButton);
 
     expect(onStageChange).toHaveBeenCalledWith("review");
     expect(onOpenGenerate).toHaveBeenCalledOnce();

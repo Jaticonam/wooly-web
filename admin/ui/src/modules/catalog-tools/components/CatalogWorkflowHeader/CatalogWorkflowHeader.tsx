@@ -1,3 +1,5 @@
+import { AdminButton } from "@jung/admin-master";
+
 import "./CatalogWorkflowHeader.css";
 
 export type CatalogWorkflowStage =
@@ -84,9 +86,9 @@ export default function CatalogWorkflowHeader({
           </button>
         ) : null}
 
-        <button type="button" className="is-reset" onClick={onReset}>
+        <AdminButton type="button" variant="secondary" size="md" className="is-reset" onClick={onReset}>
           Nuevo catálogo
-        </button>
+        </AdminButton>
       </div>
     </header>
   );

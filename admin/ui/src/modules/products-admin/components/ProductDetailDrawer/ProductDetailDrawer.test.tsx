@@ -56,16 +56,16 @@ describe("ProductDetailDrawer", () => {
   });
 
   it("presenta oferta por separado, sin reemplazar ni tachar precios de la BD", () => {
-    const { container } = renderDrawer({ ...product, price_offer: 4.5 });
+    renderDrawer({ ...product, price_offer: 4.5 });
     expect(screen.getByText("Precio oferta")).toBeInTheDocument();
     expect(screen.getByText("S/ 4.50")).toBeInTheDocument();
-    const rows = [...container.querySelectorAll(".product-detail-drawer__priceRow")];
+    const rows = [...document.querySelectorAll(".product-detail-drawer__priceRow")];
     expect(rows).toHaveLength(4);
     expect(rows.map((row) => row.textContent?.replace(/\s/g, " "))).toEqual([
       "Desde 1 un.S/ 5.50", "Desde 3 un.S/ 5.00",
       "Desde 12 un.S/ 4.70", "Desde 100 un.S/ 4.10",
     ]);
-    expect(container.querySelector("del")).toBeNull();
+    expect(document.querySelector("del")).toBeNull();
   });
 
   it("navega imágenes con flechas compactas", () => {

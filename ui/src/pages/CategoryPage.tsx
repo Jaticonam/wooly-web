@@ -455,12 +455,15 @@ const CategoryPage =
       ],
     );
 
+  const [initialQty, setInitialQty] = useState(1);
+
   const handleAddToCart =
     useCallback(
       (
-        product:
-          Product,
+        product: Product,
+        quantity = 1,
       ) => {
+        setInitialQty(quantity);
         setSelectedProduct(
           product,
         );
@@ -811,6 +814,7 @@ const CategoryPage =
       />
 
       <AddToCartModal
+        initialQty={initialQty}
         open={
           addModalOpen
         }

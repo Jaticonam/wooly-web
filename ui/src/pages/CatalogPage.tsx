@@ -136,8 +136,11 @@ const CatalogPage = () => {
 
   const hasCustomSort = sortMode !== "featured";
 
+  const [initialQty, setInitialQty] = useState(1);
+
   const handleAddToCart = useCallback(
-    (product: Product) => {
+    (product: Product, quantity = 1) => {
+      setInitialQty(quantity);
       setSelectedProduct(product);
       setAddModalOpen(true);
     },
@@ -419,6 +422,7 @@ const CatalogPage = () => {
       <AddToCartModal
         open={addModalOpen}
         product={selectedProduct}
+        initialQty={initialQty}
         currentQty={currentQtyInCart}
         onClose={handleCloseAddModal}
         onConfirmQuantity={handleAddExtra}

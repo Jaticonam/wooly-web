@@ -678,3 +678,60 @@ describe(
     );
   },
 );
+
+
+describe("W-UX-01 initial quantity", () => {
+  it.each([3, 12])(
+    "abre con %i unidades sin modificar el carrito",
+    (initialQty) => {
+      const { props } = renderModal({ initialQty });
+
+      expect(
+        screen.getByTestId("quick-add-quantity"),
+      ).toHaveTextContent(String(initialQty));
+
+      expect(props.onConfirmQuantity).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByRole("button", {
+        name: "Aumentar cantidad",
+      }));
+
+      expect(props.onConfirmQuantity).not.toHaveBeenCalled();
+
+      fireEvent.click(screen.getByRole("button", {
+        name: "Agregar " + (initialQty + 1) + "u a mi caja",
+      }));
+
+      expect(props.onConfirmQuantity).toHaveBeenCalledTimes(1);
+      expect(props.onConfirmQuantity).toHaveBeenCalledWith(
+        initialQty + 1,
+      );
+    },
+  );
+
+  it("reinicia cantidad y confirmacion al reabrir", () => {
+    const { props, rerender } = renderModal({
+      initialQty: 12,
+    });
+
+    fireEvent.click(screen.getByRole("button", {
+      name: "Agregar 12u a mi caja",
+    }));
+
+    rerender(<AddToCartModal {...props} open={false} />);
+
+    rerender(
+      <AddToCartModal
+        {...props}
+        open={true}
+        initialQty={1}
+      />,
+    );
+
+    expect(
+      screen.getByTestId("quick-add-quantity"),
+    ).toHaveTextContent("1");
+
+    expect(props.onConfirmQuantity).toHaveBeenCalledTimes(1);
+  });
+});

@@ -20,7 +20,7 @@ import { useProductCard } from "@/modules/product-detail/hooks/useProductCard";
 interface Props {
   product: Product;
   cart?: CartItem[];
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (product: Product, initialQty?: number) => void;
   onImageClick?: (product: Product) => void;
   imagePriority?: boolean;
 }
@@ -208,6 +208,7 @@ export function ProductCard({
         <ProductCardStock stock={p.stock} price={p.price_1} status={p.status} />
 
         <ProductVolumePriceBadges
+          onSelectQuantity={handleAdd}
           product={p}
           available={available}
           isPreventa={isPreventa}

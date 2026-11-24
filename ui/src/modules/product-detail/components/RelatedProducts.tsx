@@ -19,8 +19,8 @@ interface RelatedProductsProps {
     string;
   onAddToCart:
     (
-      product:
-        Product,
+      product: Product,
+      initialQty?: number,
     ) => void;
   onImageClick:
     (

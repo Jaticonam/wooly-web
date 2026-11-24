@@ -390,3 +390,36 @@ describe(
     );
   },
 );
+
+
+describe("W-UX-01 wholesale shortcuts", () => {
+  it("abre las cantidades 3 y 12 y conserva Agregar", () => {
+    const product = createProduct({ price_offer: null });
+    const onAddToCart = vi.fn();
+
+    render(
+      <MemoryRouter>
+        <ProductCard
+          product={product}
+          onAddToCart={onAddToCart}
+        />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole("button", {
+      name: /Por Mayor/,
+    }));
+    expect(onAddToCart).toHaveBeenLastCalledWith(product, 3);
+
+    fireEvent.click(screen.getByRole("button", {
+      name: /Por Docena/,
+    }));
+    expect(onAddToCart).toHaveBeenLastCalledWith(product, 12);
+
+    fireEvent.click(screen.getByRole("button", {
+      name: "Agregar",
+    }));
+    expect(onAddToCart).toHaveBeenLastCalledWith(product);
+    expect(onAddToCart).toHaveBeenCalledTimes(3);
+  });
+});

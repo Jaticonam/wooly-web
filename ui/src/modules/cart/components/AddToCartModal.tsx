@@ -31,6 +31,7 @@ interface AddToCartModalProps {
   open: boolean;
   product: Product | null;
   currentQty: number;
+  initialQty?: number;
   onClose: () => void;
   onConfirmQuantity: (qty: number) => void;
   onOpenCart: () => void;
@@ -42,6 +43,7 @@ export function AddToCartModal({
   open,
   product,
   currentQty,
+  initialQty = QUICK_ADD_MIN,
   onClose,
   onConfirmQuantity,
   onOpenCart,
@@ -52,7 +54,10 @@ export function AddToCartModal({
     selectedQty,
     setSelectedQty,
   ] = useState(
-    QUICK_ADD_MIN,
+    Math.min(
+      QUICK_ADD_MAX,
+      Math.max(QUICK_ADD_MIN, initialQty),
+    ),
   );
 
   const [
@@ -70,7 +75,10 @@ export function AddToCartModal({
       }
 
       setSelectedQty(
-        QUICK_ADD_MIN,
+        Math.min(
+          QUICK_ADD_MAX,
+          Math.max(QUICK_ADD_MIN, initialQty),
+        ),
       );
 
       setConfirmedTotalQty(
@@ -80,6 +88,7 @@ export function AddToCartModal({
     [
       open,
       product?.id,
+      initialQty,
     ],
   );
 

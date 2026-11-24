@@ -118,11 +118,13 @@ export default function FeaturedProductsSection() {
         )
       : 0;
 
+  const [initialQty, setInitialQty] = useState(1);
+
   const handleAddToCart =
     useCallback(
       (
-        product:
-          Product,
+        product: Product,
+        quantity = 1,
       ) => {
         if (
           !isProductPurchasable(
@@ -132,6 +134,7 @@ export default function FeaturedProductsSection() {
           return;
         }
 
+        setInitialQty(quantity);
         setSelectedProduct(
           product,
         );
@@ -363,6 +366,7 @@ export default function FeaturedProductsSection() {
       />
 
       <AddToCartModal
+        initialQty={initialQty}
         open={
           addModalOpen
         }

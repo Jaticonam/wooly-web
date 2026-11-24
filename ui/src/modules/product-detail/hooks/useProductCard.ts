@@ -32,8 +32,8 @@ export function useProductCard(
 
   onAddToCart:
     (
-      product:
-        Product,
+      product: Product,
+      initialQty?: number,
     ) => void,
 ) {
   const navigate =
@@ -94,16 +94,18 @@ export function useProductCard(
     );
   }
 
-  function handleAdd() {
+  function handleAdd(initialQty?: number) {
     if (
       !policy.isPurchasable
     ) {
       return;
     }
 
-    onAddToCart(
-      product,
-    );
+    if (initialQty === undefined) {
+      onAddToCart(product);
+    } else {
+      onAddToCart(product, initialQty);
+    }
   }
 
   function handleWhatsApp() {

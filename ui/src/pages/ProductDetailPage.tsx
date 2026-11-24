@@ -884,11 +884,13 @@ const ProductDetailPage =
       ],
     );
 
+  const [initialRelatedQty, setInitialRelatedQty] = useState(1);
+
   const handleRelatedAddToCart =
     useCallback(
       (
-        relatedProduct:
-          Product,
+        relatedProduct: Product,
+        quantity = 1,
       ) => {
         if (
           !isProductPurchasable(
@@ -898,6 +900,7 @@ const ProductDetailPage =
           return;
         }
 
+        setInitialRelatedQty(quantity);
         setSelectedRelated(
           relatedProduct,
         );
@@ -1228,6 +1231,7 @@ const ProductDetailPage =
       />
 
       <AddToCartModal
+        initialQty={initialRelatedQty}
         open={
           addModalOpen
         }

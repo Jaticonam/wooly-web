@@ -16,6 +16,7 @@ interface Props {
   available: boolean;
   isPreventa: boolean;
   maxTiers?: number;
+  onSelectQuantity?: (qty: number) => void;
 }
 
 export function ProductVolumePriceBadges({
@@ -23,6 +24,7 @@ export function ProductVolumePriceBadges({
   available,
   isPreventa,
   maxTiers,
+  onSelectQuantity,
 }: Props) {
   if (!available || isPreventa) return null;
 
@@ -61,6 +63,30 @@ export function ProductVolumePriceBadges({
           const totalPrice =
             tier.unitPrice *
             tier.qty;
+
+          if (
+            onSelectQuantity &&
+            (tier.qty === 3 || tier.qty === 12)
+          ) {
+            return (
+              <button
+                style={{ cursor: "pointer" }}
+                key={tier.key}
+                type="button"
+                data-no-card-click
+                className={`wholesale-chip tier tier-chip ${tier.className}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSelectQuantity(tier.qty);
+                }}
+              >
+                <span className="block w-full text-center">
+                  {TIER_LABELS[tier.key]} ({tier.label}) × S/
+                  {totalPrice.toFixed(0)}
+                </span>
+              </button>
+            );
+          }
 
           return (
             <div

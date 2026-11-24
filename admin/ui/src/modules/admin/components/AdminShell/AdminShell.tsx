@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import {
+  ClipboardList,
   Boxes,
   Files,
   LogOut,
@@ -77,6 +78,15 @@ export default function AdminShell({
             <span>Productos</span>
           </NavLink>
 
+          <NavLink
+            to="/admin/pedidos"
+            className={({ isActive }) => isActive ? "is-active" : ""}
+          >
+            <span className="wooly-admin-shell__navIcon" aria-hidden="true">
+              <ClipboardList size={18} strokeWidth={2} />
+            </span>
+            <span>Pedidos</span>
+          </NavLink>
           <NavLink
             to="/admin/catalogos"
             className={({ isActive }) =>

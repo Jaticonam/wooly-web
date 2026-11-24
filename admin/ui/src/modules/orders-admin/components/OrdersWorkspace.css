@@ -1,0 +1,43 @@
+.wooly-orders{display:flex;flex-direction:column;gap:24px;width:100%;padding:24px;max-width:1600px;margin:0 auto;color:#172e39}
+.wooly-orders__header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.wooly-orders__eyebrow{font-size:11px;font-weight:750;letter-spacing:.11em;color:#147b94}
+.wooly-orders__header h1{margin:6px 0;font-weight:800;font-size:clamp(1.5rem,2.7vw,2.1rem)}
+.wooly-orders__header p{margin:0;color:#627984;font-size:14px}
+.wooly-orders__nav{display:flex;gap:10px}
+.wooly-orders__action{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:10px;border:1px solid #cbdde3;background:#fff;color:#126f86;text-decoration:none;font-size:13px;font-weight:700}
+.wooly-orders__action:hover{background:#eaf8fb}
+.wooly-orders__action--primary{background:#117f97;border-color:#117f97;color:#fff}
+.wooly-orders__action--primary:hover{background:#086980}
+.wooly-orders__notice{display:flex;gap:12px;padding:15px 17px;border:1px solid #e4d2a9;border-radius:12px;background:#fffbef;color:#75591f}
+.wooly-orders__notice svg{flex-shrink:0;margin-top:2px}
+.wooly-orders__notice strong{font-size:13px}
+.wooly-orders__notice p{font-size:13px;margin:4px 0 0;line-height:1.55}
+.wooly-orders__metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.wooly-orders__metric{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px 12px;background:white;padding:17px;border:1px solid #e0ebef;border-radius:14px}
+.wooly-orders__metric svg{color:#147f96}
+.wooly-orders__metric span{font-size:13px;color:#607782;font-weight:600}
+.wooly-orders__metric strong{grid-column:2;font-size:28px;line-height:1.1}
+.wooly-orders__panel{background:#fff;border:1px solid #e0ebef;border-radius:14px;overflow:hidden}
+.wooly-orders__panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 20px 12px}
+.wooly-orders__panel-head h2{font-size:17px;font-weight:750;margin:0}
+.wooly-orders__panel-head span{font-size:12px;color:#71848e}
+.wooly-orders__toolbar{display:flex;gap:12px;flex-wrap:wrap;padding:0 20px 17px}
+.wooly-orders__search{display:flex;align-items:center;gap:8px;border:1px solid #dbe6e9;border-radius:9px;padding:0 12px;min-height:40px;flex:1;min-width:210px;color:#8da0a8}
+.wooly-orders__search input{border:0;outline:none;min-width:0;flex:1;background:transparent;font:inherit;font-size:13px}
+.wooly-orders__toolbar select{border:1px solid #dbe6e9;border-radius:9px;padding:0 12px;min-height:40px;background:#f7fafb;color:#71848e}
+.wooly-orders__table-wrap{overflow-x:auto}
+.wooly-orders__table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;min-width:780px}
+.wooly-orders__table th{background:#f6fafb;color:#56717e;font-size:12px;font-weight:750;padding:14px 15px;white-space:nowrap;border-bottom:1px solid #e0ebef}
+.wooly-orders__empty{text-align:center;padding:55px 20px!important;color:#738995}
+.wooly-orders__empty svg{display:block;margin:0 auto 12px;color:#91a8b2}
+.wooly-orders__empty strong,.wooly-orders__empty span{display:block;margin-top:7px}
+.wooly-orders__empty strong{color:#455d69}
+.wooly-orders__board{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:13px;overflow-x:auto;padding-bottom:12px}
+.wooly-orders__column{background:#f6fafb;border:1px solid #dce8ed;border-radius:13px;min-height:280px;padding:15px}
+.wooly-orders__column header{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.wooly-orders__column h2{font-size:14px;font-weight:800;margin:0}
+.wooly-orders__column header span{background:#e6f0f4;border-radius:50px;padding:4px 10px;color:#647f8b;font-weight:750}
+.wooly-orders__column>p{font-size:12px;color:#718995;min-height:36px;margin:8px 0 14px}
+.wooly-orders__column-body{border:1px dashed #c6d7dc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:145px;border-radius:10px;color:#8ba0aa;font-size:12px}
+@media(max-width:1000px){.wooly-orders__metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.wooly-orders{padding:16px;gap:18px}.wooly-orders__metrics{gap:9px}.wooly-orders__metric{padding:12px}.wooly-orders__metric span{font-size:11px}.wooly-orders__panel-head,.wooly-orders__toolbar{padding-left:14px;padding-right:14px}}

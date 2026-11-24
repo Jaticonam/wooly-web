@@ -48,6 +48,8 @@ import AdminProtectedRoute from "@/modules/admin-auth/components/AdminProtectedR
  * sigan siendo válidos sin reescritura.
  */
 
+const OrdersWorkspace = lazy(() => import("@/modules/orders-admin/components/OrdersWorkspace"));
+
 const ProductsAdminPage = lazy(
   () => import("@/pages/ProductsAdminPage"),
 );
@@ -163,6 +165,8 @@ export default function App() {
                         }
                       />
 
+                      <Route path="/admin/pedidos" element={<OrdersWorkspace />} />
+                      <Route path="/admin/pedidos/tablero" element={<OrdersWorkspace />} />
                       <Route
                         path="/admin/catalogos"
                         element={

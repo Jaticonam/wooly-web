@@ -329,7 +329,7 @@ export default function ProductsAdminPage() {
             </p>
           </div>
 
-          {import.meta.env.VITE_ENABLE_PRODUCT_CREATION === "true" ? <CreateProductPanel /> : null}
+          <CreateProductPanel />
 
           <div className="products-admin-page__syncActions" aria-label="Sincronización temporal">
             <button

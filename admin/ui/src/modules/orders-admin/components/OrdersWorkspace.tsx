@@ -7,6 +7,9 @@ import {
   Inbox,
   KanbanSquare,
   PackageCheck,
+  CheckCircle2,
+  CheckCheck,
+  Settings2,
   Search,
   Truck,
   Workflow,
@@ -19,14 +22,15 @@ type Stage = {
   key: string;
   title: string;
   description: string;
+  icon: typeof Inbox;
 };
 
 const STAGES: readonly Stage[] = [
-  { key: "received", title: "Recibidos", description: "Pedidos pendientes de revisión" },
-  { key: "confirmed", title: "Confirmados", description: "Pedidos confirmados" },
-  { key: "in_production", title: "En preparación", description: "Preparación comercial pendiente" },
-  { key: "finished", title: "Listos", description: "Preparados para despacho" },
-  { key: "shipped", title: "Enviados", description: "Pedidos despachados" },
+  { key: "received", title: "Recibidos", description: "Pedidos pendientes de revisión", icon: Inbox },
+  { key: "confirmed", title: "Confirmados", description: "Pedidos confirmados", icon: CheckCircle2 },
+  { key: "in_production", title: "En preparación", description: "Preparación comercial pendiente", icon: Settings2 },
+  { key: "finished", title: "Listos", description: "Preparados para despacho", icon: CheckCheck },
+  { key: "shipped", title: "Enviados", description: "Pedidos despachados", icon: Truck },
 ];
 
 const METRICS = [
@@ -121,12 +125,14 @@ export default function OrdersWorkspace() {
         ) : (
           <section className="wooly-orders__board" aria-label="Tablero de estados de pedidos">
             {STAGES.map((stage) => (
-              <article className="wooly-orders__column" key={stage.key}>
+              <article className={`wooly-orders__column wooly-orders__column--${stage.key}`} key={stage.key}>
                 <header>
-                  <h2>{stage.title}</h2>
-                  <span aria-label="Conteo no disponible">—</span>
+                  <div className="wooly-orders__column-title">
+                    <span className="wooly-orders__column-icon"><stage.icon size={20} strokeWidth={2.4} aria-hidden="true" /></span>
+                    <div><h2>{stage.title}</h2><small>{stage.description}</small></div>
+                  </div>
+                  <span className="wooly-orders__column-count" aria-label="Conteo no disponible">—</span>
                 </header>
-                <p>{stage.description}</p>
                 <div className="wooly-orders__column-body">
                   <Inbox size={23} aria-hidden="true" />
                   <span>Sin datos conectados</span>

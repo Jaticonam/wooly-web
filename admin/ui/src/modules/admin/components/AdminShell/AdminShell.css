@@ -1,458 +1,172 @@
+/* W-SIDEBAR-01 — navegación comercial jerárquica; estilos aislados del catálogo. */
 .wooly-admin-shell {
-  --wooly-admin-primary: var(--color-primary, #087f9c);
-  --wooly-admin-primary-strong: #07667d;
-  --wooly-admin-primary-soft: #e9f7fa;
-  --wooly-admin-primary-faint: #f3fbfc;
-
-  --wooly-admin-ink: #16213e;
-  --wooly-admin-muted: #738095;
-  --wooly-admin-border: #e3e8ee;
-  --wooly-admin-surface: #ffffff;
+  --wooly-admin-primary: #dd4580;
+  --wooly-admin-primary-strong: #c7336e;
+  --wooly-admin-primary-soft: #fdedf3;
+  --wooly-admin-primary-faint: #fff6f9;
+  --wooly-admin-ink: #1c2333;
+  --wooly-admin-muted: #6d7486;
+  --wooly-admin-border: #e6eaf0;
+  --wooly-admin-surface: #fff;
   --wooly-admin-workspace: #f8fafb;
-  --wooly-admin-warm: #fffaf7;
-
+  display: grid;
+  grid-template-columns: 236px minmax(0,1fr);
   min-height: 100vh;
   background: var(--wooly-admin-workspace);
   color: var(--wooly-admin-ink);
 }
-
-.wooly-admin-shell,
-.wooly-admin-shell * {
-  box-sizing: border-box;
-}
-
-.wooly-admin-shell {
-  display: grid;
-  grid-template-columns: 198px minmax(0, 1fr);
-}
-
+.wooly-admin-shell, .wooly-admin-shell * { box-sizing: border-box; }
+.wooly-admin-shell button, .wooly-admin-shell a { -webkit-tap-highlight-color: transparent; }
 .wooly-admin-shell__sidebar {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-
-  display: flex;
-  flex-direction: column;
-
-  width: 198px;
-  height: 100vh;
-
-  padding: 20px 12px 14px;
-
-  background: #ffffff;
-  border-right: 1px solid var(--wooly-admin-border);
+  position: sticky; top: 0; z-index: 30;
+  display: flex; flex-direction: column;
+  height: 100vh; min-width: 0; overflow-y: auto;
+  padding: 18px 12px 14px;
+  background: #fff; border-right: 1px solid var(--wooly-admin-border);
 }
-
-.wooly-admin-shell__brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  min-height: 54px;
-  padding: 0 8px 16px;
-}
-
+.wooly-admin-shell__brand { display:flex; align-items:center; gap:9px; min-height:54px; padding:0 4px 14px; }
 .wooly-admin-shell__brandMark {
-  display: grid;
-  place-items: center;
-
-  width: 36px;
-  height: 36px;
-
-  flex: 0 0 auto;
-
-  border-radius: 12px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #1a9ab3 0%,
-      var(--wooly-admin-primary-strong) 100%
-    );
-
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 900;
-
-  box-shadow:
-    0 8px 20px rgba(8, 127, 156, 0.20);
+  display:grid; place-items:center; width:38px; height:38px; flex:none; border-radius:12px;
+  background:linear-gradient(145deg,#ec6c9b,var(--wooly-admin-primary-strong));
+  color:#fff; font-size:17px; font-weight:900; box-shadow:0 6px 15px rgba(221,69,128,.17);
 }
-
-.wooly-admin-shell__brandCopy {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+.wooly-admin-shell__brandCopy { display:flex; flex:1; min-width:0; flex-direction:column; gap:3px; }
+.wooly-admin-shell__brandCopy strong { font-size:13.5px; line-height:1.15; white-space:nowrap; }
+.wooly-admin-shell__brandCopy small { font-size:9px; font-weight:700; letter-spacing:.06em; color:var(--wooly-admin-muted); }
+.wooly-admin-shell__collapse {
+  display:grid; place-items:center; flex:none; width:28px; height:28px; padding:0;
+  border:1px solid var(--wooly-admin-border); border-radius:8px; background:#fff;
+  color:var(--wooly-admin-muted); cursor:pointer;
 }
-
-.wooly-admin-shell__brandCopy strong {
-  color: var(--wooly-admin-ink);
-  font-size: 14px;
-  line-height: 1.15;
+.wooly-admin-shell__collapse:hover { color:var(--wooly-admin-primary-strong); border-color:#f0bbce; }
+.wooly-admin-shell__navigation { display:flex; flex-direction:column; gap:18px; margin-top:16px; }
+.wooly-admin-shell__navSection { display:flex; flex-direction:column; gap:4px; }
+.wooly-admin-shell__sectionTitle {
+  margin:0 8px 7px; font-size:10px; font-weight:800; letter-spacing:.09em;
+  line-height:1.4; color:#8993a4;
 }
-
-.wooly-admin-shell__brandCopy small {
-  margin-top: 3px;
-
-  color: var(--wooly-admin-muted);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.035em;
+.wooly-admin-shell__navigation a, .wooly-admin-shell__groupHeader > a {
+  display:flex; align-items:center; gap:10px; min-width:0; min-height:43px;
+  padding:0 11px; border:1px solid transparent; border-radius:10px;
+  color:#59647a; font-size:13px; font-weight:650; text-decoration:none; white-space:nowrap;
+  transition:background 140ms ease,color 140ms ease;
 }
-
-.wooly-admin-shell__navigation {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  margin-top: 10px;
-}
-
-.wooly-admin-shell__navigation a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  min-height: 42px;
-  padding: 0 12px;
-
-  border: 1px solid transparent;
-  border-radius: 12px;
-
-  color: #59647a;
-  text-decoration: none;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  transition:
-    background 140ms ease,
-    border-color 140ms ease,
-    color 140ms ease,
-    transform 140ms ease;
-}
-
-.wooly-admin-shell__navigation a:hover {
-  background: var(--wooly-admin-primary-faint);
-  color: var(--wooly-admin-primary-strong);
-}
-
+.wooly-admin-shell__navigation a:hover { background:var(--wooly-admin-primary-faint); color:var(--wooly-admin-primary-strong); }
 .wooly-admin-shell__navigation a.is-active {
-  background: var(--wooly-admin-primary-soft);
-  border-color: rgba(8, 127, 156, 0.08);
-  color: var(--wooly-admin-primary-strong);
-
-  box-shadow:
-    inset 3px 0 0 var(--wooly-admin-primary);
+  background:var(--wooly-admin-primary-soft); color:var(--wooly-admin-primary-strong);
+  border-color:#f7d9e5; box-shadow:inset 3px 0 0 var(--wooly-admin-primary);
 }
-
-.wooly-admin-shell__navIcon {
-  display: grid;
-  place-items: center;
-
-  width: 22px;
-  height: 22px;
-
-  color: currentColor;
-  font-size: 15px;
+.wooly-admin-shell__navIcon { display:grid; place-items:center; width:22px; height:22px; flex:none; color:currentColor; }
+.wooly-admin-shell__navIcon svg { display:block; }
+.wooly-admin-shell__navLabel { overflow:hidden; text-overflow:ellipsis; }
+.wooly-admin-shell__navGroup { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.wooly-admin-shell__groupHeader { display:flex; align-items:center; min-width:0; position:relative; }
+.wooly-admin-shell__groupHeader > a { flex:1; padding-right:33px; }
+.wooly-admin-shell__disclosure {
+  position:absolute; right:5px; top:50%; transform:translateY(-50%);
+  display:grid; place-items:center; width:29px; height:29px; padding:0;
+  border:0; border-radius:7px; background:transparent; color:var(--wooly-admin-muted); cursor:pointer;
 }
-
-.wooly-admin-shell__sidebarFooter {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  margin-top: auto;
+.wooly-admin-shell__disclosure:hover { background:#fce4ed; color:var(--wooly-admin-primary-strong); }
+.wooly-admin-shell__disclosure svg { transition:transform .15s ease; }
+.wooly-admin-shell__disclosure svg.is-open { transform:rotate(180deg); }
+.wooly-admin-shell__submenu {
+  display:flex; flex-direction:column; gap:2px; margin-left:21px; padding-left:9px;
+  border-left:1px solid #e8dce2;
 }
-
+.wooly-admin-shell__submenu a {
+  min-height:36px; gap:9px; padding:0 8px;
+  font-size:12px; font-weight:550; border-radius:8px;
+}
+.wooly-admin-shell__submenu svg { flex:none; }
+.wooly-admin-shell__sidebarFooter { display:flex; flex-direction:column; gap:12px; margin-top:auto; padding-top:24px; }
 .wooly-admin-shell__storeLink {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  min-height: 40px;
-  padding: 0 12px;
-
-  border: 1px solid var(--wooly-admin-border);
-  border-radius: 11px;
-
-  background: var(--wooly-admin-warm);
-
-  color: #556078;
-  text-decoration: none;
-
-  font-size: 12px;
-  font-weight: 700;
+  display:flex; align-items:center; gap:9px; min-height:42px; min-width:0; padding:0 10px;
+  border:1px solid var(--wooly-admin-border); border-radius:10px; background:#fffaf7;
+  color:#59647a; text-decoration:none; font-size:12px; font-weight:650;
 }
-
-.wooly-admin-shell__storeLink:hover {
-  border-color: rgba(8, 127, 156, 0.28);
-  color: var(--wooly-admin-primary-strong);
-}
-
+.wooly-admin-shell__storeLink:hover { color:var(--wooly-admin-primary-strong); border-color:#f0bbce; }
+.wooly-admin-shell__storeLink svg { flex:none; }
+.wooly-admin-shell__external { margin-left:auto; }
 .wooly-admin-shell__workspaceBrand {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 10px 8px 0;
-
-  border-top: 1px solid var(--wooly-admin-border);
+  display:flex; align-items:center; justify-content:space-between; padding:10px 7px 0;
+  border-top:1px solid var(--wooly-admin-border); font-size:9px;
 }
-
-.wooly-admin-shell__workspaceBrand small {
-  color: #9199aa;
-  font-size: 9px;
-}
-
-.wooly-admin-shell__workspaceBrand strong {
-  color: var(--wooly-admin-primary-strong);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-}
-
-.wooly-admin-shell__stage {
-  min-width: 0;
-}
-
+.wooly-admin-shell__workspaceBrand small { color:#9199aa; }
+.wooly-admin-shell__workspaceBrand strong { color:var(--wooly-admin-primary-strong); letter-spacing:.08em; }
+.wooly-admin-shell__stage { min-width:0; }
 .wooly-admin-shell__topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  min-height: 58px;
-  padding: 0 30px;
-
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid var(--wooly-admin-border);
-
-  backdrop-filter: blur(14px);
+  position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  min-height:58px; padding:0 30px; background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--wooly-admin-border); backdrop-filter:blur(14px);
 }
-
-.wooly-admin-shell__context {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.wooly-admin-shell__context strong {
-  color: var(--wooly-admin-ink);
-  font-size: 13px;
-}
-
-.wooly-admin-shell__context span {
-  color: var(--wooly-admin-muted);
-  font-size: 12px;
-}
-
-.wooly-admin-shell__topbar > small {
-  color: #929bad;
-  font-size: 11px;
-}
-
-.wooly-admin-shell__workspace {
-  min-width: 0;
-  min-height: calc(100vh - 58px);
-}
-
-@media (max-width: 900px) {
-  .wooly-admin-shell {
-    grid-template-columns: 72px minmax(0, 1fr);
-  }
-
-  .wooly-admin-shell__sidebar {
-    width: 72px;
-    padding-inline: 8px;
-  }
-
-  .wooly-admin-shell__brand {
-    justify-content: center;
-    padding-inline: 0;
-  }
-
-  .wooly-admin-shell__brandCopy,
-  .wooly-admin-shell__navigation a span:last-child,
-  .wooly-admin-shell__storeLink span:last-child,
-  .wooly-admin-shell__workspaceBrand {
-    display: none;
-  }
-
-  .wooly-admin-shell__navigation a,
-  .wooly-admin-shell__storeLink {
-    justify-content: center;
-    padding-inline: 0;
-  }
-
-  .wooly-admin-shell__topbar {
-    padding-inline: 18px;
-  }
-}
-
-@media (max-width: 640px) {
-  .wooly-admin-shell {
-    display: block;
-  }
-
-  .wooly-admin-shell__sidebar {
-    position: static;
-
-    width: 100%;
-    height: auto;
-
-    padding: 10px 14px;
-
-    border-right: 0;
-    border-bottom: 1px solid var(--wooly-admin-border);
-  }
-
-  .wooly-admin-shell__brand,
-  .wooly-admin-shell__sidebarFooter {
-    display: none;
-  }
-
-  .wooly-admin-shell__navigation {
-    flex-direction: row;
-    margin: 0;
-  }
-
-  .wooly-admin-shell__navigation a {
-    flex: 1;
-  }
-
-  .wooly-admin-shell__navigation a span:last-child {
-    display: inline;
-  }
-
-  .wooly-admin-shell__topbar {
-    position: static;
-    min-height: 50px;
-  }
-
-  .wooly-admin-shell__topbar > small {
-    display: none;
-  }
-}
-
-/* LOTE 1B.3B - LUCIDE */
-.wooly-admin-shell__navIcon {
-  display: inline-grid;
-  place-items: center;
-}
-
-.wooly-admin-shell__navIcon svg,
-.wooly-admin-shell__actions svg {
-  display: block;
-  flex: 0 0 auto;
-}
-
-.wooly-admin-shell__actions a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-/* LOTE 1B.3B.1 - STORE ICON */
-.wooly-admin-shell__storeLink svg {
-  display: block;
-  flex: 0 0 auto;
-}
-
-.wooly-admin-shell__topbarActions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.wooly-admin-shell__topbarActions > small {
-  color: #929bad;
-  font-size: 11px;
-}
-
+.wooly-admin-shell__context { display:flex; align-items:baseline; gap:10px; min-width:0; }
+.wooly-admin-shell__context strong { color:var(--wooly-admin-ink); font-size:13px; white-space:nowrap; }
+.wooly-admin-shell__context span { color:var(--wooly-admin-muted); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.wooly-admin-shell__topbarActions { display:flex; align-items:center; gap:12px; }
+.wooly-admin-shell__topbarActions > small { color:#929bad; font-size:11px; }
 .wooly-admin-shell__coreStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  min-height: 30px;
-  padding: 0 10px;
-
-  border: 1px solid #ccebdc;
-  border-radius: 999px;
-
-  background: #f0fbf5;
-
-  color: #287a52;
-  font-size: 10px;
-  font-weight: 800;
+  display:inline-flex; align-items:center; gap:6px; min-height:30px; padding:0 10px;
+  border:1px solid #ccebdc; border-radius:999px; background:#f0fbf5; color:#287a52;
+  font-size:10px; font-weight:800; white-space:nowrap;
 }
-
-.wooly-admin-shell__account {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  padding-left: 12px;
-
-  border-left: 1px solid var(--wooly-admin-border);
-}
-
-.wooly-admin-shell__account > span {
-  max-width: 150px;
-
-  overflow: hidden;
-
-  color: #4e5a70;
-  font-size: 11px;
-  font-weight: 700;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+.wooly-admin-shell__account { display:flex; align-items:center; gap:8px; padding-left:12px; border-left:1px solid var(--wooly-admin-border); }
+.wooly-admin-shell__account > span { max-width:150px; overflow:hidden; color:#4e5a70; font-size:11px; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
 .wooly-admin-shell__account button {
-  display: grid;
-  place-items: center;
-
-  width: 30px;
-  height: 30px;
-
-  border: 1px solid var(--wooly-admin-border);
-  border-radius: 9px;
-
-  background: #ffffff;
-
-  color: #7d8798;
-
-  cursor: pointer;
-
-  transition:
-    border-color 140ms ease,
-    color 140ms ease,
-    background 140ms ease;
+  display:grid; place-items:center; width:30px; height:30px; padding:0;
+  border:1px solid var(--wooly-admin-border); border-radius:9px; background:#fff;
+  color:#7d8798; cursor:pointer;
 }
-
-.wooly-admin-shell__account button:hover {
-  border-color: rgba(8, 127, 156, 0.25);
-  background: var(--wooly-admin-primary-faint);
-  color: var(--wooly-admin-primary-strong);
+.wooly-admin-shell__account button:hover { color:var(--wooly-admin-primary-strong); background:var(--wooly-admin-primary-faint); }
+.wooly-admin-shell__workspace { min-width:0; min-height:calc(100vh - 58px); }
+.wooly-admin-shell :is(a,button):focus-visible {
+  outline:2px solid var(--wooly-admin-primary-strong); outline-offset:2px;
 }
-
-@media (max-width: 760px) {
-  .wooly-admin-shell__coreStatus span,
-  .wooly-admin-shell__account > span {
-    display: none;
+.wooly-admin-shell--collapsed { grid-template-columns:72px minmax(0,1fr); }
+.wooly-admin-shell--collapsed .wooly-admin-shell__sidebar { padding-inline:8px; }
+.wooly-admin-shell--collapsed .wooly-admin-shell__brand { flex-direction:column; padding-inline:0; gap:6px; min-height:78px; }
+.wooly-admin-shell--collapsed .wooly-admin-shell__brandCopy,
+.wooly-admin-shell--collapsed .wooly-admin-shell__sectionTitle,
+.wooly-admin-shell--collapsed .wooly-admin-shell__navLabel,
+.wooly-admin-shell--collapsed .wooly-admin-shell__external,
+.wooly-admin-shell--collapsed .wooly-admin-shell__disclosure,
+.wooly-admin-shell--collapsed .wooly-admin-shell__submenu,
+.wooly-admin-shell--collapsed .wooly-admin-shell__workspaceBrand { display:none; }
+.wooly-admin-shell--collapsed .wooly-admin-shell__groupHeader > a,
+.wooly-admin-shell--collapsed .wooly-admin-shell__navigation a { justify-content:center; padding:0; }
+.wooly-admin-shell--collapsed .wooly-admin-shell__storeLink { justify-content:center; padding:0; }
+.wooly-admin-shell--collapsed .wooly-admin-shell__navigation { gap:12px; }
+@media (max-width:1000px) and (min-width:641px) {
+  .wooly-admin-shell:not(.wooly-admin-shell--collapsed) { grid-template-columns:220px minmax(0,1fr); }
+  .wooly-admin-shell__topbar { padding-inline:18px; }
+}
+@media (max-width:760px) {
+  .wooly-admin-shell__coreStatus span, .wooly-admin-shell__account > span { display:none; }
+  .wooly-admin-shell__coreStatus { justify-content:center; width:30px; padding:0; }
+  .wooly-admin-shell__account { padding-left:8px; }
+}
+@media (max-width:640px) {
+  .wooly-admin-shell, .wooly-admin-shell--collapsed { display:block; }
+  .wooly-admin-shell__sidebar {
+    position:relative; width:100%; height:auto; max-height:none;
+    padding:10px 14px; border-right:0; border-bottom:1px solid var(--wooly-admin-border);
   }
-
-  .wooly-admin-shell__coreStatus {
-    width: 30px;
-    padding: 0;
-    justify-content: center;
-  }
-
-  .wooly-admin-shell__account {
-    padding-left: 8px;
-  }
+  .wooly-admin-shell__brand { min-height:42px; padding:0 0 6px; }
+  .wooly-admin-shell__brandMark { width:32px; height:32px; }
+  .wooly-admin-shell__collapse { display:none; }
+  .wooly-admin-shell__navigation { margin-top:8px; gap:8px; }
+  .wooly-admin-shell__navSection { gap:3px; }
+  .wooly-admin-shell__sectionTitle { margin:5px 7px 2px; }
+  .wooly-admin-shell__navigation a, .wooly-admin-shell__groupHeader > a { min-height:40px; }
+  .wooly-admin-shell__sidebarFooter { margin-top:8px; padding-top:8px; }
+  .wooly-admin-shell__workspaceBrand { display:none; }
+  .wooly-admin-shell--collapsed .wooly-admin-shell__brand { flex-direction:row; min-height:42px; }
+  .wooly-admin-shell--collapsed .wooly-admin-shell__brandCopy,
+  .wooly-admin-shell--collapsed .wooly-admin-shell__sectionTitle,
+  .wooly-admin-shell--collapsed .wooly-admin-shell__navLabel,
+  .wooly-admin-shell--collapsed .wooly-admin-shell__disclosure { display:flex; }
+  .wooly-admin-shell--collapsed .wooly-admin-shell__navigation a,
+  .wooly-admin-shell--collapsed .wooly-admin-shell__groupHeader > a { justify-content:flex-start; padding:0 11px; }
+  .wooly-admin-shell__topbar { position:static; min-height:50px; padding:0 14px; }
+  .wooly-admin-shell__topbarActions > small { display:none; }
 }

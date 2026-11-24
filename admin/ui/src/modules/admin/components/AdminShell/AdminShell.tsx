@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  Boxes, ChevronDown, ChevronLeft, ChevronRight, ClipboardList,
+  Boxes, ChevronDown, PanelLeftClose, PanelLeftOpen, ClipboardList,
   Database, Files, Images, KanbanSquare, List, LogOut,
   Settings2, Sheet, ShieldCheck, Store, Workflow, ExternalLink,
 } from "lucide-react";
@@ -177,7 +177,7 @@ export default function AdminShell({
             aria-expanded={!collapsed}
             title={collapsed ? "Expandir menú" : "Contraer menú"}
           >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
             <strong>Wooly Admin</strong>
             <span>{title}</span>

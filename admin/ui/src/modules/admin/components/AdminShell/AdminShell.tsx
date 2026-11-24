@@ -57,16 +57,6 @@ export default function AdminShell({
             <strong>Wooly Admin</strong>
             <small>GESTIÓN COMERCIAL</small>
           </div>
-          <button
-            type="button"
-            className="wooly-admin-shell__collapse"
-            onClick={() => setCollapsed((value) => !value)}
-            aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
-            aria-expanded={!collapsed}
-            title={collapsed ? "Expandir menú" : "Contraer menú"}
-          >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          </button>
         </div>
 
         <nav className="wooly-admin-shell__navigation" aria-label="Wooly Admin">
@@ -179,6 +169,16 @@ export default function AdminShell({
       <div className="wooly-admin-shell__stage">
         <header className="wooly-admin-shell__topbar">
           <div className="wooly-admin-shell__context">
+          <button
+            type="button"
+            className="wooly-admin-shell__collapse"
+            onClick={() => setCollapsed((value) => !value)}
+            aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
+            aria-expanded={!collapsed}
+            title={collapsed ? "Expandir menú" : "Contraer menú"}
+          >
+            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </button>
             <strong>Wooly Admin</strong>
             <span>{title}</span>
           </div>

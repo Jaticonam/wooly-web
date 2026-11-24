@@ -38,7 +38,7 @@
   border:1px solid var(--wooly-admin-border); border-radius:8px; background:#fff;
   color:var(--wooly-admin-muted); cursor:pointer;
 }
-.wooly-admin-shell__collapse:hover { color:var(--wooly-admin-primary-strong); border-color:#a5d6e1; }
+.wooly-admin-shell__collapse:hover { color:var(--wooly-admin-primary-strong); border-color:#a5d6e1; background:var(--wooly-admin-primary-faint); }
 .wooly-admin-shell__navigation { display:flex; flex-direction:column; gap:18px; margin-top:16px; }
 .wooly-admin-shell__navSection { display:flex; flex-direction:column; gap:4px; }
 .wooly-admin-shell__sectionTitle {
@@ -100,7 +100,7 @@
   min-height:58px; padding:0 30px; background:rgba(255,255,255,.96);
   border-bottom:1px solid var(--wooly-admin-border); backdrop-filter:blur(14px);
 }
-.wooly-admin-shell__context { display:flex; align-items:baseline; gap:10px; min-width:0; }
+.wooly-admin-shell__context { display:flex; align-items:center; gap:10px; min-width:0; }
 .wooly-admin-shell__context strong { color:var(--wooly-admin-ink); font-size:13px; white-space:nowrap; }
 .wooly-admin-shell__context span { color:var(--wooly-admin-muted); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .wooly-admin-shell__topbarActions { display:flex; align-items:center; gap:12px; }
@@ -153,7 +153,6 @@
   }
   .wooly-admin-shell__brand { min-height:42px; padding:0 0 6px; }
   .wooly-admin-shell__brandMark { width:32px; height:32px; }
-  .wooly-admin-shell__collapse { display:none; }
   .wooly-admin-shell__navigation { margin-top:8px; gap:8px; }
   .wooly-admin-shell__navSection { gap:3px; }
   .wooly-admin-shell__sectionTitle { margin:5px 7px 2px; }
@@ -169,4 +168,18 @@
   .wooly-admin-shell--collapsed .wooly-admin-shell__groupHeader > a { justify-content:flex-start; padding:0 11px; }
   .wooly-admin-shell__topbar { position:static; min-height:50px; padding:0 14px; }
   .wooly-admin-shell__topbarActions > small { display:none; }
+}
+
+/* W-SIDEBAR-HEADER-01 — disparador en la cabecera, nunca dentro del sidebar. */
+.wooly-admin-shell__topbar .wooly-admin-shell__collapse {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin-right: 3px;
+}
+@media (max-width:640px) {
+  .wooly-admin-shell--collapsed .wooly-admin-shell__navigation,
+  .wooly-admin-shell--collapsed .wooly-admin-shell__sidebarFooter {
+    display: none;
+  }
 }

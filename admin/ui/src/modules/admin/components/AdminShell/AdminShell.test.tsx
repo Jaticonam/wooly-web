@@ -42,6 +42,8 @@ describe("AdminShell 2.0 / W-SIDEBAR-01", () => {
 
   it("contrae y vuelve a expandir el menú sin cambiar las rutas", () => {
     renderAt("/admin/pedidos");
+    expect(screen.getByRole("banner").querySelector('[aria-label="Contraer menú"]')).not.toBeNull();
+    expect(screen.getByRole("complementary", { name: "Menú lateral" }).querySelector('[aria-label="Contraer menú"]')).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Contraer menú" }));
     expect(document.querySelector(".wooly-admin-shell--collapsed")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Productos" })).toHaveAttribute("href", "/admin");

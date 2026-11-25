@@ -129,55 +129,35 @@
 .catalog-workspace__layout {
   display: grid;
 
-  grid-template-columns:
-    minmax(310px, 355px)
-    minmax(0, 1fr);
-
-  gap: 10px;
-
   align-items: start;
 }
 
 .catalog-workspace__builder {
   position: sticky;
-  top: 68px;
 
   display: grid;
-  gap: 9px;
 }
 
 .catalog-workspace__scope,
 .catalog-workspace__settings {
   min-width: 0;
-  padding: 13px;
 
   border: 1px solid #e1e6ea;
-  border-radius: 14px;
 
   background: #ffffff;
-
-  box-shadow:
-    0 9px 26px
-    rgba(15, 23, 42, 0.03);
 }
 
 .catalog-workspace__sectionHeading {
   display: flex;
   align-items: center;
-  gap: 9px;
 }
 
 .catalog-workspace__sectionHeading > span {
   display: grid;
 
-  width: 28px;
-  height: 28px;
-
   flex: 0 0 auto;
 
   place-items: center;
-
-  border-radius: 8px;
 
   background:
     var(--wooly-admin-primary-faint, #f3fbfc);
@@ -196,22 +176,15 @@
 
 .catalog-workspace__sectionHeading strong {
   color: #29354b;
-
-  font-size: 11px;
   font-weight: 850;
 }
 
 .catalog-workspace__sectionHeading small {
   color: #8b95a5;
-
-  font-size: 8px;
 }
 
 .catalog-workspace__scopeFilters {
   display: grid;
-  gap: 6px;
-
-  margin-top: 10px;
 }
 
 .catalog-workspace__scopeFilters details {
@@ -229,17 +202,12 @@
   align-items: center;
   gap: 6px;
 
-  min-height: 35px;
-  padding: 0 9px;
-
   border: 1px solid #e3e7eb;
   border-radius: 9px;
 
   background: #ffffff;
 
   color: #59667b;
-
-  font-size: 9px;
   font-weight: 800;
 
   cursor: pointer;
@@ -256,8 +224,6 @@
 
   color:
     var(--wooly-admin-primary-strong, #07667d);
-
-  font-size: 7px;
   font-weight: 750;
 
   text-align: right;
@@ -268,12 +234,7 @@
 .catalog-workspace__scopePopover {
   display: grid;
   gap: 3px;
-
-  max-height: 235px;
   overflow-y: auto;
-
-  margin-top: 5px;
-  padding: 5px;
 
   border: 1px solid #e5e9ed;
   border-radius: 9px;
@@ -286,8 +247,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-
-  min-height: 29px;
   padding: 0 8px;
 
   border: 1px solid transparent;
@@ -298,7 +257,6 @@
   color: #5d697d;
 
   font: inherit;
-  font-size: 8px;
   font-weight: 750;
 
   text-align: left;
@@ -330,8 +288,7 @@
   color: #9aa4b1;
 }
 
-.catalog-workspace__emptyFilter,
-.catalog-workspace__manualInfo {
+.catalog-workspace__emptyFilter {
   display: block;
 
   padding: 9px;
@@ -339,14 +296,6 @@
   color: #8792a2;
 
   font-size: 8px;
-}
-
-.catalog-workspace__manualInfo {
-  margin-top: 9px;
-
-  border-radius: 8px;
-
-  background: #f7fafb;
 }
 
 .catalog-workspace__titleField {
@@ -451,23 +400,9 @@
   padding: 0 12px 12px;
 }
 
-@media (max-width: 1120px) {
-  .catalog-workspace__layout {
-    grid-template-columns: 1fr;
-  }
-
-  .catalog-workspace__builder {
-    position: static;
-
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 760px) {
   .catalog-workspace__hero { align-items: stretch; }
   .catalog-workspace__heroActions { justify-content: flex-start; }
-  .catalog-workspace__builder { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .catalog-workspace__hero { padding: 11px; }
@@ -479,9 +414,6 @@
 .catalog-workspace__scopeHint {
   display: grid;
   gap: 3px;
-
-  margin-top: 10px;
-  padding: 10px;
 
   border: 1px solid
     rgba(8, 127, 156, 0.12);
@@ -496,15 +428,11 @@
 
 .catalog-workspace__scopeHint strong {
   color: #314057;
-
-  font-size: 9px;
   font-weight: 850;
 }
 
 .catalog-workspace__scopeHint span {
   color: #7d899a;
-
-  font-size: 8px;
   line-height: 1.45;
 }
 
@@ -512,10 +440,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 9px;
 
   margin-top: 10px;
-  padding: 10px;
 
   border: 1px solid
     rgba(8, 127, 156, 0.15);
@@ -544,14 +470,10 @@
 
 .catalog-workspace__customScope span {
   color: #7e8999;
-
-  font-size: 8px;
 }
 
 .catalog-workspace__customScope button {
   flex: 0 0 auto;
-
-  min-height: 30px;
   padding: 0 9px;
 
   border: 1px solid
@@ -567,7 +489,6 @@
     );
 
   font: inherit;
-  font-size: 8px;
   font-weight: 850;
 
   cursor: pointer;

@@ -1,5 +1,4 @@
 .catalog-product-explorer {
-  --catalog-explorer-accent: #6d28d9;
   --catalog-explorer-soft: #f5f3ff;
   --catalog-explorer-border: #ddd6fe;
 }
@@ -8,13 +7,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 9px;
 }
 
 .catalog-product-explorer__resultCount {
   color: #64748b;
-  font-size: 0.66rem;
   font-weight: 900;
 }
 
@@ -23,22 +19,14 @@
   flex: 0 0 auto;
   gap: 3px;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 3px;
   background: #ffffff;
 }
 
 .catalog-product-explorer__viewModes button {
   display: grid;
-  min-width: 40px;
-  min-height: 36px;
   place-items: center;
   gap: 1px;
   border: 0;
-  border-radius: 9px;
-  padding: 3px 7px;
-  background: transparent;
-  color: #64748b;
   cursor: pointer;
 }
 
@@ -50,24 +38,12 @@
 
 .catalog-product-explorer__viewModes button small {
   display: none;
-  font-size: 0.48rem;
   font-weight: 900;
-}
-
-.catalog-product-explorer__viewModes button:hover {
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-.catalog-product-explorer__viewModes button.is-active {
-  background: #0f172a;
-  color: #ffffff;
 }
 
 .catalog-product-explorer__viewport {
   max-height: 620px;
   overflow-y: auto;
-  padding-right: 4px;
 }
 
 .catalog-product-explorer__items {
@@ -78,16 +54,9 @@
 .catalog-product-explorer__card {
   min-width: 0;
   border: 1px solid #e2e8f0;
-  background: #ffffff;
-}
-
-.catalog-product-explorer__card.is-included {
-  border-color: #86efac;
-  background: #f0fdf4;
 }
 
 .catalog-product-explorer__card.is-excluded {
-  border-color: #fecaca;
   background: #fff7f7;
 }
 
@@ -124,7 +93,6 @@
 
 .catalog-product-explorer__id {
   margin-bottom: 2px;
-  color: var(--catalog-explorer-accent);
   font-size: 0.58rem;
   font-weight: 1000;
   letter-spacing: 0.05em;
@@ -157,12 +125,6 @@
   white-space: nowrap;
 }
 
-.catalog-product-explorer__card.is-included
-.catalog-product-explorer__state {
-  background: #dcfce7;
-  color: #166534;
-}
-
 .catalog-product-explorer__card.is-excluded
 .catalog-product-explorer__state {
   background: #fee2e2;
@@ -178,11 +140,6 @@
   font-weight: 1000;
   cursor: pointer;
   white-space: nowrap;
-}
-
-.catalog-product-explorer__action.is-primary {
-  background: var(--catalog-explorer-accent);
-  color: #ffffff;
 }
 
 .catalog-product-explorer__action.is-danger {
@@ -352,9 +309,6 @@
 }
 
 @media (min-width: 900px) {
-  .catalog-product-explorer__viewModes button {
-    min-width: 48px;
-  }
 
   .catalog-product-explorer__viewModes button small {
     display: block;
@@ -436,16 +390,6 @@
 /* ADMIN 1.0 - A3-C1 FLUID PRODUCT GRID */
 
 .catalog-product-explorer--grid
-.catalog-product-explorer__items {
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(210px, 1fr)
-    );
-  gap: 9px;
-}
-
-.catalog-product-explorer--grid
 .catalog-product-explorer__card {
   display: flex;
   min-width: 0;
@@ -486,36 +430,9 @@
   margin: auto 9px 9px;
 }
 
-@media (min-width: 1700px) {
-  .catalog-product-explorer--grid
-  .catalog-product-explorer__items {
-    grid-template-columns:
-      repeat(
-        auto-fill,
-        minmax(205px, 1fr)
-      );
-  }
-}
-
-@media (max-width: 900px) {
-  .catalog-product-explorer--grid
-  .catalog-product-explorer__items {
-    grid-template-columns:
-      repeat(
-        auto-fill,
-        minmax(190px, 1fr)
-      );
-  }
-}
-
 @media (max-width: 520px) {
   .catalog-product-explorer--grid
   .catalog-product-explorer__items {
-    grid-template-columns:
-      repeat(
-        auto-fill,
-        minmax(150px, 1fr)
-      );
     gap: 7px;
   }
 
@@ -922,18 +839,9 @@
 }
 
 @media (min-width: 701px) {
-  .catalog-product-explorer--list
-    .catalog-product-explorer__card.is-commercial {
-    grid-template-columns:
-      108px
-      minmax(0, 1fr);
-    min-height: 112px;
-  }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialImage {
-    height: 100%;
-    min-height: 112px;
     aspect-ratio: auto;
   }
 
@@ -948,17 +856,13 @@
     grid-template-areas:
       "primary price stock state";
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
     text-align: left;
   }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialPrimary {
-    display: grid;
     grid-area: primary;
     min-width: 0;
-    align-content: center;
     gap: 4px;
   }
 
@@ -984,14 +888,10 @@
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialIdentity {
     justify-content: flex-start;
-    margin: 0;
   }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialTitle {
-    min-height: 0;
-    margin: 0;
-    font-size: 12px;
     text-align: left;
   }
 
@@ -1220,27 +1120,6 @@
    ADMIN 1.0 - A2.7E COMMERCIAL LIST DENSITY
    ========================================================= */
 
-@media (min-width: 701px) {
-  .catalog-product-explorer--list
-    .catalog-product-explorer__card.is-commercial {
-    grid-template-columns:
-      96px
-      minmax(0, 1fr);
-    min-height: 96px;
-  }
-
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialImage {
-    min-height: 96px;
-  }
-
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialInfo {
-    gap: 10px 16px;
-    padding: 8px 12px;
-  }
-}
-
 @media (min-width: 1500px) {
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialInfo {
@@ -1258,31 +1137,11 @@
    ========================================================= */
 
 @media (min-width: 701px) {
-  .catalog-product-explorer--list
-    .catalog-product-explorer__card.is-commercial {
-    grid-template-columns:
-      96px
-      minmax(0, 1fr);
-  }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialImage {
-    width: 96px;
-    height: 96px;
-    min-height: 96px;
-    align-self: center;
     overflow: hidden;
-    border-radius: 12px;
     background: #f8fafc;
-  }
-
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialImage
-    img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
   }
 
   /*
@@ -1290,27 +1149,6 @@
    * el div directo dentro de commercialImage.
    * Solo se adapta su presentacion en Lista.
    */
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialImage
-    > div {
-    left: 5px;
-    top: 5px;
-    max-width: calc(100% - 10px);
-    gap: 3px;
-  }
-
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialImage
-    > div
-    > * {
-    max-width: 100%;
-    padding: 3px 6px;
-    font-size: 8px;
-    line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialImage
@@ -1393,22 +1231,11 @@
 }
 
 @media (min-width: 701px) {
-  .catalog-product-explorer--list
-    .catalog-product-explorer__card.is-commercial {
-    grid-template-columns:
-      76px
-      minmax(0, 1fr);
-    min-height: 76px;
-  }
 
   .catalog-product-explorer--list
     .catalog-product-explorer__commercialImage {
-    width: 68px;
-    height: 68px;
-    min-height: 68px;
     align-self: center;
     justify-self: center;
-    border-radius: 10px;
   }
 
   .catalog-product-explorer--list
@@ -1418,12 +1245,6 @@
     height: 100%;
     object-fit: contain;
     object-position: center;
-  }
-
-  .catalog-product-explorer--list
-    .catalog-product-explorer__commercialInfo {
-    gap: 6px 12px;
-    padding: 5px 10px;
   }
 
   .catalog-product-explorer--list
@@ -1437,8 +1258,6 @@
       "title title";
     align-items: center;
     align-content: center;
-    column-gap: 8px;
-    row-gap: 2px;
   }
 
   .catalog-product-explorer--list
@@ -1462,8 +1281,6 @@
     min-height: 0;
     overflow: hidden;
     margin: 0;
-    font-size: 11px;
-    line-height: 1.25;
     white-space: nowrap;
     text-overflow: ellipsis;
   }

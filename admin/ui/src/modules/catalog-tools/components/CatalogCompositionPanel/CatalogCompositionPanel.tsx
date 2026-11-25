@@ -28,10 +28,6 @@ import {
 } from "@wooly/contracts/catalog/domain/CatalogCompositionResolver";
 
 import {
-  filterActiveCampaigns,
-} from "@wooly/contracts/catalog/domain/CampaignRules";
-
-import {
   CATEGORY_CONFIG,
 } from "@wooly/shared/catalog/config/categories";
 
@@ -140,14 +136,12 @@ products,
         initialProductIds,
       ),
   );
-  const activeCampaigns =
-    useMemo(
-      () =>
-        filterActiveCampaigns(
-          [...campaigns],
-        ),
-      [campaigns],
-    );
+  // El administrador permite componer catálogos con campañas históricas
+  // y borradores. La publicación real sigue gobernada por CORE.
+  const availableCampaigns = useMemo(
+    () => [...campaigns],
+    [campaigns],
+  );
 
   const resolution =
     useMemo(
@@ -207,7 +201,7 @@ products,
   const campaignOptions =
     useMemo(
       () =>
-        activeCampaigns
+        availableCampaigns
           .map(
             (campaign) => {
               const optionComposition =
@@ -242,15 +236,10 @@ products,
                     .length,
               };
             },
-          )
-          .filter(
-            (campaign) =>
-              campaign.count >
-              0,
           ),
       [
         products,
-        activeCampaigns,
+        availableCampaigns,
       ],
     );
   const categoryById =
@@ -271,14 +260,14 @@ products,
     useMemo(
       () =>
         new Map(
-          activeCampaigns.map(
+          availableCampaigns.map(
             (campaign) => [
               campaign.id,
               campaign,
             ],
           ),
         ),
-      [activeCampaigns],
+      [availableCampaigns],
     );
 
   const selectedCategoryLabels =
@@ -838,7 +827,7 @@ products,
                     )
                   ) : (
                     <span className="catalog-workspace__emptyFilter">
-                      No hay campañas activas.
+                      No hay campañas registradas en JUNG CORE.
                     </span>
                   )}
                 </div>

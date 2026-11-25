@@ -672,6 +672,28 @@ describe("Catálogos 2.0 composición organizada", () => {
     expect(within(board).getByRole("button", { name: /Preparar salida/i })).toBeInTheDocument();
   });
 });
+describe("Catálogos 2.0 campañas administrativas", () => {
+  it("muestra borradores y campañas vencidas sin cambiar su estado", () => {
+    const draft: Campaign = {
+      ...campaign, id: "core-draft", name: "Navidad",
+      publicationStatus: "DRAFT", computedStatus: "borrador",
+      startDate: "2026-11-09", endDate: "",
+    };
+    const expired: Campaign = {
+      ...campaign, id: "core-expired", name: "Flores Amarillas",
+      publicationStatus: "PUBLISHED", computedStatus: "finalizada",
+      startDate: "2026-07-03", endDate: "2026-09-17",
+    };
+    render(<CatalogCompositionPanel
+      products={products}
+      campaigns={[draft, expired]}
+      isReady
+    />);
+    expect(screen.getByRole("button", { name: /Navidad/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Flores Amarillas/ })).toBeInTheDocument();
+  });
+});
+
 describe("Catálogos 2.0 cabecera compacta", () => {
   it("mantiene acciones principales y agrupa controles secundarios", () => {
     render(

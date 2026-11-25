@@ -703,7 +703,7 @@ products,
                 </strong>
 
                 <small>
-                  Combina categorías, campañas y productos.
+                  Selecciona qué incluir.
                 </small>
               </div>
             </div>
@@ -883,7 +883,7 @@ products,
                       </strong>
 
                       <span>
-                        Añade productos individuales sin borrar categorías ni campañas.
+                        Añade o excluye productos individuales.
                       </span>
                     </div>
 
@@ -908,10 +908,11 @@ products,
               </strong>
 
               <span>
-                Resultado acumulado de categorías + campañas + productos, sin duplicados.
+                Categorías, campañas y productos sin duplicados.
               </span>
             </div>
-          </section>          <section className="catalog-workspace__settings">
+          </section>
+          <section className="catalog-workspace__settings">
             <div className="catalog-workspace__sectionHeading">
               <span>
                 03
@@ -923,7 +924,7 @@ products,
                 </strong>
 
                 <small>
-                  Identidad del borrador comercial.
+                  Nombre y estado del catálogo.
                 </small>
               </div>
             </div>

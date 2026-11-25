@@ -644,6 +644,21 @@ const loadLegacyDraftIntoPanel =
     ).toBeInTheDocument();
   };
 
+describe("Catálogos 2.0 composición organizada", () => {
+  it("conserva los tres selectores y los controles de composición", () => {
+    const { container } = render(
+      <CatalogCompositionPanel products={products} campaigns={[campaign]} isReady />,
+    );
+    const builder = container.querySelector(".catalog-workspace__builder");
+    expect(builder).not.toBeNull();
+    expect(builder?.querySelectorAll(".catalog-workspace__scopeFilters details")).toHaveLength(3);
+    expect(screen.getByText("Configuración")).toBeInTheDocument();
+    expect(screen.getByLabelText("Título del catálogo")).toBeInTheDocument();
+    const board = screen.getByLabelText("Composición del catálogo");
+    expect(within(board).getByRole("button", { name: "Vista previa" })).toBeInTheDocument();
+    expect(within(board).getByRole("button", { name: /Preparar salida/i })).toBeInTheDocument();
+  });
+});
 describe("Catálogos 2.0 cabecera compacta", () => {
   it("mantiene acciones principales y agrupa controles secundarios", () => {
     render(

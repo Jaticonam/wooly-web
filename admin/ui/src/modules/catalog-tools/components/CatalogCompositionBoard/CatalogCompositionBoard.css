@@ -303,3 +303,38 @@
     max-height: 560px;
   }
 }
+
+/* CATALOG-RESTRUCTURE-01C: vista de composición alineada con el editor. */
+.catalog-composition-board { border-radius: 12px; box-shadow: none; }
+.catalog-composition-board__header {
+  min-height: 0;
+  padding: 12px 14px;
+  gap: 10px;
+  align-items: center;
+}
+.catalog-composition-board__header > div:first-child > span {
+  margin-bottom: 2px;
+  font-size: 9px;
+}
+.catalog-composition-board__header h2 { font-size: 15px; }
+.catalog-composition-board__header p { margin-top: 3px; font-size: 10px; }
+.catalog-composition-board__actions button {
+  min-height: 35px;
+  font-size: 10px;
+}
+.catalog-composition-board__row {
+  grid-template-columns: 22px 42px minmax(0, 1fr) 84px 52px;
+  min-height: 58px;
+  gap: 9px;
+  padding: 7px 12px;
+}
+.catalog-composition-board__identity strong { font-size: 11px; }
+.catalog-composition-board__identity small,
+.catalog-composition-board__identity span { font-size: 9px; }
+.catalog-composition-board__value span { font-size: 9px; }
+.catalog-composition-board__value strong { font-size: 10px; }
+.catalog-composition-board__empty { min-height: 220px; }
+@media (max-width: 720px) {
+  .catalog-composition-board__header { align-items: stretch; }
+  .catalog-composition-board__row { grid-template-columns: 22px 38px minmax(0, 1fr); }
+}

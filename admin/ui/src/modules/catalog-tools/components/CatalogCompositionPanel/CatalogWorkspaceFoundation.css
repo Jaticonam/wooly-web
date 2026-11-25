@@ -589,3 +589,86 @@
     width: 100%;
   }
 }
+
+/* CATALOG-RESTRUCTURE-01C: editor comercial compacto sin cambiar los selectores. */
+.catalog-workspace__layout {
+  grid-template-columns: minmax(270px, 315px) minmax(0, 1fr);
+  gap: 12px;
+}
+.catalog-workspace__builder {
+  gap: 8px;
+  top: 62px;
+}
+.catalog-workspace__scope,
+.catalog-workspace__settings {
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.catalog-workspace__sectionHeading {
+  gap: 8px;
+}
+.catalog-workspace__sectionHeading > span {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+}
+.catalog-workspace__sectionHeading strong {
+  font-size: 12px;
+}
+.catalog-workspace__sectionHeading small {
+  font-size: 10px;
+  line-height: 1.3;
+}
+.catalog-workspace__scopeFilters {
+  gap: 7px;
+  margin-top: 12px;
+}
+.catalog-workspace__scopeFilters summary {
+  min-height: 38px;
+  font-size: 11px;
+  padding: 0 10px;
+  border-color: #e0e8ed;
+}
+.catalog-workspace__scopeFilters summary small {
+  font-size: 10px;
+}
+.catalog-workspace__scopeFilters details[open] > summary {
+  background: #f3fbfc;
+  border-color: #c9e5eb;
+  color: #07667d;
+}
+.catalog-workspace__scopePopover {
+  max-height: 165px;
+  margin-top: 4px;
+  padding: 5px;
+}
+.catalog-workspace__scopePopover button {
+  min-height: 31px;
+  font-size: 10px;
+}
+.catalog-workspace__scopePopover button small {
+  font-size: 10px;
+}
+.catalog-workspace__scopeHint {
+  margin-top: 8px;
+  padding: 9px 10px;
+}
+.catalog-workspace__scopeHint strong { font-size: 10px; }
+.catalog-workspace__scopeHint span { font-size: 9px; }
+.catalog-workspace__customScope {
+  padding: 8px;
+  gap: 8px;
+}
+.catalog-workspace__customScope span { font-size: 9px; }
+.catalog-workspace__customScope button { min-height: 32px; font-size: 10px; }
+@media (max-width: 1120px) {
+  .catalog-workspace__layout { grid-template-columns: minmax(0, 1fr); }
+  .catalog-workspace__builder {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .catalog-workspace__builder { grid-template-columns: minmax(0, 1fr); }
+}

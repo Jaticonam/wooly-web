@@ -447,8 +447,9 @@ describe(
         ).toBeInTheDocument();
 
         expect(
+          // Texto aprobado en CATALOG-RESTRUCTURE-01C.
           screen.getByText(
-            /resultado acumulado de categorías \+ campañas \+ productos/i,
+            /categorías, campañas y productos sin duplicados/i,
           ),
         ).toBeInTheDocument();
       },
@@ -682,7 +683,9 @@ describe("Catálogos 2.0 cabecera compacta", () => {
         onBackToProducts={vi.fn()}
       />,
     );
-    const header = screen.getByRole("banner");
+    // Desde 01C el tablero de composición (con su propio <header>) forma parte del render
+    // inicial: la cabecera del compositor se localiza por su título, no como único banner.
+    const header = screen.getByRole("heading", { name: "Catálogos" }).closest("header") as HTMLElement;
     expect(within(header).getByRole("heading", { name: "Catálogos" })).toBeInTheDocument();
     expect(within(header).getByRole("button", { name: "Mis catálogos" })).toBeInTheDocument();
     expect(within(header).getByRole("button", { name: "Nuevo catálogo" })).toBeInTheDocument();

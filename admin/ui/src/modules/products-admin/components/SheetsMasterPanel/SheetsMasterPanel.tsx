@@ -19,6 +19,10 @@ const resultSchema = z.object({
   metadataWarning: z.string().optional(),
   mode: z.string().optional(),
   destructive: z.boolean().optional(),
+  writesGoogleSheets: z.boolean().optional(),
+  sourceMetadataIgnored: z.boolean().optional(),
+  applyAvailable: z.boolean().optional(),
+  metadataAcknowledged: z.boolean().optional(),
   deletions: z
     .array(
       z.object({ productId: z.string(), code: z.string().nullable().optional(), sku: z.string().nullable().optional(), name: z.string() }),
@@ -30,13 +34,14 @@ const resultSchema = z.object({
     unchanged: z.number(),
     errors: z.number(),
     pending: z.number(),
-    deleted: z.number().default(0),
+    deleted: z.number().int().nonnegative().optional(),
   }),
   rows: z.array(
     z.object({
       gid: z.number(),
       rowNumber: z.number(),
       status: z.string(),
+      code: z.string().nullable().optional(),
       message: z.string().optional(),
     }),
   ),
@@ -61,66 +66,71 @@ export default function SheetsMasterPanel({
   const [confirmed, setConfirmed] = useState(false);
   const running = useRef(false);
 
-  const safeToApply = Boolean(
-    result &&
-    result.mode === "WOOLY_INCREMENTAL_SYNC" &&
+  const previewTarget = useRef<{ brandId: string; workbook: string } | null>(null);
+  const safePreview = Boolean(
+    result && !receipt &&
+    result.mode === "COMMERCIAL_TRANSFER" &&
+    result.writesGoogleSheets === false &&
+    result.sourceMetadataIgnored === true &&
     result.destructive === false &&
-    Array.isArray(result.deletions) &&
-    result.deletions.length === 0 &&
-    result.summary.deleted === 0 &&
-    result.requiresPreparation === false &&
-    result.changeSetId.trim() !== ""
+    (result.deletions?.length ?? 0) === 0 &&
+    (result.summary.deleted ?? 0) === 0 &&
+    result.requiresPreparation !== true &&
+    typeof result.applyAvailable === "boolean" &&
+    result.changeSetId.trim() !== "" &&
+    result.fingerprint?.trim()
   );
-  async function run(action: "preview" | "prepare" | "apply") {
+  const safeToApply = Boolean(safePreview && result?.applyAvailable === true &&
+    result.summary.created + result.summary.updated > 0);
+
+  async function run(action: "preview" | "apply") {
     if (busy || running.current) return;
-    if (action === "apply" && (
-      !safeToApply ||
-      (!confirmed && !(receipt && Boolean(result?.metadataWarning)))
-    )) {
-      setError("Importación bloqueada: revisa y confirma una vista previa incremental segura.");
+    if (action === "apply" && (!safeToApply || !confirmed || !previewTarget.current || !result)) {
+      setError("Importación bloqueada: revisa y confirma una vista previa comercial segura.");
       return;
     }
     running.current = true;
     setBusy(true);
     setError("");
-    if (action !== "apply") {
-      setConfirmed(false);
-      setResult(null);
-      setReceipt(false);
-    }
+    setConfirmed(false);
+    const reserved = result?.changeSetId;
+    const previousTarget = previewTarget.current;
+    setResult(null);
+    setReceipt(false);
+    previewTarget.current = null;
     try {
-      const id = workbookId(input),
-        brand = await jungCoreAdminProducts.options();
-      const base =
-        "/catalog-bulk/brands/" +
-        encodeURIComponent(brand.id) +
-        "/google-sheets/" +
-        encodeURIComponent(id) +
-        "/temporary-master/";
-      localStorage.setItem("jung-core-master-workbook", id);
-      if (action === "prepare") {
-        await jungCoreAdminProducts.request(base + "prepare", {
-          fingerprint: result?.fingerprint,
-        });
-        setResult(
-          resultSchema.parse(
-            await jungCoreAdminProducts.request(base + "preview", {}),
-          ),
-        );
-        setReceipt(false);
+      const id = workbookId(input);
+      let target: { brandId: string; workbook: string };
+      if (action === "preview") {
+        const brand = await jungCoreAdminProducts.options();
+        target = { brandId: brand.id, workbook: id };
       } else {
-        const data = resultSchema.parse(
-          await jungCoreAdminProducts.request(
-            base + action,
-            action === "apply" ? { changeSetId: result?.changeSetId } : {},
-          ),
-        );
-        setResult(data);
-        setReceipt(action === "apply");
-        if (action === "apply") {
-          setConfirmed(false);
-          await onSynced();
+        if (!previousTarget || previousTarget.workbook !== id || !reserved) {
+          throw new Error("El documento cambió. Revisa nuevamente antes de importar.");
         }
+        target = previousTarget;
+      }
+      const base =
+        "/catalog-bulk/brands/" + encodeURIComponent(target.brandId) +
+        "/google-sheets/" + encodeURIComponent(target.workbook) +
+        "/temporary-master/commercial-transfer/";
+      localStorage.setItem("jung-core-master-workbook", id);
+      const data = resultSchema.parse(await jungCoreAdminProducts.request(
+        base + action,
+        action === "apply" ? { sheetName: "*", changeSetId: reserved } : { sheetName: "*" },
+      ));
+      if (action === "preview") {
+        previewTarget.current = target;
+        setResult(data);
+      } else {
+        if (data.changeSetId !== reserved || data.mode !== "WOOLY_INCREMENTAL_SYNC" ||
+            data.metadataAcknowledged !== false || !Array.isArray(data.deletions) ||
+            data.deletions.length !== 0 || data.summary.deleted !== 0) {
+          throw new Error("Respuesta de Apply inesperada. Revisa CORE antes de volver a importar.");
+        }
+        setResult(data);
+        setReceipt(true);
+        await onSynced();
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "No se pudo sincronizar");
@@ -150,7 +160,7 @@ export default function SheetsMasterPanel({
       </p>
       <p>
         Campos mínimos: Código, Nombre y Precio 1u.
-        Las imágenes son opcionales y la publicación se realiza desde Admin.
+        Esta transferencia no escribe en Google Sheets ni publica productos.
       </p>      {workbookLink(input) ? (
         <p>
           <a href={workbookLink(input)} target="_blank" rel="noreferrer">
@@ -169,6 +179,8 @@ export default function SheetsMasterPanel({
             setResult(null);
             setReceipt(false);
             setConfirmed(false);
+            previewTarget.current = null;
+            setError("");
           }}
         />
       </label>
@@ -180,46 +192,27 @@ export default function SheetsMasterPanel({
         >
           Revisar cambios
         </button>
-        {result?.requiresPreparation ? (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => void run("prepare")}
-          >
-            Preparar edición comercial temporal
-          </button>
-        ) : result ? (
+        {result ? (
           <>
-            {!safeToApply ? (
+            {!receipt && !safePreview ? (
               <p role="alert">
-                Importación bloqueada: CORE debe devolver una vista previa incremental,
-                sin eliminaciones y con la preparación completada.
+                Importación bloqueada: CORE debe devolver una vista previa comercial segura,
+                sin eliminaciones ni escrituras en Sheets.
               </p>
+            ) : null}
+            {!receipt && safePreview && !safeToApply ? (
+              <p>No hay altas ni actualizaciones válidas para aplicar.</p>
             ) : null}
             {!receipt && safeToApply ? (
               <label>
-                <input
-                  type="checkbox"
-                  checked={confirmed}
-                  disabled={busy}
-                  onChange={(event) => setConfirmed(event.target.checked)}
-                />
+                <input type="checkbox" checked={confirmed} disabled={busy}
+                  onChange={(event) => setConfirmed(event.target.checked)} />
                 Confirmo que revisé los cambios y deseo importar los productos válidos.
               </label>
             ) : null}
-            <button
-              type="button"
-              disabled={
-                busy ||
-                !safeToApply ||
-                (!receipt && !confirmed) ||
-                (receipt && !result.metadataWarning)
-              }
-              onClick={() => void run("apply")}
-            >
-              {receipt
-                ? "Reintentar confirmación de metadata"
-                : "Confirmar importación"}
+            <button type="button" disabled={busy || receipt || !safeToApply || !confirmed}
+              onClick={() => void run("apply")}>
+              {receipt ? "Importación completada" : "Confirmar importación"}
             </button>
           </>
         ) : null}
@@ -234,14 +227,12 @@ export default function SheetsMasterPanel({
             Sin cambios: {result.summary.unchanged} · Errores:{" "}
             {result.summary.errors} · Pendientes: {result.summary.pending} ·{" "}
             {receipt ? "Eliminaciones" : "Eliminaciones"}:{" "}
-            {result.summary.deleted}
+            {result.summary.deleted ?? 0}
           </p>
-          {result.summary.deleted > 0 ? (
+          {(result.summary.deleted ?? 0) > 0 ? (
             <p role="alert">
-              Snapshot completo destructivo: {result.summary.deleted} productos
-              Wooly ausentes de Google Sheets{" "}
-              {receipt ? "fueron eliminados" : "se eliminarán al sincronizar"}.
-              Las otras marcas y los archivos R2 se conservan.
+              Snapshot completo destructivo: {result.summary.deleted} productos afectados.
+              Importación bloqueada.
             </p>
           ) : null}
           {result.deletions?.length ? (
@@ -265,6 +256,7 @@ export default function SheetsMasterPanel({
               {result.rows.map((row) => (
                 <li key={row.gid + ":" + row.rowNumber}>
                   Pestaña {row.gid}, fila {row.rowNumber}: {row.status}
+                  {row.code ? " — " + row.code : ""}
                   {row.message ? " — " + row.message : ""}
                 </li>
               ))}

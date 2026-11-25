@@ -14,7 +14,10 @@ vi.mock("../../integrations/JungCoreAdminProducts", () => ({
 const safePreview = {
   changeSetId: "reserved-change",
   fingerprint: "current-fingerprint",
-  mode: "WOOLY_INCREMENTAL_SYNC",
+  mode: "COMMERCIAL_TRANSFER",
+  writesGoogleSheets: false,
+  sourceMetadataIgnored: true,
+  applyAvailable: true,
   destructive: false,
   deletions: [],
   requiresPreparation: false,
@@ -44,6 +47,7 @@ async function review() {
 describe("INT-01.5 Sheets safety", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
     localStorage.clear();
 
     vi.mocked(jungCoreAdminProducts.options).mockResolvedValue({
@@ -95,8 +99,21 @@ describe("INT-01.5 Sheets safety", () => {
     openPanel();
     fireEvent.click(screen.getByText("Revisar cambios"));
 
-    await screen.findByText("Preparar edición comercial temporal");
-    expect(screen.queryByText("Confirmar importación")).not.toBeInTheDocument();
+    await screen.findByText("Confirmar importación");
+    expect(screen.getByText("Confirmar importación")).toBeDisabled();
+    expect(screen.queryByText("Preparar edición comercial temporal")).not.toBeInTheDocument();
+    expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    { writesGoogleSheets: true }, { writesGoogleSheets: undefined },
+    { sourceMetadataIgnored: false }, { applyAvailable: false },
+    { fingerprint: undefined }, { mode: "WOOLY_INCREMENTAL_SYNC" },
+  ])("blocks incompatible or empty preview (%j)", async (override) => {
+    vi.mocked(jungCoreAdminProducts.request).mockResolvedValueOnce({ ...safePreview, ...override });
+    openPanel();
+    await review();
+    expect(screen.getByText("Confirmar importación")).toBeDisabled();
     expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(1);
   });
 
@@ -165,10 +182,10 @@ describe("INT-01.5 Sheets safety", () => {
       expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(2);
     });
 
-    resolveApply(safePreview);
+    resolveApply({ ...safePreview, mode: "WOOLY_INCREMENTAL_SYNC", metadataAcknowledged: false } as typeof safePreview);
 
     await waitFor(() => {
-      expect(screen.getByText("Reintentar confirmación de metadata")).toBeDisabled();
+      expect(screen.getByText("Importación completada")).toBeDisabled();
     });
 
     expect(jungCoreAdminProducts.request).toHaveBeenCalledTimes(2);

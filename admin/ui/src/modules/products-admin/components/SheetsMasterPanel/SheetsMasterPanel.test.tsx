@@ -9,8 +9,10 @@ vi.mock("../../integrations/JungCoreAdminProducts", () => ({
 const preview = {
   changeSetId: "receipt",
   fingerprint: "fingerprint",
-  requiresPreparation: false,
-  mode: "WOOLY_INCREMENTAL_SYNC",
+  mode: "COMMERCIAL_TRANSFER",
+  writesGoogleSheets: false,
+  sourceMetadataIgnored: true,
+  applyAvailable: true,
   destructive: false,
   deletions: [],
   summary: { created: 1, updated: 1, unchanged: 0, errors: 1, pending: 1 },
@@ -30,7 +32,7 @@ describe("Sheets master explicit CORE sync", () => {
   it("previews, applies the reserved change set and refreshes admin results", async () => {
     vi.mocked(jungCoreAdminProducts.request)
       .mockResolvedValueOnce(preview)
-      .mockResolvedValueOnce({ ...preview, fingerprint: undefined });
+      .mockResolvedValueOnce({ ...preview, mode: "WOOLY_INCREMENTAL_SYNC", metadataAcknowledged: false, summary: { ...preview.summary, deleted: 0 } });
     const reload = vi.fn();
     render(<SheetsMasterPanel onSynced={reload} />);
     fireEvent.change(screen.getByLabelText("Workbook operativo"), {
@@ -38,13 +40,17 @@ describe("Sheets master explicit CORE sync", () => {
     });
     fireEvent.click(screen.getByText("Revisar cambios"));
     await screen.findByText("Confirmar importación");
+    expect(jungCoreAdminProducts.request).toHaveBeenCalledWith(
+      "/catalog-bulk/brands/brand/google-sheets/spreadsheet-fixture/temporary-master/commercial-transfer/preview",
+      { sheetName: "*" },
+    );
     expect(reload).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByText("Confirmar importación"));
     await waitFor(() => expect(reload).toHaveBeenCalledOnce());
     expect(jungCoreAdminProducts.request).toHaveBeenLastCalledWith(
-      "/catalog-bulk/brands/brand/google-sheets/spreadsheet-fixture/temporary-master/apply",
-      { changeSetId: "receipt" },
+      "/catalog-bulk/brands/brand/google-sheets/spreadsheet-fixture/temporary-master/commercial-transfer/apply",
+      { sheetName: "*", changeSetId: "receipt" },
     );
     expect(screen.getByRole("status")).toHaveTextContent("Creados: 1");
     expect(screen.getByText(/Precio inválido/)).toBeInTheDocument();

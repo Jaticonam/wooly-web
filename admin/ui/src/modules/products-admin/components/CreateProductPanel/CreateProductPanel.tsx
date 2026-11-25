@@ -136,7 +136,7 @@ export default function CreateProductPanel({
           open
           title="Crear producto"
           description="Registra un nuevo producto comercial de Wooly."
-          size="large"
+          size="drawer-wide"
           onClose={close}
         >
           {created ? (

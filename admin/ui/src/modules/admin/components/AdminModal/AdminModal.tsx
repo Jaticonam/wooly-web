@@ -10,6 +10,7 @@ type AdminModalSize =
   | "compact"
   | "large"
   | "drawer"
+  | "drawer-wide"
   | "fullscreen";
 
 interface AdminModalProps {
@@ -76,8 +77,8 @@ export default function AdminModal({
     <div
       className={
         open
-          ? `admin-modal is-open${size === "drawer" ? " admin-modal--drawer" : ""}`
-          : `admin-modal${size === "drawer" ? " admin-modal--drawer" : ""}`
+          ? `admin-modal is-open${size === "drawer" || size === "drawer-wide" ? " admin-modal--drawer" : ""}`
+          : `admin-modal${size === "drawer" || size === "drawer-wide" ? " admin-modal--drawer" : ""}`
       }
       aria-hidden={
         !open

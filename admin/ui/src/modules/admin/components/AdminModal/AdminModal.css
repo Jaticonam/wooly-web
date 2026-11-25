@@ -232,3 +232,31 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-modal__dialog--drawer { transition: none; }
 }
+
+/* DRAWER-03: wider side-sheet only for the product creation workflow. */
+.admin-modal__dialog--drawer-wide {
+  width: min(560px, 100vw);
+  height: 100dvh;
+  max-height: 100dvh;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 16px 0 0 16px;
+  box-shadow: -18px 0 50px rgba(15, 23, 42, 0.18);
+  transform: translateX(24px);
+}
+.admin-modal--drawer.is-open .admin-modal__dialog--drawer-wide { transform: translateX(0); }
+.admin-modal__dialog--drawer-wide .admin-modal__content { padding: 14px; }
+@media (max-width: 600px) {
+  .admin-modal__dialog--drawer-wide {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border-left: 0;
+  }
+  .admin-modal__dialog--drawer-wide .admin-modal__content { padding: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-modal__dialog--drawer-wide { transition: none; }
+}

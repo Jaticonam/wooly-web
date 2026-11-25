@@ -51,6 +51,7 @@ describe("CreateProductPanel", () => {
     expect(
       screen.getByRole("dialog", { name: "Crear producto" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Crear producto" })).toHaveClass("admin-modal__dialog--drawer-wide");
     expect(
       screen.getByText("El código es obligatorio. Código de barras y Código SUNAT son opcionales."),
     ).toBeInTheDocument();

@@ -243,3 +243,36 @@
   font-size:11px;
   color:#536c79;
 }
+
+/* DRAWER-03: compact product creation across desktop and mobile. */
+.admin-modal__dialog--drawer-wide .create-product-panel { gap: 12px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__intro { gap: 8px; padding: 0; }
+.admin-modal__dialog--drawer-wide .create-product-panel__intro h3 { font-size: 16px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__intro p { font-size: 12px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__section {
+  gap: 10px;
+  padding: 12px;
+  box-shadow: none;
+}
+.admin-modal__dialog--drawer-wide .create-product-panel__grid { gap: 10px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__prices {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.admin-modal__dialog--drawer-wide .create-product-panel__prices label { gap: 5px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__inventoryNote { padding: 11px 12px; }
+.admin-modal__dialog--drawer-wide .create-product-panel__actions {
+  position: sticky;
+  bottom: -14px;
+  z-index: 2;
+  background: var(--w-surface, #fff);
+  padding: 12px 0;
+}
+.admin-modal__dialog--drawer-wide .create-product-panel__actionsNote {
+  flex-basis: 100%;
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .admin-modal__dialog--drawer-wide .create-product-panel__grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-modal__dialog--drawer-wide .create-product-panel__actions { bottom: -12px; }
+}

@@ -29,21 +29,41 @@ describe("CORE administrative products", () => {
       price_1: 12.5,
     });
   });
-  it("loads every CORE page with brand filtering and includes DRAFT", async () => {
+  it("loads the protected commercial admin collection including all 194 drafts", async () => {
     const client = new JungCoreAdminProducts("/core", "wooly");
-    const request = vi
-      .spyOn(client, "request")
-      .mockResolvedValueOnce({ success: true, pages: 2, data: [raw] })
-      .mockResolvedValueOnce({
-        success: true,
-        pages: 2,
-        data: [{ ...raw, id: "other", sku: "OTHER" }],
-      });
-    expect(await client.list()).toHaveLength(2);
-    expect(request.mock.calls.map((call) => call[0])).toEqual([
-      "/products?brandSlug=wooly&limit=100&page=1",
-      "/products?brandSlug=wooly&limit=100&page=2",
+    const commercial = {
+      ...raw,
+      category: { id: "category", code: "FLORES", name: "Flores" },
+      image: null,
+      pricing: { tiers: [{ minimumQuantity: 1, unitPrice: 12.5 }] },
+      offer: null,
+      inventory: { balances: [] },
+      merchandising: { priority: 3, badges: [{ code: "nuevo" }] },
+    };
+    const request = vi.spyOn(client, "request")
+      .mockResolvedValueOnce({ success: true, data: {
+        id: "brand-id", name: "Wooly", categories: [raw.category],
+      } })
+      .mockResolvedValueOnce({ success: true, data: Array.from({ length: 194 }, (_, index) => ({
+        ...commercial, id: "product-" + index,
+      })) });
+    const products = await client.list();
+    expect(products).toHaveLength(194);
+    expect(products[0]).toMatchObject({
+      id: "product-0", status: "borrador", category: "flores", price_1: 12.5, img: "", priority: 3, badges: ["nuevo"],
+    });
+    expect(request.mock.calls.map(call => call[0])).toEqual([
+      "/products/admin-options?brandSlug=wooly",
+      "/catalog-commercial/brands/brand-id/products",
     ]);
+  });
+  it("never falls back to the public endpoint if commercial admin rejects the session", async () => {
+    const client = new JungCoreAdminProducts("/core", "wooly");
+    const request = vi.spyOn(client, "request")
+      .mockResolvedValueOnce({ success: true, data: { id: "brand-id", name: "Wooly", categories: [] } })
+      .mockRejectedValueOnce(new Error("HTTP 403"));
+    await expect(client.list()).rejects.toThrow("HTTP 403");
+    expect(request).toHaveBeenCalledTimes(2);
   });
   it("fails visibly instead of falling back to a public or Sheets source", async () => {
     const client = new JungCoreAdminProducts("/core", "wooly");

@@ -478,3 +478,41 @@
     text-align: left;
   }
 }
+/* CATALOG-RESTRUCTURE-01D: administrador de borradores en drawer lateral. */
+.admin-modal__dialog--drawer-wide .catalog-draft-manager {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__header {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__header > div:first-child > span {
+  display: none;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__header h3 {
+  font-size: 0.95rem;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__header p {
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__controls {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__inventory {
+  flex-wrap: wrap;
+}
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__controls input,
+.admin-modal__dialog--drawer-wide .catalog-draft-manager__controls select {
+  min-width: 0;
+}
+@media (max-width: 600px) {
+  .admin-modal__dialog--drawer-wide .catalog-draft-manager__header {
+    flex-wrap: wrap;
+  }
+}

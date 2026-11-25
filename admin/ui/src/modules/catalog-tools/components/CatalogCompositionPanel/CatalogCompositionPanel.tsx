@@ -583,7 +583,7 @@ products,
         open={
           isDraftManagerOpen
         }
-        size="large"
+        size="drawer-wide"
         title="Mis catálogos"
         description="Guarda, abre, duplica o archiva tus borradores comerciales."
         onClose={() =>

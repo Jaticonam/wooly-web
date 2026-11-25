@@ -644,6 +644,18 @@ const loadLegacyDraftIntoPanel =
     ).toBeInTheDocument();
   };
 
+describe("Catálogos 2.0 panel de borradores", () => {
+  it("abre Mis catálogos en drawer ancho y conserva la vista previa amplia", () => {
+    const { container } = render(
+      <CatalogCompositionPanel products={products} campaigns={[campaign]} isReady />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Mis catálogos" }));
+    const drafts = screen.getByRole("dialog", { name: "Mis catálogos" });
+    expect(drafts).toHaveClass("admin-modal__dialog--drawer-wide");
+    expect(drafts.closest(".admin-modal")).toHaveClass("admin-modal--drawer");
+    expect(container.querySelector(".admin-modal__dialog--large")).not.toBeNull();
+  });
+});
 describe("Catálogos 2.0 composición organizada", () => {
   it("conserva los tres selectores y los controles de composición", () => {
     const { container } = render(

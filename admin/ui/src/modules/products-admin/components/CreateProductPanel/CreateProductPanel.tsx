@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
+import ProductCodeImageMatches from "./ProductCodeImageMatches";
 import {
   jungCoreProductCreation,
   type CreatedCanonicalProduct,
@@ -190,6 +191,7 @@ export default function CreateProductPanel({
                     <input id="create-product-code" required value={code}
                       placeholder="Ej. OSO20CM"
                       onChange={(event) => setCode(event.target.value)} />
+                    <ProductCodeImageMatches code={code} />
                   </div>
                   <div className="create-product-panel__field">
                     <label htmlFor="create-product-category">Categoría</label>

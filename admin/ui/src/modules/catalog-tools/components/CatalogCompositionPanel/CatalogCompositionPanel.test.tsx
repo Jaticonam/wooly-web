@@ -694,6 +694,45 @@ describe("Catálogos 2.0 campañas administrativas", () => {
   });
 });
 
+describe("Catálogos 2.0 campañas sin productos asociados", () => {
+  it("permite seleccionar campañas sin productos y muestra el total disponible", () => {
+    const emptyCampaign: Campaign = {
+      ...campaign, id: "core-empty", name: "Graduados",
+      publicationStatus: "DRAFT", computedStatus: "borrador",
+    };
+    render(
+      <CatalogCompositionPanel
+        products={[]}
+        campaigns={[emptyCampaign]}
+        isReady
+        campaignsReady
+      />,
+    );
+    expect(screen.getByText("1 disponibles")).toBeInTheDocument();
+    const campaignButton = screen.getByRole("button", { name: /Graduados/ });
+    expect(campaignButton).toBeEnabled();
+    expect(campaignButton).toHaveTextContent("0 productos");
+    fireEvent.click(campaignButton);
+    expect(campaignButton).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("1 añadida")).toBeInTheDocument();
+  });
+
+  it("mantiene campañas operativas aun cuando productos no está listo", () => {
+    render(
+      <CatalogCompositionPanel
+        products={[]}
+        campaigns={[campaign]}
+        isReady={false}
+        campaignsReady
+      />,
+    );
+    const campaignButton = screen.getByRole("button", { name: /Campaña prueba/ });
+    expect(campaignButton).toBeEnabled();
+    fireEvent.click(campaignButton);
+    expect(campaignButton).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
 describe("Catálogos 2.0 cabecera compacta", () => {
   it("mantiene acciones principales y agrupa controles secundarios", () => {
     render(

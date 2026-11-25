@@ -69,7 +69,8 @@ export default function SalesCatalogToolsPage() {
     isReady: campaignsReady,
     error: campaignsError,
   } = useCoreCatalogCampaigns();
-  const isPanelReady = isFullCatalogLoaded && campaignsReady;
+  // La lista de campañas no depende de que existan productos asociados.
+  const isPanelReady = isFullCatalogLoaded;
 
   return (
     <AdminShell title="Catálogos">
@@ -83,6 +84,9 @@ export default function SalesCatalogToolsPage() {
           }
           isReady={
             isPanelReady
+          }
+          campaignsReady={
+            campaignsReady
           }
           initialProductIds={
             incomingHandoff

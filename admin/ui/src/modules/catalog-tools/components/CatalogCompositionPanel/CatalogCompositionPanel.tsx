@@ -61,6 +61,7 @@ interface CatalogCompositionPanelProps {
   products: readonly Product[];
   campaigns: readonly Campaign[];
   isReady: boolean;
+  campaignsReady?: boolean;
   onBackToProducts?: () => void;
 }
 
@@ -89,6 +90,7 @@ export default function CatalogCompositionPanel({
 products,
   campaigns,
   isReady,
+  campaignsReady = isReady,
   onBackToProducts,
 }: CatalogCompositionPanelProps) {
   const [
@@ -778,7 +780,9 @@ products,
                   <small>
                     {composition.filters.campaignIds.length > 0
                       ? `${composition.filters.campaignIds.length} añadida${composition.filters.campaignIds.length === 1 ? "" : "s"}`
-                      : "Sin añadir"}
+                      : campaignsReady
+                        ? `${campaignOptions.length} disponibles`
+                        : "Cargando campañas"}
                   </small>
                 </summary>
 
@@ -798,7 +802,7 @@ products,
                               campaign.id
                             }
                             disabled={
-                              !isReady
+                              !campaignsReady
                             }
                             className={
                               isActive
@@ -819,7 +823,7 @@ products,
                             </span>
 
                             <small>
-                              {campaign.count}
+                              {campaign.count} productos
                             </small>
                           </button>
                         );
@@ -827,7 +831,9 @@ products,
                     )
                   ) : (
                     <span className="catalog-workspace__emptyFilter">
-                      No hay campañas registradas en JUNG CORE.
+                      {campaignsReady
+                        ? "No hay campañas registradas en JUNG CORE."
+                        : "Campañas no disponibles todavía."}
                     </span>
                   )}
                 </div>

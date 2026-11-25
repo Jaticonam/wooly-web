@@ -163,3 +163,123 @@
     flex-wrap: wrap;
   }
 }
+
+/* ATTR-ADMIN-02A — experiencia administrativa; operaciones existentes intactas. */
+.attribute-registry {
+  --attribute-accent: var(--wooly-admin-primary, #087f9c);
+  --attribute-accent-strong: var(--wooly-admin-primary-strong, #07667d);
+  gap: 16px;
+}
+.attribute-registry__context {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  border: 1px solid #d5e9ee;
+  border-radius: 14px;
+  background: #f3fbfc;
+}
+.attribute-registry__contextIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 12px;
+  background: #e1f4f8;
+  color: var(--attribute-accent-strong);
+}
+.attribute-registry__contextCopy { flex: 1; min-width: 0; }
+.attribute-registry__eyebrow {
+  display: block;
+  color: var(--attribute-accent-strong);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .075em;
+}
+.attribute-registry__contextCopy > strong {
+  display: block;
+  margin: 4px 0;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.attribute-registry__contextCopy p,
+.attribute-registry__toolbarCopy p {
+  margin: 0;
+  color: var(--wooly-admin-muted, #738095);
+  line-height: 1.5;
+}
+.attribute-registry__access {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid #c6e7ec;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--attribute-accent-strong);
+  font-size: 11px;
+  font-weight: 700;
+}
+.attribute-registry__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.attribute-registry__summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 13px 15px;
+  border: 1px solid #e0eaf0;
+  border-radius: 12px;
+  background: #fff;
+}
+.attribute-registry__summary span { color: var(--wooly-admin-muted, #738095); }
+.attribute-registry__summary strong { font-size: 22px; color: var(--attribute-accent-strong); }
+.attribute-registry__listToolbar { margin-top: 3px; }
+.attribute-registry__toolbarCopy { display: grid; gap: 4px; }
+.attribute-registry__toolbarCopy > strong { font-size: 16px; }
+.attribute-registry__workspace { padding: 17px; border: 1px solid #e0eaf0; border-radius: 14px; background: #fff; }
+.attribute-registry__definition { transition: border-color .15s ease; }
+.attribute-registry__definition:hover { border-color: #b9dfe8; }
+.attribute-registry__definition > header > div:first-child { min-width: 0; }
+.attribute-registry__definition h3 { font-size: 15px; margin-bottom: 6px; }
+.attribute-registry__definitionActions { display: flex; align-items: center; gap: 9px; }
+.attribute-registry__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f1f4f8;
+  color: #59677a;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.attribute-registry__status.is-active { background: #e7f7f2; color: #14755b; }
+.attribute-registry__status.is-inactive { background: #f2f4f7; color: #667185; }
+.attribute-registry__status.is-archived { background: #fff2e5; color: #935916; }
+.attribute-registry__detailStatus { display: flex; margin: 0; }
+.attribute-registry__detailHeading dl {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.attribute-registry__detailHeading dl dt { font-size: 11px; margin-bottom: 4px; }
+.attribute-registry__detailHeading dl dd { font-size: 13px; }
+.attribute-registry__optionSection { border-top: 1px solid #e0eaf0; }
+.attribute-registry__back { width: max-content; }
+.attribute-registry button:focus-visible,
+.attribute-registry input:focus-visible,
+.attribute-registry select:focus-visible { outline-color: var(--attribute-accent-strong); }
+@media (max-width: 600px) {
+  .attribute-registry__context { align-items: flex-start; flex-wrap: wrap; }
+  .attribute-registry__access { margin-left: 56px; }
+  .attribute-registry__summary { gap: 6px; }
+  .attribute-registry__summary > div { padding: 10px; }
+  .attribute-registry__summary strong { font-size: 19px; }
+  .attribute-registry__toolbar { flex-wrap: wrap; }
+  .attribute-registry__definitionActions { width: 100%; justify-content: space-between; }
+  .attribute-registry__detailHeading dl { grid-template-columns: 1fr; }
+}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, Plus, RefreshCw, Settings2 } from "lucide-react";
+import { ArrowLeft, Layers3, Plus, RefreshCw, Settings2 } from "lucide-react";
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 import {
   loadAdminCategoryAttributes,
@@ -85,6 +85,17 @@ export default function CategoryAttributeRegistryModal({
       size="large"
     >
       <div className="attribute-registry" aria-busy={loading || busy}>
+        <div className="attribute-registry__context">
+          <div className="attribute-registry__contextIcon" aria-hidden="true"><Layers3 size={20} /></div>
+          <div className="attribute-registry__contextCopy">
+            <span className="attribute-registry__eyebrow">CATÁLOGOS / CATEGORÍAS / ATRIBUTOS</span>
+            <strong>{category.name}</strong>
+            <p>Organiza las características disponibles para los productos de esta categoría.</p>
+          </div>
+          <span className="attribute-registry__access">
+            {canWrite ? "Configuración habilitada" : "Solo lectura"}
+          </span>
+        </div>
         {view.kind !== "list" && (
           <button className="attribute-registry__back" type="button" disabled={busy} onClick={back}>
             <ArrowLeft size={14} aria-hidden="true" /> Volver a atributos
@@ -100,7 +111,7 @@ export default function CategoryAttributeRegistryModal({
             </button>
           </div>
         ) : view.kind === "create" && canWrite ? (
-          <section>
+          <section className="attribute-registry__workspace attribute-registry__pending">
             <h3>Agregar atributo</h3>
             <p>
               Los atributos estandarizados se seleccionarán desde Valores maestros de JUNG CORE.
@@ -109,7 +120,7 @@ export default function CategoryAttributeRegistryModal({
           </section>
         ) : detail ? (
           <>
-            <header className="attribute-registry__detailHeading">
+            <header className="attribute-registry__detailHeading attribute-registry__workspace">
               <dl>
                 <dt>Nombre</dt>
                 <dd>{detail.label}</dd>
@@ -118,9 +129,10 @@ export default function CategoryAttributeRegistryModal({
                 <dt>Uso</dt>
                 <dd>{usageLabel(detail.role)}</dd>
               </dl>
-              <p>
-                {typeLabels[detail.type]} · {usageLabel(detail.role)} ·{" "}
-                {statusLabels[detail.status]}
+              <p className="attribute-registry__detailStatus">
+                <span className={`attribute-registry__status is-${detail.status.toLowerCase()}`}>
+                  {statusLabels[detail.status]}
+                </span>
               </p>
             </header>
             {canWrite ? (
@@ -135,7 +147,7 @@ export default function CategoryAttributeRegistryModal({
             ) : (
               <DefinitionInspection value={detail} />
             )}
-            <section className="attribute-registry__optionSection">
+            <section className="attribute-registry__optionSection attribute-registry__workspace">
               <header className="attribute-registry__toolbar">
                 <h3>Valores disponibles ({detail.options.length})</h3>
                 {canWrite && !adding && (
@@ -169,8 +181,16 @@ export default function CategoryAttributeRegistryModal({
           </>
         ) : (
           <>
-            <header className="attribute-registry__toolbar">
-              <strong>Atributos ({rows.length})</strong>
+            <div className="attribute-registry__summary" aria-label="Resumen de atributos">
+              <div><span>Registrados</span><strong>{rows.length}</strong></div>
+              <div><span>Disponibles</span><strong>{rows.filter((row) => row.status === "ACTIVE").length}</strong></div>
+              <div><span>Obligatorios</span><strong>{rows.filter((row) => row.required && row.status === "ACTIVE").length}</strong></div>
+            </div>
+            <header className="attribute-registry__toolbar attribute-registry__listToolbar">
+              <div className="attribute-registry__toolbarCopy">
+                <strong>Atributos ({rows.length})</strong>
+                <p>Consulta las definiciones y configura su disponibilidad por categoría.</p>
+              </div>
               {canWrite && (
                 <button type="button" disabled={busy} onClick={() => setView({ kind: "create" })}>
                   <Plus size={14} aria-hidden="true" /> Agregar atributo
@@ -188,10 +208,13 @@ export default function CategoryAttributeRegistryModal({
                   <div>
                     <h3>{definition.label}</h3>
                     <span>
-                      {typeLabels[definition.type]} · {usageLabel(definition.role)} ·{" "}
-                      {statusLabels[definition.status]}
+                      {typeLabels[definition.type]} · {usageLabel(definition.role)}
                     </span>
                   </div>
+                  <div className="attribute-registry__definitionActions">
+                    <span className={`attribute-registry__status is-${definition.status.toLowerCase()}`}>
+                      {statusLabels[definition.status]}
+                    </span>
                   <button
                     type="button"
                     disabled={busy}
@@ -203,6 +226,7 @@ export default function CategoryAttributeRegistryModal({
                   >
                     <Settings2 size={14} aria-hidden="true" /> Configurar
                   </button>
+                  </div>
                 </header>
                 <p className="attribute-registry__preview">
                   {definition.options.length} opciones

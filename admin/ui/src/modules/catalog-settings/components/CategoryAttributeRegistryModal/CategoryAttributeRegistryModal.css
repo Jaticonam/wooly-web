@@ -302,3 +302,54 @@
   background: var(--attribute-accent, #087f9c);
   color: #fff;
 }
+
+/* Compact side-sheet layout: attributes only; all backend operations intact. */
+.admin-modal__dialog--drawer .attribute-registry { gap: 12px; }
+.admin-modal__dialog--drawer .attribute-registry__context {
+  padding: 12px;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.admin-modal__dialog--drawer .attribute-registry__contextIcon {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+}
+.admin-modal__dialog--drawer .attribute-registry__contextCopy > strong { font-size: 15px; }
+.admin-modal__dialog--drawer .attribute-registry__access {
+  margin-left: 43px;
+  font-size: 10px;
+}
+.admin-modal__dialog--drawer .attribute-registry__summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+.admin-modal__dialog--drawer .attribute-registry__summary > div { padding: 10px; }
+.admin-modal__dialog--drawer .attribute-registry__summary strong { font-size: 18px; }
+.admin-modal__dialog--drawer .attribute-registry__toolbar { flex-wrap: wrap; }
+.admin-modal__dialog--drawer .attribute-registry__toolbarCopy { width: 100%; }
+.admin-modal__dialog--drawer .attribute-registry__definition,
+.admin-modal__dialog--drawer .attribute-registry__workspace { padding: 12px; }
+.admin-modal__dialog--drawer .attribute-registry__definition > header { flex-wrap: wrap; }
+.admin-modal__dialog--drawer .attribute-registry__definitionActions {
+  width: 100%;
+  justify-content: space-between;
+}
+.admin-modal__dialog--drawer .attribute-registry__grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.admin-modal__dialog--drawer .attribute-registry__detailHeading dl {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.admin-modal__dialog--drawer .attribute-registry__form { gap: 12px; }
+.admin-modal__dialog--drawer .attribute-registry__formIntro h3 { font-size: 16px; }
+.admin-modal__dialog--drawer .attribute-registry__actions {
+  position: sticky;
+  bottom: 0;
+  padding: 9px 0 2px;
+  background: var(--w-surface, #fff);
+}
+.admin-modal__dialog--drawer .attribute-registry button {
+  min-height: 36px;
+}
+@media (max-width: 380px) {
+  .admin-modal__dialog--drawer .attribute-registry__detailHeading dl { grid-template-columns: 1fr; }
+}

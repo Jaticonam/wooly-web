@@ -92,6 +92,7 @@ describe("Human category attribute workspace", () => {
     ).not.toBeInTheDocument();
     noTechnicalUI();
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
+    expect(screen.getByRole("dialog")).toHaveClass("admin-modal__dialog--drawer");
     fireEvent.click(screen.getByRole("button", { name: /Volver a atributos/ }));
     expect(screen.getByText("Atributos (1)")).toBeInTheDocument();
   });

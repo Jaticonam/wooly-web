@@ -84,7 +84,7 @@ export default function CategoryAttributeRegistryModal({
       title={"Atributos · " + category.name}
       description="Características disponibles para los productos de esta categoría"
       onClose={close}
-      size="large"
+      size="drawer"
     >
       <div className="attribute-registry" aria-busy={loading || busy}>
         <div className="attribute-registry__context">

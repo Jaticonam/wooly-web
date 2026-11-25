@@ -58,7 +58,6 @@ import CatalogCompositionBoard from "@/modules/catalog-tools/components/CatalogC
 
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 
-import "./CatalogCompositionPanel.css";
 import "./CatalogWorkspaceFoundation.css";
 
 interface CatalogCompositionPanelProps {

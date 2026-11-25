@@ -1009,7 +1009,7 @@ export default function CatalogMasterFormModal({
           ? () => undefined
           : onClose
       }
-      size="compact"
+      size="drawer"
     >
       <form
         className={

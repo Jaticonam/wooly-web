@@ -551,3 +551,40 @@ label > small,
       1fr 1fr;
   }
 }
+
+/* DRAWER-02 / Datos maestros: formulario adaptable dentro del panel derecho. */
+.admin-modal__dialog--drawer .catalog-master-form {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  gap: 11px;
+}
+.admin-modal__dialog--drawer .catalog-master-form__grid,
+.admin-modal__dialog--drawer .catalog-master-form__grid.catalog-master-form__grid--category,
+.admin-modal__dialog--drawer .catalog-master-form__grid.catalog-master-form__grid--campaign,
+.admin-modal__dialog--drawer .catalog-master-form__grid.catalog-master-form__grid--badge {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 11px;
+  padding: 0;
+}
+.admin-modal__dialog--drawer .catalog-master-form__pair,
+.admin-modal__dialog--drawer .catalog-master-form__grid--category .catalog-master-form__pair {
+  gap: 9px;
+}
+.admin-modal__dialog--drawer .catalog-master-form__footer {
+  position: sticky;
+  bottom: -14px;
+  z-index: 2;
+  padding: 12px 0;
+  margin-top: 2px;
+  background: var(--w-surface, #fff);
+}
+@media (max-width: 520px) {
+  .admin-modal__dialog--drawer .catalog-master-form__pair,
+  .admin-modal__dialog--drawer .catalog-master-form__grid--category .catalog-master-form__pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-modal__dialog--drawer .catalog-master-form__footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

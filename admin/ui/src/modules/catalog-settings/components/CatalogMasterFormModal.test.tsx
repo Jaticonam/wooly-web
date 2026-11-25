@@ -816,6 +816,22 @@ describe(
         );
       },
     );
+    it.each(["category", "campaign", "badge"] as const)(
+      "presenta %s en panel lateral sin alterar operaciones",
+      (kind) => {
+        render(
+          <CatalogMasterFormModal
+            open
+            brandId="brand-1"
+            canWrite
+            editor={{ kind, entity: null }}
+            onClose={vi.fn()}
+            onSaved={vi.fn()}
+          />,
+        );
+        expect(screen.getByRole("dialog")).toHaveClass("admin-modal__dialog--drawer");
+      },
+    );
     it(
       "bloquea el guardado si el rol no puede escribir",
       () => {

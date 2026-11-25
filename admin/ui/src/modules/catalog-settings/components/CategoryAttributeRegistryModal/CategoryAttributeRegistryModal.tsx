@@ -3,10 +3,12 @@ import { ArrowLeft, Layers3, Plus, RefreshCw, Settings2 } from "lucide-react";
 import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 import {
   loadAdminCategoryAttributes,
+  createAdminCategoryAttribute,
   updateAdminCategoryAttribute,
   type AdminCategoryAttributeDefinition,
 } from "@/modules/admin-auth/services/AdminAuthClient";
 import { DefinitionEditor, DefinitionInspection } from "./CategoryAttributeEditors";
+import CreateAttributeForm from "./CreateAttributeForm";
 import { ordered, statusLabels, typeLabels, usageLabel } from "./CategoryAttributeFormData";
 import "./CategoryAttributeRegistryModal.css";
 type View = { kind: "list" } | { kind: "create" } | { kind: "detail"; id: string };
@@ -111,13 +113,13 @@ export default function CategoryAttributeRegistryModal({
             </button>
           </div>
         ) : view.kind === "create" && canWrite ? (
-          <section className="attribute-registry__workspace attribute-registry__pending">
-            <h3>Agregar atributo</h3>
-            <p>
-              Los atributos estandarizados se seleccionarán desde Valores maestros de JUNG CORE.
-            </p>
-            <p>Próximamente por JUNG CORE</p>
-          </section>
+          <CreateAttributeForm
+            busy={busy}
+            onSave={async (input) => {
+              await mutate(() => createAdminCategoryAttribute(brandId, category.id, input));
+              setView({ kind: "list" });
+            }}
+          />
         ) : detail ? (
           <>
             <header className="attribute-registry__detailHeading attribute-registry__workspace">

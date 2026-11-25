@@ -131,24 +131,48 @@ describe("Human category attribute workspace", () => {
     expect(screen.queryByText("Archivado")).not.toBeInTheDocument();
     noTechnicalUI();
   });
-  it("offers only an informative attribute selection surface without writes", async () => {
+  it("creates an attribute in the selected category using existing CORE operation", async () => {
+    vi.mocked(client.loadAdminCategoryAttributes)
+      .mockResolvedValueOnce(envelope([]))
+      .mockResolvedValueOnce(envelope([{ ...definition, label: "Material" }]));
+    open();
+    await screen.findByText("Esta categoría todavía no tiene atributos.");
+    fireEvent.click(screen.getByRole("button", { name: "Agregar atributo" }));
+    expect(screen.getByRole("form", { name: "Crear atributo" })).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Nombre del atributo"), { target: { value: "Material" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crear atributo" }));
+    await waitFor(() => expect(client.createAdminCategoryAttribute).toHaveBeenCalledWith(
+      "b", "c", {
+        label: "Material", type: "TEXT", role: "ATTRIBUTE", required: false,
+        multiple: false, allowCustomValue: false, config: {},
+      },
+    ));
+    expect(client.createAdminCategoryAttributeOption).not.toHaveBeenCalled();
+    expect(await screen.findByText("Atributos (1)")).toBeInTheDocument();
+  });
+  it("validates measurement units before calling CORE", async () => {
     open();
     await screen.findByText("Atributos (1)");
     fireEvent.click(screen.getByRole("button", { name: "Agregar atributo" }));
-    expect(
-      screen.getByText(
-        "Los atributos estandarizados se seleccionarán desde Valores maestros de JUNG CORE.",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Próximamente por JUNG CORE")).toBeInTheDocument();
-    expect(screen.queryByRole("form")).not.toBeInTheDocument();
-    expect(screen.queryByText("Nuevo atributo")).not.toBeInTheDocument();
-    expect(screen.getAllByRole("dialog")).toHaveLength(1);
-    fireEvent.click(screen.getByRole("button", { name: /Volver a atributos/ }));
-    expect(screen.getByText("Atributos (1)")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Nombre del atributo"), { target: { value: "Medida" } });
+    fireEvent.change(screen.getByLabelText("Tipo de dato"), { target: { value: "MEASUREMENT" } });
+    fireEvent.change(screen.getByLabelText("Uso comercial"), { target: { value: "SIZE" } });
+    fireEvent.change(screen.getByLabelText("Unidades permitidas"), { target: { value: "cm, m" } });
+    fireEvent.change(screen.getByLabelText("Unidad principal"), { target: { value: "kg" } });
+    fireEvent.submit(screen.getByRole("form", { name: "Crear atributo" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("unidad principal");
     expect(client.createAdminCategoryAttribute).not.toHaveBeenCalled();
-    expect(client.createAdminCategoryAttributeOption).not.toHaveBeenCalled();
-    expect(client.updateAdminCategoryAttribute).not.toHaveBeenCalled();
+  });
+  it("retains create form and reports CORE errors without repeating writes", async () => {
+    vi.mocked(client.createAdminCategoryAttribute).mockRejectedValueOnce(new Error("Duplicado"));
+    open();
+    await screen.findByText("Atributos (1)");
+    fireEvent.click(screen.getByRole("button", { name: "Agregar atributo" }));
+    fireEvent.change(screen.getByLabelText("Nombre del atributo"), { target: { value: "Tamaño" } });
+    fireEvent.submit(screen.getByRole("form", { name: "Crear atributo" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Duplicado");
+    expect(client.createAdminCategoryAttribute).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("form", { name: "Crear atributo" })).toBeInTheDocument();
   });
   it("shows canonical context as information and saves only category configuration", async () => {
     open();

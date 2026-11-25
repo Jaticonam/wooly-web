@@ -283,3 +283,22 @@
   .attribute-registry__definitionActions { width: 100%; justify-content: space-between; }
   .attribute-registry__detailHeading dl { grid-template-columns: 1fr; }
 }
+
+/* ATTR-ADMIN-02B: alta real y controlada de definiciones. */
+.attribute-registry__createForm { gap: 18px; }
+.attribute-registry__formIntro h3 { font-size: 18px; margin: 5px 0; }
+.attribute-registry__formIntro p { margin: 0; color: var(--wooly-admin-muted, #738095); line-height: 1.5; }
+.attribute-registry__grid .attribute-registry__full { grid-column: 1 / -1; }
+.attribute-registry__createNote {
+  background: #f3fbfc;
+  color: #426674;
+  padding: 11px 13px;
+  border: 1px solid #d6ebf0;
+  border-radius: 10px;
+  line-height: 1.5;
+}
+.attribute-registry__createForm .attribute-registry__actions button[type="submit"] {
+  border-color: var(--attribute-accent-strong, #07667d);
+  background: var(--attribute-accent, #087f9c);
+  color: #fff;
+}

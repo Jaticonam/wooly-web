@@ -483,92 +483,41 @@ products,
     <section className="catalog-composition-panel">
       <header className="catalog-workspace__hero">
         <div className="catalog-workspace__heroCopy">
-          <div className="catalog-workspace__kicker">
-            <span>
-              CATALOG WORKSPACE
-            </span>
-
-            <small>
-              Composición comercial
-            </small>
-          </div>
-
-          <h1>
-            Catálogos
-          </h1>
-
-          <p>
-            Combina categorías, campañas y productos. Cada fuente se acumula en una sola composición comercial.
-          </p>
+          <h1>Catálogos</h1>
+          <p>Crea, organiza y comparte tus catálogos comerciales.</p>
         </div>
 
         <div className="catalog-workspace__heroActions">
           <button
             type="button"
-            onClick={() =>
-              setIsDraftManagerOpen(
-                true,
-              )
-            }
+            onClick={() => setIsDraftManagerOpen(true)}
           >
-            <FolderOpen
-              size={15}
-              strokeWidth={1.9}
-              aria-hidden="true"
-            />
-
+            <FolderOpen size={15} strokeWidth={1.9} aria-hidden="true" />
             Mis catálogos
           </button>
-
-          {onOpenCatalogSync ? (
-            <button
-              type="button"
-              onClick={
-                onOpenCatalogSync
-              }
-            >
-              <Database
-                size={15}
-                strokeWidth={1.9}
-                aria-hidden="true"
-              />
-
-              Datos
-            </button>
-          ) : null}
-
-          <button
-            type="button"
-            onClick={
-              resetComposition
-            }
-          >
-            <Plus
-              size={15}
-              strokeWidth={2}
-              aria-hidden="true"
-            />
-
-            Nuevo
+          <button type="button" className="is-primary" onClick={resetComposition}>
+            <Plus size={15} strokeWidth={2} aria-hidden="true" />
+            Nuevo catálogo
           </button>
-
-          {onBackToProducts ? (
-            <button
-              type="button"
-              className="is-back"
-              onClick={
-                onBackToProducts
-              }
-            >
-              <ArrowLeft
-                size={15}
-                strokeWidth={1.9}
-                aria-hidden="true"
-              />
-
-              Product Explorer
-            </button>
-          ) : null}
+          {(onOpenCatalogSync || onBackToProducts) && (
+            <details className="catalog-workspace__moreActions">
+              <summary aria-label="Más opciones">Más opciones</summary>
+              <div className="catalog-workspace__moreMenu">
+                {onOpenCatalogSync && (
+                  <button type="button" onClick={onOpenCatalogSync}>
+                    <Database size={15} strokeWidth={1.9} aria-hidden="true" />
+                    Datos
+                  </button>
+                )}
+                {onBackToProducts && (
+                  <button type="button" onClick={onBackToProducts}>
+                    <ArrowLeft size={15} strokeWidth={1.9} aria-hidden="true" />
+                    Product Explorer
+                  </button>
+                )}
+              </div>
+            </details>
+          )}
         </div>
       </header>
 

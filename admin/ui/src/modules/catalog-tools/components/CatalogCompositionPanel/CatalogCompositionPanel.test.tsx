@@ -644,6 +644,26 @@ const loadLegacyDraftIntoPanel =
     ).toBeInTheDocument();
   };
 
+describe("Catálogos 2.0 cabecera compacta", () => {
+  it("mantiene acciones principales y agrupa controles secundarios", () => {
+    render(
+      <CatalogCompositionPanel
+        products={products}
+        campaigns={[campaign]}
+        isReady
+        onOpenCatalogSync={vi.fn()}
+        onBackToProducts={vi.fn()}
+      />,
+    );
+    const header = screen.getByRole("banner");
+    expect(within(header).getByRole("heading", { name: "Catálogos" })).toBeInTheDocument();
+    expect(within(header).getByRole("button", { name: "Mis catálogos" })).toBeInTheDocument();
+    expect(within(header).getByRole("button", { name: "Nuevo catálogo" })).toBeInTheDocument();
+    expect(within(header).getByText("Más opciones")).toBeInTheDocument();
+    expect(within(header).getByRole("button", { name: "Datos", hidden: true })).toBeInTheDocument();
+    expect(within(header).getByRole("button", { name: "Product Explorer", hidden: true })).toBeInTheDocument();
+  });
+});
 describe(
   "CatalogCompositionPanel Draft Compatibility V2",
   () => {

@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 import { useAdminProducts } from "@/modules/products-admin/hooks/useAdminProducts";
-import type { Campaign } from "@wooly/contracts/types/product";
+import { useCoreCatalogCampaigns } from "@/modules/catalog-tools/hooks/useCoreCatalogCampaigns";
 
 import CatalogCompositionPanel from "@/modules/catalog-tools/components/CatalogCompositionPanel/CatalogCompositionPanel";
 
@@ -62,10 +62,14 @@ export default function SalesCatalogToolsPage() {
 
   // Productos únicamente desde JUNG CORE protegido; nunca desde Sheets.
   const { data, isLoading, isFullCatalogLoaded, error } = useAdminProducts();
-  // No existe aún contrato administrativo de campañas en CORE.
-  // Evitar inventar nombres/fechas o cargar campañas desde Sheets.
-  const campaigns: Campaign[] = [];
-  const isPanelReady = isFullCatalogLoaded;
+  // Campañas administrativas de CORE; nunca recurrir a Sheets.
+  const {
+    campaigns,
+    isLoading: campaignsLoading,
+    isReady: campaignsReady,
+    error: campaignsError,
+  } = useCoreCatalogCampaigns();
+  const isPanelReady = isFullCatalogLoaded && campaignsReady;
 
   return (
     <AdminShell title="Catálogos">
@@ -101,10 +105,15 @@ export default function SalesCatalogToolsPage() {
             {isLoading ? "Cargando productos desde JUNG CORE..." : "El catálogo administrativo de JUNG CORE todavía no está disponible."}
           </section>
         ) : null}
-        <section className="sales-catalog-tools__notice" role="status">
-          Campañas pendientes de integración con el registro administrativo de JUNG CORE.
-          No se importan datos desde Sheets.
-        </section>
+        {campaignsError ? (
+          <section className="sales-catalog-tools__notice" role="alert">
+            Error al consultar campañas de JUNG CORE. No se utilizarán datos antiguos de Sheets.
+          </section>
+        ) : campaignsLoading ? (
+          <section className="sales-catalog-tools__notice" role="status">
+            Cargando campañas desde JUNG CORE...
+          </section>
+        ) : null}
       </main>
     </AdminShell>
   );

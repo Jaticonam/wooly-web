@@ -46,6 +46,28 @@ const resultSchema = z.object({
     }),
   ),
 });
+const exportCount = z.number().int().nonnegative();
+const exportCell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+const exportSchema = z.object({
+  mode: z.literal("COMMERCIAL_EXPORT"),
+  fingerprint: z.string().min(1),
+  destructive: z.literal(false),
+  writesCoreProducts: z.literal(false),
+  applyAvailable: z.boolean().optional(),
+  verified: z.boolean().optional(),
+  receiptId: z.string().optional(),
+  summary: z.object({
+    created: exportCount, updated: exportCount, unchanged: exportCount,
+    conflicts: exportCount, preserved: exportCount, deleted: z.literal(0),
+  }),
+  rows: z.array(z.object({
+    code: z.string(), category: z.string(), rowNumber: z.number().optional(),
+    status: z.enum(["CREATE", "UPDATE", "UNCHANGED", "CONFLICT", "PRESERVED"]),
+    message: z.string().optional(),
+    changes: z.array(z.object({ field: z.string(), from: exportCell, to: exportCell })).optional(),
+  })),
+});
+
 export default function SheetsMasterPanel({
   onSynced,
 }: {
@@ -65,6 +87,20 @@ export default function SheetsMasterPanel({
   const [receipt, setReceipt] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const running = useRef(false);
+  const [exportResult, setExportResult] = useState<z.infer<typeof exportSchema> | null>(null);
+  const [exportConfirmed, setExportConfirmed] = useState(false);
+  const [exportReceipt, setExportReceipt] = useState(false);
+  const exportTarget = useRef<{ brandId: string; workbook: string } | null>(null);
+  const exportAvailable = Boolean(exportResult && !exportReceipt &&
+    exportResult.applyAvailable === true &&
+    exportResult.summary.created + exportResult.summary.updated > 0);
+
+  function clearExport() {
+    setExportResult(null);
+    setExportConfirmed(false);
+    setExportReceipt(false);
+    exportTarget.current = null;
+  }
 
   const previewTarget = useRef<{ brandId: string; workbook: string } | null>(null);
   const safePreview = Boolean(
@@ -92,6 +128,7 @@ export default function SheetsMasterPanel({
     running.current = true;
     setBusy(true);
     setError("");
+    clearExport();
     setConfirmed(false);
     const reserved = result?.changeSetId;
     const previousTarget = previewTarget.current;
@@ -139,6 +176,54 @@ export default function SheetsMasterPanel({
       setBusy(false);
     }
   }
+  async function runExport(action: "preview" | "apply") {
+    if (busy || running.current) return;
+    if (action === "apply" && (!exportAvailable || !exportConfirmed || !exportTarget.current || !exportResult)) {
+      setError("Exportación bloqueada: revisa y confirma los cambios.");
+      return;
+    }
+    running.current = true;
+    setBusy(true);
+    setError("");
+    setResult(null);
+    setConfirmed(false);
+    setReceipt(false);
+    previewTarget.current = null;
+    const fingerprint = exportResult?.fingerprint;
+    const previous = exportTarget.current;
+    clearExport();
+    try {
+      const id = workbookId(input);
+      let target: { brandId: string; workbook: string };
+      if (action === "preview") {
+        const brand = await jungCoreAdminProducts.options();
+        target = { brandId: brand.id, workbook: id };
+      } else {
+        if (!previous || previous.workbook !== id || !fingerprint) throw new Error("Revisa nuevamente el documento.");
+        target = previous;
+      }
+      const endpoint = "/catalog-bulk/brands/" + encodeURIComponent(target.brandId) +
+        "/google-sheets/" + encodeURIComponent(target.workbook) + "/temporary-master/commercial-export/" + action;
+      const data = exportSchema.parse(await jungCoreAdminProducts.request(endpoint,
+        action === "apply" ? { fingerprint } : {}));
+      if (action === "preview") {
+        if (typeof data.applyAvailable !== "boolean" || data.verified !== undefined)
+          throw new Error("Respuesta de revisión de exportación inválida.");
+        exportTarget.current = target;
+      } else {
+        if (data.fingerprint !== fingerprint || data.verified !== true || !data.receiptId)
+          throw new Error("No se pudo confirmar la exportación. Revisa la hoja antes de reintentar.");
+        setExportReceipt(true);
+      }
+      setExportResult(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No se pudo exportar. Revisa antes de reintentar.");
+    } finally {
+      running.current = false;
+      setBusy(false);
+    }
+  }
+
   return (
     <section
       className="sheets-master-panel"
@@ -147,7 +232,7 @@ export default function SheetsMasterPanel({
       <div className="sheets-master-panel__heading">
         <div>
           <strong>Sincronización de productos</strong>
-          <small>Google Sheets → JUNG CORE</small>
+          <small>Google Sheets ↔ JUNG CORE</small>
         </div>
         <span className="sheets-master-panel__badge">
           Sincronización incremental
@@ -180,6 +265,7 @@ export default function SheetsMasterPanel({
             setReceipt(false);
             setConfirmed(false);
             previewTarget.current = null;
+            clearExport();
             setError("");
           }}
         />
@@ -217,6 +303,53 @@ export default function SheetsMasterPanel({
           </>
         ) : null}
       </div>
+      <div className="sheets-master-panel__actions">
+        <button type="button" disabled={busy} onClick={() => void runExport("preview")}>
+          Revisar exportación
+        </button>
+        {exportResult && !exportReceipt ? (
+          <>
+            {!exportAvailable ? <p>No hay cambios seguros para exportar.</p> : (
+              <label>
+                <input type="checkbox" checked={exportConfirmed} disabled={busy}
+                  onChange={(event) => setExportConfirmed(event.target.checked)} />
+                Confirmo los cambios a Google Sheets y que nadie está editando el documento.
+              </label>
+            )}
+            <button type="button" disabled={busy || !exportAvailable || !exportConfirmed}
+              onClick={() => void runExport("apply")}>Confirmar exportación</button>
+          </>
+        ) : null}
+      </div>
+      <p>CORE → Sheets: sólo productos y precios, sin eliminar filas ni reemplazar cambios pendientes.
+        Disponible en el entorno TEST autorizado.</p>
+      {exportResult ? (
+        <div className="sheets-master-panel__results">
+          <p role="status">
+            {exportReceipt ? "Exportación verificada" : "Vista previa de exportación"}:
+            Altas: {exportResult.summary.created} · Actualizados: {exportResult.summary.updated} ·
+            Sin cambios: {exportResult.summary.unchanged} · Conflictos: {exportResult.summary.conflicts} ·
+            Conservados: {exportResult.summary.preserved} · Eliminaciones: 0
+          </p>
+          <details className="sheets-master-panel__details" open>
+            <summary>Revisar cambios de exportación</summary>
+            <ul>
+              {exportResult.rows.filter(row => row.status !== "UNCHANGED").map((row, index) => (
+                <li key={row.category + ":" + row.rowNumber + ":" + row.code + ":" + index}>
+                  {row.category} — {row.code || "Sin código"} — {({
+                    CREATE: "Alta", UPDATE: "Actualizar", UNCHANGED: "Sin cambios",
+                    CONFLICT: "Conflicto", PRESERVED: "Conservado",
+                  })[row.status]}
+                  {row.message ? " — " + row.message : ""}
+                  {row.changes?.length ? <ul>{row.changes.map(change =>
+                    <li key={change.field}>{change.field}: {String(change.from ?? "—")} → {String(change.to ?? "—")}</li>
+                  )}</ul> : null}
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      ) : null}
       {busy ? <p role="status">Procesando…</p> : null}
       {error ? <p role="alert">{error}</p> : null}
       {result ? (

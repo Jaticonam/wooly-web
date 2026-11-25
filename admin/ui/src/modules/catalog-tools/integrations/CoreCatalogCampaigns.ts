@@ -19,11 +19,8 @@ const coreCampaignSchema = z.object({
   priority: z.number(),
   publicationStatus: z.string(),
 });
-const coreCampaignPageSchema = z.object({
+const coreCampaignListSchema = z.object({
   success: z.literal(true),
-  page: z.number(),
-  pages: z.number(),
-  total: z.number(),
   data: z.array(coreCampaignSchema),
 });
 const coreOptionsSchema = z.object({
@@ -51,24 +48,17 @@ export function mapCoreCatalogCampaign(raw: CoreCampaign): Campaign {
 
 export async function listCoreCatalogCampaigns(): Promise<Campaign[]> {
   const options = coreOptionsSchema.parse(await jungCoreAdminProducts.options());
-  const result: Campaign[] = [];
-  let page = 1;
-  let pages = 1;
-
-  do {
-    // Lectura administrativa, incluye borradores y publicados.
-    // No utilizar el endpoint público ni Google Sheets.
-    const response = coreCampaignPageSchema.parse(
-      await jungCoreAdminProducts.request("/campaigns?page=" + page + "&limit=100"),
-    );
-    pages = response.pages;
-    if (pages > 100 || response.page !== page) {
-      throw new Error("Paginación de campañas CORE no válida.");
-    }
-    result.push(
-      ...response.data.filter((item) => item.brandId === options.id).map(mapCoreCatalogCampaign),
-    );
-    page++;
-  } while (page <= pages);
-  return result.sort((a, b) => b.priority - a.priority);
+  // Endpoint protegido por marca: incluye borradores y campañas sin productos.
+  // No consultar /campaigns global ni la vista pública de campañas.
+  const response = coreCampaignListSchema.parse(
+    await jungCoreAdminProducts.request(
+      "/catalog-commercial/brands/" + encodeURIComponent(options.id) + "/campaigns",
+    ),
+  );
+  if (response.data.some((item) => item.brandId !== options.id)) {
+    throw new Error("JUNG CORE devolvió campañas de otra marca.");
+  }
+  return response.data
+    .map(mapCoreCatalogCampaign)
+    .sort((a, b) => b.priority - a.priority);
 }

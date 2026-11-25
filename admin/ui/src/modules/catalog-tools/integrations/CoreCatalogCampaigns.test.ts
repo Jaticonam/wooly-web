@@ -17,24 +17,40 @@ describe("Campañas administrativas JUNG CORE", () => {
     });
   });
 
-  it("filtra por la marca Wooly, recorre páginas y nunca usa Sheets", async () => {
+  it("consulta sólo la marca WOOLY por el endpoint protegido", async () => {
     const options = vi.spyOn(jungCoreAdminProducts, "options").mockResolvedValue({
       id: "wooly", name: "Wooly", categories: [],
     });
-    const request = vi.spyOn(jungCoreAdminProducts, "request").mockImplementation(async (url) => ({
-      success: true, page: Number(url.match(/page=(\d+)/)?.[1] ?? 0),
-      pages: 2, total: 2, data: [{
-        id: url.includes("page=1") ? "wooly-uuid" : "other-uuid",
-        brandId: url.includes("page=1") ? "wooly" : "other",
-        slug: "graduados", name: "Graduados", icon: "🎓", color: "Negro",
+    const request = vi.spyOn(jungCoreAdminProducts, "request").mockResolvedValue({
+      success: true,
+      data: [{
+        id: "campaign-uuid", brandId: "wooly", slug: "graduados",
+        name: "Graduados", icon: "🎓", color: "Negro",
         startsAt: null, endsAt: null, priority: 50, publicationStatus: "DRAFT",
       }],
-    }));
+    });
     try {
       const result = await listCoreCatalogCampaigns();
-      expect(result.map((campaign) => campaign.id)).toEqual(["wooly-uuid"]);
-      expect(request).toHaveBeenCalledTimes(2);
-      expect(request.mock.calls[0][0]).toBe("/campaigns?page=1&limit=100");
+      expect(result.map(item => item.id)).toEqual(["campaign-uuid"]);
+      expect(request).toHaveBeenCalledOnce();
+      expect(request).toHaveBeenCalledWith("/catalog-commercial/brands/wooly/campaigns");
+    } finally { request.mockRestore(); options.mockRestore(); }
+  });
+
+  it("rechaza campañas ajenas aunque la API responda success", async () => {
+    const options = vi.spyOn(jungCoreAdminProducts, "options").mockResolvedValue({
+      id: "wooly", name: "Wooly", categories: [],
+    });
+    const request = vi.spyOn(jungCoreAdminProducts, "request").mockResolvedValue({
+      success: true,
+      data: [{
+        id: "campaign-other", brandId: "other", slug: "other",
+        name: "Otra marca", icon: null, color: null,
+        startsAt: null, endsAt: null, priority: 0, publicationStatus: "DRAFT",
+      }],
+    });
+    try {
+      await expect(listCoreCatalogCampaigns()).rejects.toThrow("otra marca");
     } finally { request.mockRestore(); options.mockRestore(); }
   });
 });

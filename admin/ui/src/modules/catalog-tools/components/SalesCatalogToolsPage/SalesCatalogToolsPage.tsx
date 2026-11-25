@@ -8,20 +8,12 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import {
-  useCatalogCampaigns,
-} from "@wooly/shared/catalog/hooks/useCatalogCampaigns";
-
-import {
-  useCatalogData,
-} from "@wooly/shared/catalog/hooks/useCatalogData";
-
-import CatalogSyncPanel from "@/modules/catalog-tools/components/CatalogSyncPanel/CatalogSyncPanel";
+import { useAdminProducts } from "@/modules/products-admin/hooks/useAdminProducts";
+import type { Campaign } from "@wooly/contracts/types/product";
 
 import CatalogCompositionPanel from "@/modules/catalog-tools/components/CatalogCompositionPanel/CatalogCompositionPanel";
 
 import AdminShell from "@/modules/admin/components/AdminShell/AdminShell";
-import AdminModal from "@/modules/admin/components/AdminModal/AdminModal";
 
 import {
   parseCatalogWorkspaceHandoff,
@@ -43,13 +35,6 @@ export default function SalesCatalogToolsPage() {
       parseCatalogWorkspaceHandoff(
         location.state,
       ),
-  );
-
-  const [
-    isCatalogSyncOpen,
-    setIsCatalogSyncOpen,
-  ] = useState(
-    false,
   );
 
   useEffect(
@@ -75,56 +60,16 @@ export default function SalesCatalogToolsPage() {
     ],
   );
 
-  const {
-    data,
-    isLoading,
-    isFullCatalogLoaded,
-  } = useCatalogData(
-    "todas",
-  );
-
-  const {
-    campaigns,
-    isLoading:
-      isCampaignRegistryLoading,
-  } = useCatalogCampaigns({
-    includeInactive: true,
-  });
-
-  const isPanelReady =
-    isFullCatalogLoaded &&
-    !isCampaignRegistryLoading;
+  // Productos únicamente desde JUNG CORE protegido; nunca desde Sheets.
+  const { data, isLoading, isFullCatalogLoaded, error } = useAdminProducts();
+  // No existe aún contrato administrativo de campañas en CORE.
+  // Evitar inventar nombres/fechas o cargar campañas desde Sheets.
+  const campaigns: Campaign[] = [];
+  const isPanelReady = isFullCatalogLoaded;
 
   return (
     <AdminShell title="Catálogos">
       <main className="sales-catalog-tools">
-        <AdminModal
-          open={
-            isCatalogSyncOpen
-          }
-          size="large"
-          title="Google Sheets"
-          description="Revisa el estado del catálogo y actualiza los datos cuando sea necesario."
-          onClose={() =>
-            setIsCatalogSyncOpen(
-              false,
-            )
-          }
-        >
-          <CatalogSyncPanel
-            currentProductCount={
-              data.length
-            }
-            campaignCount={
-              campaigns.length
-            }
-            isReady={
-              isPanelReady
-            }
-            initiallyExpanded
-          />
-        </AdminModal>
-
         <CatalogCompositionPanel
           products={
             data
@@ -145,21 +90,21 @@ export default function SalesCatalogToolsPage() {
               "/admin",
             )
           }
-          onOpenCatalogSync={() =>
-            setIsCatalogSyncOpen(
-              true,
-            )
-          }
         />
 
-        {!isPanelReady ? (
-          <section className="sales-catalog-tools__notice">
-            {isLoading ||
-            isCampaignRegistryLoading
-              ? "Cargando catálogo y campañas oficiales..."
-              : "El catálogo aún puede estar cargando categorías. Espera unos segundos antes de preparar un catálogo."}
+        {error ? (
+          <section className="sales-catalog-tools__notice" role="alert">
+            Error al consultar JUNG CORE. No se utilizarán datos antiguos de Sheets.
+          </section>
+        ) : !isPanelReady ? (
+          <section className="sales-catalog-tools__notice" role="status">
+            {isLoading ? "Cargando productos desde JUNG CORE..." : "El catálogo administrativo de JUNG CORE todavía no está disponible."}
           </section>
         ) : null}
+        <section className="sales-catalog-tools__notice" role="status">
+          Campañas pendientes de integración con el registro administrativo de JUNG CORE.
+          No se importan datos desde Sheets.
+        </section>
       </main>
     </AdminShell>
   );

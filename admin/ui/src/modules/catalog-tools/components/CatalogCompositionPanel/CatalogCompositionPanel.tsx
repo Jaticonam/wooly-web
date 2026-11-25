@@ -5,7 +5,6 @@ import {
 
 import {
   ArrowLeft,
-  Database,
   FolderOpen,
   Megaphone,
   Plus,
@@ -67,7 +66,6 @@ interface CatalogCompositionPanelProps {
   campaigns: readonly Campaign[];
   isReady: boolean;
   onBackToProducts?: () => void;
-  onOpenCatalogSync?: () => void;
 }
 
 const SELECTABLE_CATEGORIES =
@@ -96,7 +94,6 @@ products,
   campaigns,
   isReady,
   onBackToProducts,
-  onOpenCatalogSync,
 }: CatalogCompositionPanelProps) {
   const [
     isCatalogDetailsOpen,
@@ -498,22 +495,14 @@ products,
             <Plus size={15} strokeWidth={2} aria-hidden="true" />
             Nuevo catálogo
           </button>
-          {(onOpenCatalogSync || onBackToProducts) && (
+          {onBackToProducts && (
             <details className="catalog-workspace__moreActions">
               <summary aria-label="Más opciones">Más opciones</summary>
               <div className="catalog-workspace__moreMenu">
-                {onOpenCatalogSync && (
-                  <button type="button" onClick={onOpenCatalogSync}>
-                    <Database size={15} strokeWidth={1.9} aria-hidden="true" />
-                    Datos
-                  </button>
-                )}
-                {onBackToProducts && (
-                  <button type="button" onClick={onBackToProducts}>
-                    <ArrowLeft size={15} strokeWidth={1.9} aria-hidden="true" />
-                    Product Explorer
-                  </button>
-                )}
+                <button type="button" onClick={onBackToProducts}>
+                  <ArrowLeft size={15} strokeWidth={1.9} aria-hidden="true" />
+                  Product Explorer
+                </button>
               </div>
             </details>
           )}

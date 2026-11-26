@@ -66,8 +66,11 @@ import type { Campaign, Product } from "@wooly/contracts/types/product";
 import { createCatalogWorkspaceHandoff } from "@/modules/catalog-tools/domain/CatalogWorkspaceHandoff";
 
 import CreateProductPanel from "../CreateProductPanel/CreateProductPanel";
+import { jungCoreProtectedProductCreation } from "../../integrations/jungCore/JungCoreProtectedProductCreation";
+import { PRODUCT_ADMIN_PROTECTED_MODE } from "../../hooks/useAdminProducts";
 
 import "./ProductsAdminPage.css";
+import ProductCommercialEditor from "../ProductDetailDrawer/ProductCommercialEditor";
 import "./ProductExplorerVisualV2.css";
 
 function normalizedStatus(product: Product): string {
@@ -98,6 +101,7 @@ export default function ProductsAdminPage() {
     () => new Set<string>(),
   );
 
+  const auth = useAdminAuth();
   const {
     data: products,
     isLoading,
@@ -105,9 +109,8 @@ export default function ProductsAdminPage() {
     error,
     categories,
     reload,
-  } = useAdminProducts();
+  } = useAdminProducts(auth.configuration?.brandId);
 
-  const auth = useAdminAuth();
   const brandId = auth.configuration?.brandId;
   const canPublish =
     !!brandId &&
@@ -329,7 +332,7 @@ export default function ProductsAdminPage() {
             </p>
           </div>
 
-          <CreateProductPanel />
+          <CreateProductPanel provider={PRODUCT_ADMIN_PROTECTED_MODE ? jungCoreProtectedProductCreation : undefined} />
 
           <div className="products-admin-page__syncActions" aria-label="Sincronización temporal">
             <button
@@ -521,6 +524,18 @@ export default function ProductsAdminPage() {
             submitting={publicationSubmitting}
             error={publishError}
             onClose={closePublicationReview}
+            onCorrect={
+              import.meta.env.DEV &&
+              import.meta.env.VITE_WOOLY_ADMIN_PROTECTED_PRODUCTS === "true" &&
+              brandId === "9c9db775-ad35-4f39-959c-d9c5ce9a123a"
+                ? () => {
+                    if (publicationReview) {
+                      setSelectedProduct(publicationReview.product);
+                      closePublicationReview();
+                    }
+                  }
+                : undefined
+            }
             onConfirm={confirmPublication}
           />
         ) : null}
@@ -535,6 +550,20 @@ export default function ProductsAdminPage() {
           }}
           onPublish={canPublish ? publishProduct : undefined}
           publishing={selectedProduct?.id === publishingProductId}
+          commercialEditor={
+            import.meta.env.DEV &&
+            import.meta.env.VITE_WOOLY_ADMIN_PROTECTED_PRODUCTS === "true" &&
+            canPublish &&
+            brandId === "9c9db775-ad35-4f39-959c-d9c5ce9a123a" &&
+            selectedProduct ? (
+              <ProductCommercialEditor
+                key={`${brandId}:${selectedProduct.id}`}
+                brandId={brandId}
+                productId={selectedProduct.id}
+                onSaved={reload}
+              />
+            ) : undefined
+          }
         />
 
         {error ? <p role="alert">{error.message}</p> : null}

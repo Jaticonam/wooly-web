@@ -20,6 +20,7 @@ interface ProductPublicationDialogProps {
   submitting: boolean;
   error?: string;
   onClose: () => void;
+  onCorrect?: () => void;
   onConfirm: (confirmations: AdminPublicationConfirmations) => void;
 }
 
@@ -32,6 +33,7 @@ export default function ProductPublicationDialog({
   submitting,
   error,
   onClose,
+  onCorrect,
   onConfirm,
 }: ProductPublicationDialogProps) {
   const [useDefaultImage, setUseDefaultImage] = useState(false);
@@ -111,6 +113,19 @@ export default function ProductPublicationDialog({
         {error ? <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
 
         </div><DialogFooter className="border-t border-slate-100 bg-slate-50 px-6 py-4 sm:justify-end">
+          {onCorrect && (
+            readiness.blockers.length > 0 ||
+            readiness.warnings.length > 0
+          ) && (
+            <button
+              type="button"
+              disabled={submitting}
+              onClick={onCorrect}
+              className="rounded-lg border px-4 py-2 text-sm font-semibold"
+            >
+              Corregir producto
+            </button>
+          )}
           <button type="button" disabled={submitting} onClick={onClose} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 disabled:opacity-50">
             Cancelar
           </button>

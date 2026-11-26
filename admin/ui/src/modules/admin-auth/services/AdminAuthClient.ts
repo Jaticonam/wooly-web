@@ -531,3 +531,134 @@ export function publishAdminProduct(
     confirmations === undefined ? undefined : { confirmations },
   );
 }
+
+
+export interface UpdateAdminProductInput {
+  name?: string;
+  description?: string | null;
+  categoryId?: string;
+}
+
+function protectedProductEditPath(
+  brandId: string,
+  productId: string,
+): string {
+  if (
+    !import.meta.env.DEV ||
+    import.meta.env.VITE_WOOLY_ADMIN_PROTECTED_PRODUCTS !== "true" ||
+    brandId !== "9c9db775-ad35-4f39-959c-d9c5ce9a123a" ||
+    window.location.origin !== "http://localhost:8000"
+  ) {
+    throw new Error("Edicion no autorizada en este entorno.");
+  }
+
+  const path =
+    `/catalog-commercial/brands/${encodeURIComponent(brandId)}` +
+    `/products/${encodeURIComponent(productId)}`;
+
+  const resolved = new URL(
+    resolveAdminCoreUrl(path),
+    window.location.origin,
+  );
+
+  if (
+    resolved.origin !== window.location.origin ||
+    resolved.pathname !== `/jung-core${path}` ||
+    resolved.search ||
+    resolved.hash
+  ) {
+    throw new Error("Proxy administrativo no autorizado.");
+  }
+
+  return path;
+}
+
+export function loadAdminProductDetail(
+  brandId: string,
+  productId: string,
+): Promise<unknown> {
+  return requestJson<unknown>(
+    protectedProductEditPath(brandId, productId),
+    "GET",
+  );
+}
+
+export function updateAdminProduct(
+  brandId: string,
+  productId: string,
+  input: UpdateAdminProductInput,
+): Promise<unknown> {
+  return requestJson<unknown>(
+    protectedProductEditPath(brandId, productId),
+    "PUT",
+    input,
+  );
+}
+
+
+export interface AdminProductPriceTier {
+  minimumQuantity: number;
+  unitPrice: number;
+}
+
+export function loadAdminProductPricing(
+  brandId: string,
+  productId: string,
+): Promise<unknown> {
+  return requestJson<unknown>(
+    `${protectedProductEditPath(brandId, productId)}/pricing`,
+    "GET",
+  );
+}
+
+export function updateAdminProductTierPrices(
+  brandId: string,
+  productId: string,
+  input: {
+    tiers: AdminProductPriceTier[];
+    expectedTiers: AdminProductPriceTier[];
+  },
+): Promise<unknown> {
+  return requestJson<unknown>(
+    `${protectedProductEditPath(brandId, productId)}/pricing/tiers-only`,
+    "PUT",
+    input,
+  );
+}
+
+export type AdminInventoryOverride =
+  | "AUTO"
+  | "PREORDER"
+  | "COMING_SOON"
+  | "OUT_OF_STOCK"
+  | null;
+
+export function updateAdminProductInventoryPolicy(
+  brandId: string,
+  productId: string,
+  input: {
+    tracked: boolean;
+    availabilityOverride: AdminInventoryOverride;
+  },
+): Promise<unknown> {
+  return requestJson<unknown>(
+    `${protectedProductEditPath(brandId, productId)}/inventory-policy`,
+    "PUT",
+    input,
+  );
+}
+export function updateAdminProductMerchandising(
+  brandId: string,
+  productId: string,
+  input: {
+    priority: number;
+    manualBadgeCodes: string[];
+  },
+): Promise<unknown> {
+  return requestJson(
+    protectedProductEditPath(brandId, productId) +
+      "/merchandising",
+    "PUT",
+    input,
+  );
+}

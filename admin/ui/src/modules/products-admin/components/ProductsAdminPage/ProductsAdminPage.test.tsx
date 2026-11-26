@@ -19,6 +19,7 @@ import type { Product } from "@wooly/contracts/types/product";
 import ProductsAdminPage from "./ProductsAdminPage";
 
 vi.mock("@/modules/products-admin/hooks/useAdminProducts", () => ({
+  PRODUCT_ADMIN_PROTECTED_MODE: false,
   useAdminProducts: vi.fn(),
 }));
 

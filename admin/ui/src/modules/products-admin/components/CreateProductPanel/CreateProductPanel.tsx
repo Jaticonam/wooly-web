@@ -9,7 +9,11 @@ import {
 } from "../../integrations/jungCore/JungCoreProductCreation";
 import "./CreateProductPanel.css";
 
-const quantities = [1, 3, 12, 50, 100] as const;
+import {
+  quantities,
+  ProductIdentityFields,
+  ProductPriceFields,
+} from "./ProductCommercialFields";
 
 export default function CreateProductPanel({
   provider = jungCoreProductCreation,
@@ -193,41 +197,17 @@ export default function CreateProductPanel({
                       onChange={(event) => setCode(event.target.value)} />
                     <ProductCodeImageMatches code={code} />
                   </div>
-                  <div className="create-product-panel__field">
-                    <label htmlFor="create-product-category">Categoría</label>
-                    <select
-                      id="create-product-category"
-                      required
-                      value={categoryId}
-                      onChange={(event) => setCategoryId(event.target.value)}
-                    >
-                      <option value="">Selecciona una categoría</option>
-                      {options?.categories.map((category) => (
-                        <option key={category.id} value={category.id}>{category.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="create-product-panel__field create-product-panel__field--wide">
-                    <label htmlFor="create-product-name">Nombre</label>
-                    <input
-                      id="create-product-name"
-                      required
-                      value={name}
-                      placeholder="Nombre comercial del producto"
-                      onChange={(event) => setName(event.target.value)}
-                      autoFocus
-                    />
-                  </div>
-                  <div className="create-product-panel__field create-product-panel__field--wide">
-                    <label htmlFor="create-product-description">Descripción</label>
-                    <textarea
-                      id="create-product-description"
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
-                      placeholder="Características, presentación y detalles relevantes"
-                      rows={3}
-                    />
-                  </div>
+                  <ProductIdentityFields
+                    idPrefix="create-product"
+                    categories={options?.categories ?? []}
+                    categoryId={categoryId}
+                    name={name}
+                    description={description}
+                    setCategoryId={setCategoryId}
+                    setName={setName}
+                    setDescription={setDescription}
+                    autoFocus
+                  />
                 </div>
                 {options && !options.categories.length && (
                   <p role="status">
@@ -247,29 +227,11 @@ export default function CreateProductPanel({
                       Precios unitarios opcionales en {options.priceLists[0].currency} ·{" "}
                       {options.priceLists[0].name}. Si ingresas precios, incluye 1 unidad.
                     </p>
-                    <div className="create-product-panel__prices">
-                      {quantities.map((quantity) => (
-                        <label key={quantity}>
-                          {quantity === 1 ? "1 unidad" : quantity + " unidades"}
-                          <span className="create-product-panel__priceInput">
-                            <span aria-hidden="true">{options.priceLists[0].currency === "PEN" ? "S/" : options.priceLists[0].currency}</span>
-                            <input
-                              type="number"
-                              min="0.01"
-                              max="9999999999.99"
-                              step="0.01"
-                              value={prices[quantity] ?? ""}
-                              onChange={(event) =>
-                                setPrices((current) => ({
-                                  ...current,
-                                  [quantity]: event.target.value,
-                                }))
-                              }
-                            />
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                    <ProductPriceFields
+                      currency={options.priceLists[0].currency}
+                      prices={prices}
+                      setPrices={setPrices}
+                    />
                   </>
                 ) : (
                   <p className="create-product-panel__sectionHelp">

@@ -2,6 +2,11 @@ import { createElement, type ReactNode } from "react";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { it, expect, vi } from "vitest";
+
+vi.hoisted(() => {
+  // Esta prueba verifica exclusivamente el contrato administrativo estándar.
+  vi.stubEnv("VITE_WOOLY_ADMIN_PROTECTED_PRODUCTS", "false");
+});
 import { jungCoreAdminProducts } from "../integrations/JungCoreAdminProducts";
 import { useAdminProducts, PRODUCT_ADMIN_AUTO_REFRESH_MS } from "./useAdminProducts";
 vi.mock("../integrations/JungCoreAdminProducts", () => ({

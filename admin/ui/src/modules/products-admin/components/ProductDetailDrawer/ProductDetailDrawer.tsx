@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Images, Package, Tag, Send } from "lucide-react";
 
 import {
@@ -21,6 +22,7 @@ interface ProductDetailDrawerProps {
   onOpenChange: (open: boolean) => void;
   onPublish?: (product: Product) => void;
   publishing?: boolean;
+  commercialEditor?: ReactNode;
 }
 
 const PRICE_TIERS = [
@@ -52,6 +54,7 @@ export default function ProductDetailDrawer({
   onOpenChange,
   onPublish,
   publishing = false,
+  commercialEditor,
 }: ProductDetailDrawerProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [hasImageError, setHasImageError] = useState(false);
@@ -109,6 +112,7 @@ export default function ProductDetailDrawer({
           </div>
         </SheetHeader>
         <div className="product-detail-drawer__body">
+          {commercialEditor}
           <section className="product-detail-drawer__overview" aria-label="Resumen operativo">
             <div className="product-detail-drawer__overviewData">
               <div className="product-detail-drawer__summary">

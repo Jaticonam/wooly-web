@@ -34,9 +34,18 @@ describe("Catálogos / CORE administrativo exclusivo", () => {
       isReady: true, error: null,
     } as ReturnType<typeof useCoreCatalogCampaigns>);
     vi.mocked(useAdminProducts).mockReturnValue({
-      data: [{ id: "producto-core" }], isLoading: false,
+      data: [{
+        id: "producto-core",
+        title: "Producto de prueba",
+        description: "Fixture de Catalog Tools",
+        category: "flores",
+        price_1: 18,
+        img: "",
+      }], isLoading: false,
       isFullCatalogLoaded: true, error: null,
-    } as ReturnType<typeof useAdminProducts>);
+      categories: [],
+      reload: async () => {},
+    });
   });
 
   it("lee productos desde CORE y no presenta la ventana antigua de Sheets", () => {
@@ -50,7 +59,7 @@ describe("Catálogos / CORE administrativo exclusivo", () => {
 
   it("mantiene las campañas disponibles aunque CORE aún no entregue productos", () => {
     vi.mocked(useAdminProducts).mockReturnValue({
-      data: [], isLoading: true, isFullCatalogLoaded: false, error: null,
+      data: [], isLoading: true, isFullCatalogLoaded: false, error: null, categories: [], reload: async () => {},
     } as ReturnType<typeof useAdminProducts>);
     renderPage();
     expect(screen.getByTestId("composition-panel")).toHaveTextContent("products:0");
@@ -72,7 +81,9 @@ describe("Catálogos / CORE administrativo exclusivo", () => {
     vi.mocked(useAdminProducts).mockReturnValue({
       data: [], isLoading: false, isFullCatalogLoaded: false,
       error: new Error("CORE unavailable"),
-    } as ReturnType<typeof useAdminProducts>);
+      categories: [],
+      reload: async () => {},
+    });
     renderPage();
     expect(screen.getByRole("alert")).toHaveTextContent("No se utilizarán datos antiguos de Sheets");
     expect(screen.getByTestId("composition-panel")).toHaveTextContent("ready:false");

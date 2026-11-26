@@ -103,13 +103,20 @@ export default function ProductsAdminPage() {
 
   const auth = useAdminAuth();
   const {
-    data: products,
+    data: coreProducts,
     isLoading,
     isFullCatalogLoaded,
     error,
     categories,
     reload,
   } = useAdminProducts(auth.configuration?.brandId);
+
+  const products = useMemo(
+    () => coreProducts.filter(
+      product => !["archived", "archivado"].includes(normalizedStatus(product))
+    ),
+    [coreProducts],
+  );
 
   const brandId = auth.configuration?.brandId;
   const canPublish =
@@ -163,7 +170,9 @@ export default function ProductsAdminPage() {
   };
 
   const publishProduct = async (product: Product) => {
-    if (!canPublish || !brandId || publishing.current || normalizedStatus(product) === "publicado")
+    if (!canPublish || !brandId || publishing.current ||
+        normalizedStatus(product) === "publicado" ||
+        !products.some(current => current.id === product.id))
       return;
 
     publishing.current = true;
@@ -191,7 +200,8 @@ export default function ProductsAdminPage() {
   };
 
   const confirmPublication = async (confirmations: AdminPublicationConfirmations) => {
-    if (!publicationReview || !brandId || publicationSubmitting || !canPublish) return;
+    if (!publicationReview || !brandId || publicationSubmitting || !canPublish ||
+        !products.some(product => product.id === publicationReview.product.id)) return;
 
     setPublicationSubmitting(true);
     setPublishError("");
@@ -229,9 +239,30 @@ export default function ProductsAdminPage() {
 
   useEffect(() => {
     setSelectedProduct((current) =>
-      current ? (products.find((product) => product.id === current.id) ?? current) : null,
+      current ? (products.find((product) => product.id === current.id) ??
+        (isFullCatalogLoaded ? null : current)) : null,
     );
-  }, [products]);
+
+    if (!isFullCatalogLoaded) return;
+
+    const eligible = new Set(products.map(product => product.id));
+
+    setSelectedProductIds(current => {
+      const next = new Set([...current].filter(id => eligible.has(id)));
+      return next.size === current.size ? current : next;
+    });
+  }, [products, isFullCatalogLoaded]);
+
+  useEffect(() => {
+    if (
+      isFullCatalogLoaded && publicationReview && !publicationSubmitting &&
+      !products.some(product => product.id === publicationReview.product.id)
+    ) {
+      setPublicationReview(null);
+      setPublishingProductId(null);
+      publishing.current = false;
+    }
+  }, [products, isFullCatalogLoaded, publicationReview, publicationSubmitting]);
 
   const isReady = isFullCatalogLoaded;
 
@@ -275,6 +306,7 @@ export default function ProductsAdminPage() {
   }, [products]);
 
   const toggleProductSelection = (product: Product) => {
+    if (!products.some(current => current.id === product.id)) return;
     setSelectedProductIds((current) => toggleProductAdminSelection(current, product.id));
   };
 
@@ -301,12 +333,14 @@ export default function ProductsAdminPage() {
     setBulkPublishing(true);
   };
   const prepareCatalog = () => {
-    if (selectedProductIds.size === 0) {
-      return;
-    }
+    const eligible = products
+      .filter(product => selectedProductIds.has(product.id))
+      .map(product => product.id);
+
+    if (eligible.length === 0) return;
 
     navigate("/admin/catalogos", {
-      state: createCatalogWorkspaceHandoff([...selectedProductIds]),
+      state: createCatalogWorkspaceHandoff(eligible),
     });
   };
   return (

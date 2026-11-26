@@ -484,3 +484,73 @@ it.each([{ id: "other", status: "PUBLISHED" }, { id: "core-p", status: "DRAFT" }
   expect(reload).not.toHaveBeenCalled();
   expect(screen.queryByText(/publicación confirmada por JUNG CORE/)).not.toBeInTheDocument();
 });
+
+
+it("excluye archivados del catalogo operativo y de la seleccion", async () => {
+  const active: Product = {
+    id: "active",
+    code: "AKT-RS150",
+    title: "Producto vigente",
+    description: "Producto vigente",
+    category: "flores",
+    price_1: 5.5,
+    stock: null,
+    img: "",
+    status: "borrador",
+  };
+
+  const archived: Product = {
+    ...active,
+    id: "archived",
+    code: "CT-554-03",
+    title: "Producto archivado",
+    status: "archived",
+  };
+
+  const catalog = {
+    data: [active, archived],
+    isLoading: false,
+    isFullCatalogLoaded: true,
+    categories: [],
+    error: null,
+    reload: vi.fn().mockResolvedValue(undefined),
+  };
+
+  vi.mocked(useAdminProducts).mockReturnValue(catalog);
+
+  const view = render(
+    <MemoryRouter>
+      <ProductsAdminPage />
+    </MemoryRouter>,
+  );
+
+  expect(screen.getByTestId("product-explorer"))
+    .toHaveTextContent("products:1");
+
+  expect(screen.queryByRole("button", { name: "Publicar archived" }))
+    .not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: "Seleccionar visibles" }));
+
+  expect(screen.getByText("1 seleccionados")).toBeInTheDocument();
+
+  vi.mocked(useAdminProducts).mockReturnValue({
+    ...catalog,
+    data: [{ ...active, status: "ARCHIVED" }, archived],
+  });
+
+  view.rerender(
+    <MemoryRouter>
+      <ProductsAdminPage />
+    </MemoryRouter>,
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText("0 seleccionados")).toBeInTheDocument();
+  });
+
+  expect(screen.getByTestId("product-explorer"))
+    .toHaveTextContent("products:0");
+
+  expect(publishAdminProduct).not.toHaveBeenCalled();
+});

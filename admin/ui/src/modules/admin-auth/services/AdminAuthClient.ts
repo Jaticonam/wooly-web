@@ -662,3 +662,25 @@ export function updateAdminProductMerchandising(
     input,
   );
 }
+
+export interface AdminInventoryBalanceExpected {
+  onHand: number;
+  reserved: number;
+  updatedAt: string;
+}
+
+export function updateAdminProductInventoryBalance(
+  brandId: string,
+  productId: string,
+  locationCode: string,
+  input: {
+    onHand: number;
+    expected: AdminInventoryBalanceExpected | null;
+  },
+): Promise<unknown> {
+  return requestJson<unknown>(
+    `${protectedProductEditPath(brandId, productId)}/inventory-balances/${encodeURIComponent(locationCode)}`,
+    "PUT",
+    input,
+  );
+}

@@ -15,7 +15,8 @@ describe("AdminShell 2.0 / W-SIDEBAR-01", () => {
     expect(screen.getByRole("link", { name: "Productos" })).toHaveClass("is-active");
     expect(screen.getByRole("link", { name: "Catálogos" })).not.toHaveClass("is-active");
     expect(screen.getByRole("link", { name: "Configuración" })).not.toHaveClass("is-active");
-    expect(screen.queryByText("Campañas")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Campañas" })).toHaveAttribute("href", "/admin/campanas");
+    expect(screen.getByRole("link", { name: "Campañas" })).not.toHaveClass("is-active");
     expect(screen.queryByText("Sistema")).not.toBeInTheDocument();
   });
 

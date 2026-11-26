@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Boxes, ChevronDown, PanelLeftClose, PanelLeftOpen, ClipboardList,
-  Database, Files, Images, KanbanSquare, List, LogOut,
+  Database, Files, Images, KanbanSquare, List, LogOut, Megaphone,
   Settings2, Sheet, ShieldCheck, Store, Workflow, ExternalLink,
 } from "lucide-react";
 import { useOptionalAdminAuth } from "@/modules/admin-auth/context/AdminAuthContext";
@@ -100,6 +100,13 @@ export default function AdminShell({
                 </div>
               )}
             </div>
+
+            <NavLink to="/admin/campanas" className={itemClass} title="Campañas">
+              <span className="wooly-admin-shell__navIcon">
+                <Megaphone size={19} strokeWidth={2} />
+              </span>
+              <span className="wooly-admin-shell__navLabel">Campañas</span>
+            </NavLink>
 
             <NavLink to="/admin/catalogos" className={itemClass} title="Catálogos">
               <span className="wooly-admin-shell__navIcon"><Files size={19} strokeWidth={2} /></span>

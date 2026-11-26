@@ -58,6 +58,10 @@ const SalesCatalogToolsPage = lazy(
   () => import("@/pages/SalesCatalogToolsPage"),
 );
 
+const CampaignsAdminPage = lazy(
+  () => import("@/modules/campaigns-admin/pages/CampaignsAdminPage"),
+);
+
 const CatalogSettingsPage = lazy(
   () => import("@/modules/catalog-settings/pages/CatalogSettingsPage"),
 );
@@ -165,6 +169,7 @@ export default function App() {
                         }
                       />
 
+                      <Route path="/admin/campanas" element={<CampaignsAdminPage />} />
                       <Route path="/admin/pedidos" element={<OrdersWorkspace />} />
                       <Route path="/admin/pedidos/tablero" element={<OrdersWorkspace />} />
                       <Route

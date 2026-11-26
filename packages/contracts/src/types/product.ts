@@ -42,6 +42,24 @@ export interface Campaign {
   computedStatus: CampaignComputedStatus;
 }
 
+export interface ProductMediaAsset {
+  assetId: string;
+  url: string;
+  thumbnailUrl: string | null;
+  altText: string;
+  role: string;
+  position: number;
+  isPrimary: boolean;
+  origin: "MEDIA_ASSET" | "TEMPORARY_LINK";
+  temporarySource: "GOOGLE_SHEETS" | "DROPBOX" | null;
+  assetStatus: string;
+}
+
+export interface ProductMedia {
+  primary: ProductMediaAsset | null;
+  gallery: ProductMediaAsset[];
+}
+
 export interface Product {
   code?: string | null;
   barcode?: string | null;
@@ -66,6 +84,8 @@ export interface Product {
   stock?: number | null;
   img: string;
   gallery?: string;
+  /** Canonical multimedia provided by CORE. */
+  media?: ProductMedia;
 
   status?: string;
   badges?: string[];

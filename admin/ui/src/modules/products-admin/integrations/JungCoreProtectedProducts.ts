@@ -5,6 +5,24 @@ import { resolveAdminCoreUrl } from "@/modules/admin-auth/services/AdminAuthClie
  * WOOLY-ADMIN-CORE-SEC-01A — lector autenticado aislado.
  * No sustituye el contrato legacy hasta completar la paridad comercial.
  */
+export const protectedMediaAssetSchema = z.object({
+  assetId: z.string().min(1),
+  url: z.string().min(1),
+  thumbnailUrl: z.string().nullable(),
+  altText: z.string(),
+  role: z.string(),
+  position: z.number().int(),
+  isPrimary: z.boolean(),
+  origin: z.enum(["MEDIA_ASSET", "TEMPORARY_LINK"]),
+  temporarySource: z.enum(["GOOGLE_SHEETS", "DROPBOX"]).nullable(),
+  assetStatus: z.string(),
+});
+
+export const protectedProductMediaSchema = z.object({
+  primary: protectedMediaAssetSchema.nullable(),
+  gallery: z.array(protectedMediaAssetSchema),
+});
+
 export const protectedProductSchema = z.object({
   id: z.string().min(1),
   code: z.string().nullable(),
@@ -40,10 +58,7 @@ export const protectedProductSchema = z.object({
       onHand: z.number(), reserved: z.number(), available: z.number(),
     }).passthrough()),
   }),
-  media: z.object({
-    primary: z.object({ url: z.string() }).passthrough().nullable(),
-    gallery: z.array(z.object({ url: z.string() }).passthrough()),
-  }),
+  media: protectedProductMediaSchema,
   merchandising: z.object({
     priority: z.number(),
     badges: z.array(z.object({ code: z.string(), label: z.string().nullable(), active: z.boolean() })),

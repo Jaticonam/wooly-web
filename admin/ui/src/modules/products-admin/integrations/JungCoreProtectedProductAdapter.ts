@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Product } from "@wooly/contracts/types/product";
-import { assertLegacyListingParity, type ProtectedProduct } from "./JungCoreProtectedProducts";
+import { assertLegacyListingParity, protectedProductMediaSchema, type ProtectedProduct } from "./JungCoreProtectedProducts";
 
 const commercialProductSchema = z.object({
   id: z.string().min(1),
@@ -13,6 +13,7 @@ const commercialProductSchema = z.object({
   sku: z.string().nullable(),
   category: z.object({ id: z.string() }).nullable(),
   image: z.object({ url: z.string() }).nullable(),
+  media: protectedProductMediaSchema,
   campaigns: z.array(z.object({ campaignId: z.string() })),
   pricing: z.object({ tiers: z.array(z.object({ minimumQuantity: z.number(), unitPrice: z.number() })) }),
   offer: z.object({ unitPrice: z.number(), status: z.string() }).nullable(),
@@ -38,6 +39,14 @@ export function mapProtectedAdminProduct(
   if (data.category && !category) throw new Error("WOOLY_ADMIN_CATEGORY_PARITY_BLOCKED");
   const tiers = new Map(data.pricing.tiers.map(tier => [tier.minimumQuantity, tier.unitPrice]));
   const status = ({ DRAFT: "borrador", HIDDEN: "oculto", INACTIVE: "oculto", ACTIVE: "publicado", PUBLISHED: "publicado", PREORDER: "preventa", OUT_OF_STOCK: "agotado" } as Record<string, string>)[data.status] ?? data.status.toLowerCase();
+  const media = {
+    primary: data.media.primary,
+    gallery: [...data.media.gallery].sort(
+      (a, b) => a.position - b.position ||
+        a.assetId.localeCompare(b.assetId),
+    ),
+  };
+
   return {
     id: data.id,
     code: data.code,
@@ -56,7 +65,9 @@ export function mapProtectedAdminProduct(
     stock: data.inventory.balances.length
       ? data.inventory.balances.reduce((sum, balance) => sum + Math.max(0, balance.available), 0)
       : null,
-    img: data.image?.url ?? "",
+    media,
+    img: media.primary?.url ?? "",
+    gallery: media.gallery.map(asset => asset.url).join("|"),
     status,
     priority: data.merchandising?.priority ?? 0,
     badges: data.merchandising?.badges.map(badge => badge.code) ?? [],

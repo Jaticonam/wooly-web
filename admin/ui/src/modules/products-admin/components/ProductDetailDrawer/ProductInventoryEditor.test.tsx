@@ -11,17 +11,49 @@ import ProductInventoryEditor from "./ProductInventoryEditor";
 
 import {
   loadAdminProductDetail,
+  loadBrandAdminConfiguration,
   updateAdminProductInventoryPolicy,
+  updateAdminProductInventoryBalance,
 } from "@/modules/admin-auth/services/AdminAuthClient";
 
 vi.mock("@/modules/admin-auth/services/AdminAuthClient", () => ({
   loadAdminProductDetail: vi.fn(),
+  loadBrandAdminConfiguration: vi.fn(),
   updateAdminProductInventoryPolicy: vi.fn(),
+  updateAdminProductInventoryBalance: vi.fn(),
 }));
+
+const detail = vi.mocked(loadAdminProductDetail);
+const config = vi.mocked(loadBrandAdminConfiguration);
+const policy = vi.mocked(updateAdminProductInventoryPolicy);
+const stock = vi.mocked(updateAdminProductInventoryBalance);
+
+const location = {
+  id: "location-test",
+  code: "MAIN",
+  name: "Almacen principal",
+  status: "ACTIVE",
+  countsForPublicCatalog: true,
+};
+
+function balance(onHand = 10, reserved = 2) {
+  return {
+    locationId: location.id,
+    locationCode: location.code,
+    locationName: location.name,
+    locationStatus: location.status,
+    countsForPublicCatalog: true,
+    onHand,
+    reserved,
+    available: onHand - reserved,
+    updatedAt: "2026-11-27T00:00:00.000Z",
+  };
+}
 
 function response(
   tracked: boolean | null = null,
   availabilityOverride: string | null = null,
+  balances: ReturnType<typeof balance>[] = [],
 ) {
   return {
     success: true,
@@ -30,7 +62,7 @@ function response(
       inventory: {
         tracked,
         availabilityOverride,
-        balances: [],
+        balances,
       },
     },
   };
@@ -38,7 +70,18 @@ function response(
 
 beforeEach(() => {
   vi.resetAllMocks();
-  vi.mocked(loadAdminProductDetail).mockResolvedValue(response());
+
+  detail.mockResolvedValue(response());
+
+  config.mockResolvedValue({
+    success: true,
+    data: {
+      brandId: "brand-test",
+      inventoryLocations: [location],
+    },
+  } as unknown as Awaited<
+    ReturnType<typeof loadBrandAdminConfiguration>
+  >);
 });
 
 async function openEditor() {
@@ -52,103 +95,237 @@ async function openEditor() {
     />,
   );
 
-  fireEvent.click(screen.getByRole("button", {
-    name: "Gestionar inventario",
-  }));
-
   await screen.findByRole("button", {
-    name: "Guardar politica",
+    name: "Guardar inventario",
   });
 
   return onSaved;
 }
 
+function save() {
+  fireEvent.click(screen.getByRole("button", {
+    name: "Guardar inventario",
+  }));
+}
+
+function changeOverride(value: string) {
+  fireEvent.change(screen.getByLabelText(
+    "Disponibilidad comercial",
+  ), { target: { value } });
+}
+
+function changeStock(value: string) {
+  fireEvent.change(screen.getByLabelText(
+    "Existencias fisicas",
+  ), { target: { value } });
+}
+
 describe("ProductInventoryEditor", () => {
-  it("no inventa politica ni stock cuando CORE no los registra", async () => {
+  it("carga directamente sin inventar politica ni stock", async () => {
     await openEditor();
 
     expect(screen.getByLabelText(
-      "Seguimiento de inventario",
-    )).toHaveValue("");
-
-    expect(screen.getByText(
-      "Sin balances registrados en CORE.",
-    )).toBeInTheDocument();
+      "Existencias fisicas",
+    )).toHaveValue(null);
 
     expect(screen.getByRole("button", {
-      name: "Guardar politica",
+      name: "Guardar inventario",
     })).toBeDisabled();
 
-    expect(updateAdminProductInventoryPolicy).not.toHaveBeenCalled();
+    expect(policy).not.toHaveBeenCalled();
+    expect(stock).not.toHaveBeenCalled();
   });
 
-  it("no escribe una politica sin cambios", async () => {
-    vi.mocked(loadAdminProductDetail)
-      .mockResolvedValue(response(false));
+  it("normaliza AUTO y null como la misma disponibilidad", async () => {
+    detail.mockResolvedValue(response(true, "AUTO"));
 
     await openEditor();
 
-    fireEvent.click(screen.getByRole("button", {
-      name: "Guardar politica",
-    }));
+    expect(screen.getByLabelText(
+      "Disponibilidad comercial",
+    )).toHaveValue("AUTO");
 
-    await screen.findByText("No hay cambios de inventario.");
+    expect(screen.getByRole("button", {
+      name: "Guardar inventario",
+    })).toBeDisabled();
 
-    expect(updateAdminProductInventoryPolicy).not.toHaveBeenCalled();
+    expect(policy).not.toHaveBeenCalled();
   });
 
-  it("actualiza exclusivamente la politica comercial", async () => {
+  it("envia null y confirma mediante una lectura independiente", async () => {
+    detail.mockResolvedValue(response(true, "PREORDER"));
+
     const onSaved = await openEditor();
 
-    vi.mocked(updateAdminProductInventoryPolicy)
-      .mockResolvedValue(response(true, "PREORDER"));
+    detail
+      .mockResolvedValueOnce(response(true, "PREORDER"))
+      .mockResolvedValueOnce(response(true, null));
 
-    fireEvent.change(screen.getByLabelText(
-      "Seguimiento de inventario",
-    ), { target: { value: "true" } });
+    policy.mockResolvedValue(response(true, "PREORDER"));
 
-    fireEvent.change(screen.getByLabelText(
-      "Disponibilidad comercial",
-    ), { target: { value: "PREORDER" } });
+    changeOverride("AUTO");
+    save();
 
-    fireEvent.click(screen.getByRole("button", {
-      name: "Guardar politica",
-    }));
+    await screen.findByText("Inventario confirmado por CORE TEST.");
 
-    await screen.findByText(
-      "Politica de inventario confirmada por CORE TEST.",
+    expect(policy).toHaveBeenCalledExactlyOnceWith(
+      "brand-test",
+      "product-test",
+      {
+        tracked: true,
+        availabilityOverride: null,
+      },
     );
 
-    expect(updateAdminProductInventoryPolicy)
-      .toHaveBeenCalledExactlyOnceWith(
-        "brand-test",
-        "product-test",
-        {
-          tracked: true,
-          availabilityOverride: "PREORDER",
-        },
-      );
+    expect(detail).toHaveBeenCalledTimes(3);
+    expect(stock).not.toHaveBeenCalled();
 
     await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
   });
 
-  it("bloquea cambios ante una politica desactualizada", async () => {
+  it("actualiza existencias preservando las reservas", async () => {
+    detail.mockResolvedValue(response(true, null, [balance()]));
+
+    const onSaved = await openEditor();
+
+    detail
+      .mockResolvedValueOnce(response(true, null, [balance()]))
+      .mockResolvedValueOnce(response(true, null, [balance(15)]));
+
+    stock.mockResolvedValue(response(true, null, [balance()]));
+
+    changeStock("15");
+    save();
+
+    await screen.findByText("Inventario confirmado por CORE TEST.");
+
+    expect(stock).toHaveBeenCalledExactlyOnceWith(
+      "brand-test",
+      "product-test",
+      "MAIN",
+      {
+        onHand: 15,
+        expected: {
+          onHand: 10,
+          reserved: 2,
+          updatedAt: "2026-11-27T00:00:00.000Z",
+        },
+      },
+    );
+
+    expect(policy).not.toHaveBeenCalled();
+
+    await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
+  });
+
+  it("bloquea cantidades inferiores a las reservas", async () => {
+    detail.mockResolvedValue(response(true, null, [balance()]));
+
     await openEditor();
 
-    vi.mocked(loadAdminProductDetail)
-      .mockResolvedValue(response(false, "AUTO"));
+    changeStock("1");
+    save();
 
-    fireEvent.change(screen.getByLabelText(
-      "Seguimiento de inventario",
-    ), { target: { value: "true" } });
+    expect(stock).not.toHaveBeenCalled();
+    expect(policy).not.toHaveBeenCalled();
+  });
 
-    fireEvent.click(screen.getByRole("button", {
-      name: "Guardar politica",
-    }));
+  it("bloquea una politica desactualizada antes de escribir", async () => {
+    await openEditor();
+
+    detail.mockResolvedValue(response(false));
+
+    changeOverride("PREORDER");
+    save();
 
     expect(await screen.findByRole("alert"))
-      .toHaveTextContent("La politica de inventario cambio");
+      .toHaveTextContent("La politica cambio");
 
-    expect(updateAdminProductInventoryPolicy).not.toHaveBeenCalled();
+    expect(policy).not.toHaveBeenCalled();
+    expect(stock).not.toHaveBeenCalled();
+  });
+
+  it("no declara exito si la relectura no confirma la politica", async () => {
+    detail.mockResolvedValue(response(true, null));
+
+    const onSaved = await openEditor();
+
+    policy.mockResolvedValue(response(true, "PREORDER"));
+
+    changeOverride("PREORDER");
+    save();
+
+    expect(await screen.findByRole("alert"))
+      .toHaveTextContent("Resultado no confirmado");
+
+    expect(onSaved).not.toHaveBeenCalled();
+  });
+
+  it("informa resultados parciales sin reintentar automaticamente", async () => {
+    detail.mockResolvedValue(response(true, null, [balance()]));
+
+    const onSaved = await openEditor();
+
+    detail
+      .mockResolvedValueOnce(response(true, null, [balance()]))
+      .mockResolvedValueOnce(response(true, "PREORDER", [balance()]));
+
+    policy.mockResolvedValue(response(true, "PREORDER"));
+    stock.mockRejectedValue(new Error("HTTP 409"));
+
+    changeOverride("PREORDER");
+    changeStock("15");
+    save();
+
+    expect(await screen.findByRole("alert"))
+      .toHaveTextContent("Resultado parcial. Confirmado: politica");
+
+    expect(policy).toHaveBeenCalledOnce();
+    expect(stock).toHaveBeenCalledOnce();
+    expect(onSaved).not.toHaveBeenCalled();
+
+    expect(screen.getByRole("button", {
+      name: "Guardar inventario",
+    })).toBeDisabled();
+
+    expect(screen.getByRole("button", {
+      name: "Recargar inventario",
+    })).toBeInTheDocument();
+  });
+
+  it("permite registrar un primer saldo sin inventar reservas", async () => {
+    await openEditor();
+
+    detail
+      .mockResolvedValueOnce(response())
+      .mockResolvedValueOnce(response(true))
+      .mockResolvedValueOnce(response(true, null, [balance(8, 0)]));
+
+    policy.mockResolvedValue(response(true));
+    stock.mockResolvedValue(response(true));
+
+    changeStock("8");
+    save();
+
+    await screen.findByText("Inventario confirmado por CORE TEST.");
+
+    expect(policy).toHaveBeenCalledExactlyOnceWith(
+      "brand-test",
+      "product-test",
+      {
+        tracked: true,
+        availabilityOverride: null,
+      },
+    );
+
+    expect(stock).toHaveBeenCalledExactlyOnceWith(
+      "brand-test",
+      "product-test",
+      "MAIN",
+      {
+        onHand: 8,
+        expected: null,
+      },
+    );
   });
 });
